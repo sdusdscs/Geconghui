@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>中国美食 - 品味中华味道</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  .yuan_body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    color: #3d2c29; background: #fff;
+  }
+  .yuan_container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* ===== 顶部导航 ===== */
+  .yuan_nav {
+    background: linear-gradient(90deg, #c0601a, #e07b2a);
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .yuan_logo {
+    color: #fff; font-size: 22px; font-weight: bold; letter-spacing: 3px;
+    text-decoration: none;
+  }
+  .yuan_menu { display: flex; gap: 32px; list-style: none; }
+  .yuan_menu a {
+    color: #fff; text-decoration: none; font-size: 15px; opacity: 0.92;
+  }
+  .yuan_menu a:hover, .yuan_menu a.active { color: #ffd8a8; opacity: 1; }
+
+  /* ===== Hero Banner ===== */
+  .yuan_hero {
+    height: 460px;
+    background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url("img/4.png") center/cover no-repeat;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; color: #fff;
+  }
+  .yuan_hero h1 { font-size: 52px; letter-spacing: 8px; margin-bottom: 16px; text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+  .yuan_hero p { font-size: 18px; opacity: 0.95; margin-bottom: 28px; }
+  .yuan_hero_btn {
+    display: inline-block; background: #d96b1f; color: #fff;
+    padding: 12px 36px; border-radius: 24px;
+    text-decoration: none; font-size: 15px;
+    transition: background .2s;
+  }
+  .yuan_hero_btn:hover { background: #b8551a; }
+
+  /* ===== 通用 section 标题 ===== */
+  .yuan_section { padding: 60px 0; }
+  .yuan_section_title {
+    text-align: center; font-size: 30px; color: #8b4513;
+    margin-bottom: 40px; letter-spacing: 4px;
+  }
+
+  /* ===== 三列特色 ===== */
+  .yuan_feature_grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;
+  }
+  .yuan_feature_card {
+    background: #fff; border-radius: 12px; padding: 36px 24px;
+    text-align: center; box-shadow: 0 4px 16px rgba(139,69,19,0.08);
+  }
+  .yuan_feature_icon {
+    width: 110px; height: 110px; border-radius: 50%;
+    object-fit: cover; margin: 0 auto 18px; display: block;
+    border: 4px solid #f5e6d3;
+  }
+  .yuan_feature_card h3 { color: #8b4513; font-size: 19px; margin-bottom: 10px; }
+  .yuan_feature_card p { color: #999; font-size: 14px; line-height: 1.7; }
+
+  /* ===== 四列热门菜品（上图下文）===== */
+  .yuan_dish_grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  }
+  .yuan_dish_card {
+    background: #fff; border-radius: 10px; overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    transition: transform .25s;
+  }
+  .yuan_dish_card:hover { transform: translateY(-6px); }
+  .yuan_dish_img { width: 100%; height: 180px; object-fit: cover; display: block; }
+  .yuan_dish_body { padding: 18px; text-align: center; }
+  .yuan_dish_name { color: #3d2c29; font-size: 17px; font-weight: bold; margin-bottom: 6px; }
+  .yuan_dish_desc { color: #999; font-size: 13px; }
+
+  /* ===== 关于我们 ===== */
+  .yuan_about {
+    background: #fdf6ee; padding: 60px 0; text-align: center;
+  }
+  .yuan_about_text {
+    max-width: 900px; margin: 0 auto;
+    color: #666; font-size: 15px; line-height: 2; text-align: center;
+  }
+
+  /* ===== 页脚 ===== */
+  .yuan_footer {
+    background: #2b1d18; color: #b89a8a;
+    text-align: center; padding: 26px 20px; font-size: 13px;
+  }
+  .yuan_footer a { color: #d96b1f; text-decoration: none; }
+</style>
+</head>
+<body class="yuan_body">
+
+  <!-- 导航 -->
+  <nav class="yuan_nav">
+    <a class="yuan_logo" href="#">中国美食</a>
+    <ul class="yuan_menu">
+      <li><a href="#" class="active">首页</a></li>
+      <li><a href="#yuan_feature">菜系介绍</a></li>
+      <li><a href="#yuan_dish">特色菜品</a></li>
+      <li><a href="#yuan_about">美食文化</a></li>
+      <li><a href="food.html">探店</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <header class="yuan_hero">
+    <h1>品味中华美食</h1>
+    <p>传承千年的烹饪艺术，汇聚八方的美味佳肴</p>
+    <a class="yuan_hero_btn" href="#yuan_dish">探索菜系</a>
+  </header>
+
+  <!-- 三列特色 -->
+  <section class="yuan_section" id="yuan_feature">
+    <div class="yuan_container">
+      <h2 class="yuan_section_title">中国美食特色</h2>
+      <div class="yuan_feature_grid">
+        <div class="yuan_feature_card">
+          <img class="yuan_feature_icon" src="img/4.png" alt="八大菜系">
+          <h3>八大菜系</h3>
+          <p>鲁、川、粤、苏、闽、浙、湘、徽，各具特色，风味万千。</p>
+        </div>
+        <div class="yuan_feature_card">
+          <img class="yuan_feature_icon" src="img/4.png" alt="精湛技艺">
+          <h3>精湛技艺</h3>
+          <p>蒸、煮、煎、炸、烤，百种烹饪手法，讲究火候与刀工。</p>
+        </div>
+        <div class="yuan_feature_card">
+          <img class="yuan_feature_icon" src="img/4.png" alt="食疗养生">
+          <h3>食疗养生</h3>
+          <p>药食同源，四季进补，滋补养生的传统饮食智慧。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 四列热门菜品（上图下文）-->
+  <section class="yuan_section" id="yuan_dish" style="background:#fafafa;">
+    <div class="yuan_container">
+      <h2 class="yuan_section_title">热门菜品</h2>
+      <div class="yuan_dish_grid">
+        <div class="yuan_dish_card">
+          <img class="yuan_dish_img" src="img/4.png" alt="北京烤鸭">
+          <div class="yuan_dish_body">
+            <div class="yuan_dish_name">北京烤鸭</div>
+            <div class="yuan_dish_desc">外酥里嫩，肥而不腻</div>
+          </div>
+        </div>
+        <div class="yuan_dish_card">
+          <img class="yuan_dish_img" src="img/4.png" alt="麻婆豆腐">
+          <div class="yuan_dish_body">
+            <div class="yuan_dish_name">麻婆豆腐</div>
+            <div class="yuan_dish_desc">麻辣鲜香，嫩滑爽口</div>
+          </div>
+        </div>
+        <div class="yuan_dish_card">
+          <img class="yuan_dish_img" src="img/4.png" alt="西湖醋鱼">
+          <div class="yuan_dish_body">
+            <div class="yuan_dish_name">西湖醋鱼</div>
+            <div class="yuan_dish_desc">酸甜适口，肉质鲜嫩</div>
+          </div>
+        </div>
+        <div class="yuan_dish_card">
+          <img class="yuan_dish_img" src="img/4.png" alt="宫保鸡丁">
+          <div class="yuan_dish_body">
+            <div class="yuan_dish_name">宫保鸡丁</div>
+            <div class="yuan_dish_desc">香辣微甜，花生酥脆</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 关于我们 -->
+  <section class="yuan_about" id="yuan_about">
+    <div class="yuan_container">
+      <h2 class="yuan_section_title">关于中国美食</h2>
+      <p class="yuan_about_text">
+        中国饮食文化源远流长，博大精深。从远古时代的茹毛饮血，到如今的八大菜系百花齐放，中国美食经历了数千年的发展演变。每一道菜品都承载着地域文化、历史传承和人们对美好生活的向往。<br>
+        中国美食讲究"色、香、味、形、器"俱全，注重食材的本味和烹饪的火候。无论是宫廷盛宴还是民间小吃，都体现着中国人对美食的独特理解和追求。
+      </p>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="yuan_footer">
+    © 2026 中国美食官网 · 传承千年味道 · <a href="food.html">美食探店</a>
+  </footer>
+</body>
+</html>

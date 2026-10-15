@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>背景颜色随时间变化</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f0f0f0;
+  }
+
+  .color-box {
+    width: 300px;
+    height: 300px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: combo 8s infinite ease-in-out;
+  }
+
+  @keyframes combo {
+    0%   { background-color: #ff6b6b; transform: rotate(0deg)   scale(1);   }
+    25%  { background-color: #4ecdc4; transform: rotate(90deg)  scale(0.6); }
+    50%  { background-color: #ffe66d; transform: rotate(180deg) scale(1);   }
+    75%  { background-color: #a855f7; transform: rotate(270deg) scale(0.6); }
+    100% { background-color: #ff6b6b; transform: rotate(360deg) scale(1);   }
+  }
+</style>
+</head>
+<body>
+  <div class="color-box"></div>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>响应式八盒子 · 媒体查询布局</title>
+    <style>
+        /* 全局重置 & 基础字体 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            min-width: 320px;            /* 页面最小宽度 320px */
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* 布局容器 */
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        /* 标题区域，包含“袁磊” */
+        .title-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .title-section h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #0f172a;
+            letter-spacing: 1px;
+        }
+
+        .title-section h1 span {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        .title-section p {
+            font-size: 1.125rem;
+            color: #334155;
+            margin-top: 0.5rem;
+            font-weight: 400;
+        }
+
+        /* 八个盒子的网格容器 */
+        .grid-boxes {
+            display: grid;
+            gap: 1.25rem;
+            grid-template-columns: repeat(1, 1fr);  /* 默认手机：1列 */
+            margin-top: 1rem;
+        }
+
+        /* 单个盒子样式 */
+        .box {
+            background: linear-gradient(145deg, #ffffff, #f1f5f9);
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            aspect-ratio: 1 / 1;          /* 每个盒子为正方形，更美观 */
+        }
+
+        .box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.12);
+            border-color: #cbd5e1;
+        }
+
+        /* 盒子序号 */
+        .box-number {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0f172a;
+            background: #eef2ff;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            margin-bottom: 0.75rem;
+            color: #1e40af;
+        }
+
+        /* 盒子内文字 (可以包含“袁磊”，但这里作为通用文字) */
+        .box-text {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #1e293b;
+            word-break: break-word;
+        }
+
+        /* 小点缀：每个盒子底部放一个“葛聪慧”小字，或根据需求出现 */
+        .box-sub {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* ---------- 媒体查询：支持3个断点 ---------- */
+        /* 1. 超小屏幕 (默认就是320px起) 1列，已经在上面定义 */
+
+        /* 2. 小屏幕设备 (平板竖屏等) 宽度 >= 480px，一行2个盒子 */
+        @media (min-width: 480px) {
+            .grid-boxes {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .title-section h1 {
+                font-size: 2.25rem;
+            }
+        }
+
+        /* 3. 中等屏幕 (平板横屏/小笔记本) 宽度 >= 768px，一行4个盒子 */
+        @media (min-width: 768px) {
+            .grid-boxes {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            body {
+                padding: 2rem;
+            }
+        }
+
+        /* 4. 大屏幕 (桌面) 宽度 >= 1200px，一行8个盒子（八个全部一行） */
+        @media (min-width: 1200px) {
+            .grid-boxes {
+                grid-template-columns: repeat(8, 1fr);
+                gap: 1rem;
+            }
+            .box {
+                padding: 1rem 0.5rem;
+                aspect-ratio: 1 / 1;
+            }
+            .box-number {
+                width: 40px;
+                height: 40px;
+                font-size: 1.4rem;
+            }
+            .box-text {
+                font-size: 0.9rem;
+            }
+            .title-section h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* 为了更加灵活，在极小屏幕下，字体适当缩小 */
+        @media (max-width: 380px) {
+            .box-number {
+                width: 40px;
+                height: 40px;
+                font-size: 1.4rem;
+            }
+            .box-text {
+                font-size: 0.9rem;
+            }
+            .title-section h1 {
+                font-size: 1.75rem;
+            }
+        }
+
+        /* 确保所有盒子内容居中，并保持美观 */
+        .box {
+            min-width: 0;   /* 防止grid子项溢出 */
+        }
+
+        /* 增加一个装饰性底边 */
+        .footer-note {
+            margin-top: 2rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1.5rem;
+        }
+
+        .footer-note strong {
+            color: #2563eb;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 包含文字“葛聪慧”的标题区域 -->
+        <div class="title-section">
+            <h1>📦 响应式 <span>葛聪慧</span> 布局</h1>
+            <p>八个盒子 · 媒体查询 · 一行数量随视口变化</p>
+        </div>
+
+        <!-- 八个盒子的网格 -->
+        <div class="grid-boxes">
+            <!-- 盒子 1 -->
+            <div class="box">
+                <div class="box-number">1</div>
+                <div class="box-text">葛聪慧</div>
+                <div class="box-sub">盒子一号</div>
+            </div>
+            <!-- 盒子 2 -->
+            <div class="box">
+                <div class="box-number">2</div>
+                <div class="box-text">葛聪慧</div>
+                <div class="box-sub">盒子二号</div>
+            </div>
+            <!-- 盒子 3 -->
+            <div class="box">
+                <div class="box-number">3</div>
+                <div class="box-text">葛聪慧</div>
+                <div class="box-sub">盒子三号</div>
+            </div>
+            <!-- 盒子 4 -->
+            <div class="box">
+                <div class="box-number">4</div>
+                <div class="box-text">葛聪慧</div>
+                <div class="box-sub">盒子四号</div>
+            </div>
+            <!-- 盒子 5 -->
+            <div class="box">
+                <div class="box-number">5</div>
+                <div class="box-text">葛聪慧</div>
+                <div class="box-sub">盒子五号</div>
+            </div>
+            <!-- 盒子 6 -->
+            <div class="box">
+                <div class="box-number">6</div>
+                <div class="box-text">葛聪慧</div>
+                <div class="box-sub">盒子六号</div>
+            </div>
+            <!-- 盒子 7 -->
+            <div class="box">
+                <div class="box-number">7</div>
+                <div class="box-text">葛聪慧</div>
+                <div class="box-sub">盒子七号</div>
+            </div>
+            <!-- 盒子 8 -->
+            <div class="box">
+                <div class="box-number">8</div>
+                <div class="box-text">葛聪慧</div>
+                <div class="box-sub">盒子八号</div>
+            </div>
+        </div>
+
+        <!-- 附加说明 -->
+        <div class="footer-note">
+            <strong>葛聪慧</strong> · 媒体查询断点：320px起(1列) / 480px(2列) / 768px(4列) / 1200px(8列)
+        </div>
+    </div>
+</body>
+</html>

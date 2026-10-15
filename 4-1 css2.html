@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* 清除默认边距 */
+        h2, h3, p {
+            padding: 0;
+            margin: 0;
+        }
+        
+        /* 关键点：给 body 添加文本居中，让行内块元素 h2 居中 */
+        body {
+            text-align: center; 
+        }
+
+        #box {
+            padding: 8px;
+            margin: 20px auto; /* 上下边距20px，左右 auto 让整个盒子也居中显示（如果你需要盒子也居中的话） */
+            border: 1px solid #ccc;
+            font-size: 12px;
+            width: 480px;
+            text-align: left; /* 盒子内部文字恢复默认左对齐 */
+        }
+        
+        #box h3 {
+            font-size: 16px;
+            line-height: 33px;
+            text-align: center;
+            color: #034;
+            letter-spacing: 2px;
+        }
+        
+        #box p {
+            color: #666;
+            text-indent: 2em;
+            line-height: 150%;
+        }
+        
+        #box a {
+            text-decoration: none;
+            color: #034;
+        }
+
+        /* ================= 扩展要求实现 ================= */
+        
+        /* 2、h2黑底白字（行内块元素，让背景只包裹文字） */
+        h2 {
+            display: inline-block;  
+            background-color: #000; 
+            color: #fff;            
+            margin-bottom: 10px;    
+            padding: 2px 5px;       
+        }
+
+        /* 1、学号、姓名、班级的值是蓝色加粗 */
+        .highlight {
+            color: blue;    
+            font-weight: bold; 
+        }
+
+        /* 3、知识点的值蓝底白字 */
+        .knowledge-value {
+            background-color: blue; 
+            color: white;           
+        }
+    </style>
+</head>
+<body>
+    <h2>css群组选择器和后代选择器</h2>
+    <div id="box">
+        <h3>CSS进阶</h3>
+        <p>
+            学号：<span class="highlight">123</span>，
+            姓名：<span class="highlight">葛聪慧</span>，
+            班级：<span class="highlight">计算机24001</span>，
+            《高级网页设计》设置的学习难度：中等
+            本实例的知识点：<span class="knowledge-value">CSS 群组选择器和后代选择器</span>。
+            <a href="#">【更多】</a>
+        </p>
+    </div>
+    
+</body>
+</html>

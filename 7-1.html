@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    /* 全局css */
+    *{margin: 0;padding: 0;}
+    ul{list-style: none;}
+    img{
+        display: block;
+    }
+    .slist{ 
+        display: flex;
+        margin: 8px;
+    }
+    .slist li{
+        width: 30%;
+        margin-right:3px;
+        flex-grow: 1;
+        position: relative;
+    }
+    .slist img{ 
+        width: 100%;
+          
+    }
+    .slist p{ 
+        text-align: center;
+        font-size: 14px;
+        line-height: 30px;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: rgba(0,0,0,0.5);
+        color: white;
+        font-weight: bold;
+        }
+</style>
+<body>
+    <ul class="slist"> 
+        <li>
+            <img src="./img/a1.jpg">
+            <p>葛聪慧的标题1</p>
+        </li>
+        <li>
+            <img src="./img/a2.jpg">
+            <p>葛聪慧的标题2</p>
+        </li>
+        <li>
+            <img src="./img/a3.jpg">
+            <p>葛聪慧的标题3</p>
+        </li>
+    </ul>
+</body>
+</html>

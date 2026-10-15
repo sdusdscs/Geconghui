@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全屏盒子 · 葛聪慧 · 媒体查询</title>
+    <style>
+        /* 全局重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ============================================
+           根字体大小（1rem 的基准）
+           使用媒体查询让 rem 随视口变化 → 文字大小变化
+           ============================================ */
+        html {
+            font-size: 16px;      /* 默认基准: 1rem = 16px */
+            min-width: 320px;      /* 页面最小宽度 */
+        }
+
+        /* 断点1: 小屏 (默认) → 已在上面设置为 16px */
+
+        /* 断点2: 中等屏幕 (平板) ≥ 768px */
+        @media (min-width: 768px) {
+            html {
+                font-size: 18px;
+            }
+        }
+
+        /* 断点3: 大屏幕 (桌面) ≥ 1200px */
+        @media (min-width: 1200px) {
+            html {
+                font-size: 22px;
+            }
+        }
+
+        /* ============================================
+           body 撑满全屏，让 .fullscreen-box 铺满
+           ============================================ */
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;      /* 避免出现滚动条 */
+            transition: background-color 0.4s ease;
+        }
+
+        /* ============================================
+           全屏盒子：铺满整个视口
+           ============================================ */
+        .fullscreen-box {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            transition: background-color 0.4s ease;
+        }
+
+        /* 主标题，包含"葛聪慧" */
+        .fullscreen-box h1 {
+            font-size: 2.5rem;         /* rem 单位，随根字体变化 */
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 0.05em;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 1rem;
+        }
+
+        /* 副标题 */
+        .fullscreen-box p {
+            font-size: 1.125rem;       /* rem 单位 */
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+
+        /* 装饰性强调文字 */
+        .fullscreen-box .highlight {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 1rem;
+            border-radius: 9999px;
+            backdrop-filter: blur(4px);
+            margin-top: 1.5rem;
+            font-size: 1rem;           /* rem 单位 */
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        /* ============================================
+           媒体查询：视口变化 → 背景颜色变化
+           ============================================ */
+
+        /* 断点1: 默认 (小屏 < 768px) → 淡蓝色背景 */
+        body {
+            background-color: #3b82f6;        /* 蓝色 */
+        }
+        .fullscreen-box {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+        }
+
+        /* 断点2: ≥ 768px (平板) → 紫色背景 */
+        @media (min-width: 768px) {
+            body {
+                background-color: #8b5cf6;    /* 紫色 */
+            }
+            .fullscreen-box {
+                background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+            }
+        }
+
+        /* 断点3: ≥ 1200px (桌面) → 橙红色背景 */
+        @media (min-width: 1200px) {
+            body {
+                background-color: #f97316;    /* 橙色 */
+            }
+            .fullscreen-box {
+                background: linear-gradient(135deg, #fb923c, #f97316);
+            }
+        }
+
+        /* 可选：极窄屏下文字自动缩放已在 rem 基础上实现 */
+    </style>
+</head>
+<body>
+    <!-- 全屏盒子，铺满整个视口 -->
+    <div class="fullscreen-box">
+        <h1>👋 葛聪慧</h1>
+        <p>全屏盒子 · 视口变化 → 背景颜色变化</p>
+        <div class="highlight">文字大小随 rem 变化 · 媒体查询</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <Style>
+        .main{
+            display: flex;
+            flex-wrap: wrap;
+            margin: 10px;
+         }
+         .box{
+            width: 100px;
+            height: 100px;
+            border: 1px solid red;
+            margin: 10px;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            font-size: 40px;
+            transition:all 1s;
+            box-sizing: border-box;
+         }
+         .box:first-child:hover{
+            background-color: red;
+            color: white;
+            font-size: 100px;
+         }
+         .box:nth-child(2):hover{
+             border-radius: 50%;
+             border-width: 10px;
+         }
+         .box:nth-child(3):hover{
+            box-shadow: 10px 10px 10px rgba(254, 3, 3, 0.5);
+         }
+         .box:nth-of-type(4):hover{
+            box-shadow: 10px 10px 10px rgba(254, 3, 3, 0.5);
+         }
+         .box:nth-of-type(5):hover{
+            background: linear-gradient(#000,#ccc,#fff);
+         }
+         .box:nth-of-type(5)+.box{
+            background: radial-gradient(#fff,#ccc,#000);
+         }
+         .box:nth-of-type(7):hover{
+            transform: scale(0.5);
+         }
+         .box:nth-child(8):hover{
+            transform: translateX(-150px)
+         }
+         .box:nth-child(9):hover{
+            transform: rotateZ(-180deg);
+         }
+         .box:nth-child(10):hover{
+            transform: skewX(20deg) translateY(50px);
+         }
+         .box:nth-last-child(2):hover::before{
+            content: "*";
+            color: #e60e0e;
+         }
+         .box:nth-child(12):hover::after{
+            content: "葛聪慧";
+            font-size:16px;
+            padding: 5px 10px;
+            background-color: #ffffff; /* 深色背景 */
+            color: #0a0909;            /* 白色文字 */
+            width: 30px;            /* 宽30 */
+            height: 25px;           /* 高25 */
+            
+            /* 使用 flex 布局实现水平垂直居中 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            /* 防止文字换行 */
+            white-space: nowrap; 
+            
+         }
+         .box:nth-child(even):hover {
+            background-color: #7a83e7; 
+            border-radius: 10px;
+            transform: translateY(-5px); 
+            box-shadow: 0 5px 10px rgba(186, 117, 255, 0.4);
+        }
+
+    </Style>
+</head>
+<body>
+    <div class="main">
+        <div class="box">1</div>
+        <div class="box">2</div>
+        <div class="box">3</div>
+        <div class="box">4</div>
+        <div class="box">5</div>
+        <div class="box">6</div>
+        <div class="box">7</div>
+        <div class="box">8</div>
+        <div class="box">9</div>
+        <div class="box">10</div>
+        <div class="box">11</div>
+        <div class="box">12</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS变量演示 - 葛聪慧</title>
+<style>
+  :root {
+    --Ge-primary: #4f46e5;
+    --Ge-primary-light: #818cf8;
+    --Ge-bg: #f4f5fb;
+    --Ge-card: #ffffff;
+    --Ge-text: #1f2937;
+    --Ge-muted: #6b7280;
+    --Ge-border: #e5e7eb;
+    --Ge-radius: 14px;
+    --Ge-gap: 20px;
+    --Ge-title-size: 28px;
+    --Ge-shadow: 0 8px 24px rgba(79, 70, 229, 0.12);
+  }
+
+  .Ge_theme-green {
+    --Ge-primary: #059669;
+    --Ge-primary-light: #34d399;
+    --Ge-bg: #ecfdf5;
+    --Ge-shadow: 0 8px 24px rgba(5, 150, 105, 0.15);
+  }
+
+  .Ge_theme-warm {
+    --Ge-primary: #d97706;
+    --Ge-primary-light: #fbbf24;
+    --Ge-bg: #fffbeb;
+    --Ge-shadow: 0 8px 24px rgba(217, 119, 6, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--Ge-bg);
+    color: var(--Ge-text);
+    min-height: 100vh;
+    transition: background 0.35s;
+  }
+
+  .Ge_topbar {
+    background: var(--Ge-primary);
+    color: #fff;
+    padding: 18px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.35s;
+  }
+
+  .Ge_topbar a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  .Ge_topbar a:hover { opacity: 1; text-decoration: underline; }
+
+  .Ge_container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 36px 20px 60px;
+  }
+
+  .Ge_hero {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .Ge_hero h1 {
+    font-size: var(--Ge-title-size);
+    margin-bottom: 10px;
+    color: var(--Ge-primary);
+    transition: color 0.35s;
+  }
+
+  .Ge_hero p {
+    color: var(--Ge-muted);
+    font-size: 15px;
+  }
+
+  .Ge_author {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 6px 18px;
+    border: 2px solid var(--Ge-primary);
+    border-radius: 999px;
+    color: var(--Ge-primary);
+    font-weight: bold;
+    letter-spacing: 4px;
+    transition: color 0.35s, border-color 0.35s;
+  }
+
+  .Ge_switch {
+    display: flex;
+    justify-content: center;
+    gap: var(--Ge-gap);
+    margin-bottom: 36px;
+  }
+
+  .Ge_btn {
+    border: none;
+    cursor: pointer;
+    padding: 10px 22px;
+    border-radius: var(--Ge-radius);
+    font-size: 14px;
+    color: #fff;
+    background: var(--Ge-primary);
+    transition: background 0.35s, transform 0.2s;
+  }
+
+  .Ge_btn:hover { transform: translateY(-2px); }
+
+  .Ge_btn_green { background: #059669; }
+  .Ge_btn_warm { background: #d97706; }
+  .Ge_btn_reset { background: #6b7280; }
+
+  .Ge_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--Ge-gap);
+  }
+
+  .Ge_card {
+    background: var(--Ge-card);
+    border-radius: var(--Ge-radius);
+    padding: 24px;
+    box-shadow: var(--Ge-shadow);
+    border-top: 4px solid var(--Ge-primary);
+    transition: box-shadow 0.35s, border-color 0.35s;
+  }
+
+  .Ge_card h3 {
+    color: var(--Ge-primary);
+    font-size: 17px;
+    margin-bottom: 12px;
+    transition: color 0.35s;
+  }
+
+  .Ge_card p {
+    color: var(--Ge-muted);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .Ge_code {
+    display: block;
+    margin-top: 12px;
+    padding: 12px;
+    background: #1f2937;
+    color: #a5f3fc;
+    border-radius: 8px;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-x: auto;
+  }
+
+  .Ge_demo_box {
+    margin-top: 28px;
+    background: var(--Ge-card);
+    border-radius: var(--Ge-radius);
+    padding: 28px;
+    box-shadow: var(--Ge-shadow);
+  }
+
+  .Ge_demo_box h2 {
+    font-size: 20px;
+    color: var(--Ge-primary);
+    margin-bottom: 16px;
+    transition: color 0.35s;
+  }
+
+  .Ge_demo_bar {
+    height: 36px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--Ge-primary), var(--Ge-primary-light));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    margin-bottom: var(--Ge-gap);
+    transition: background 0.35s;
+  }
+
+  .Ge_footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--Ge-muted);
+    font-size: 13px;
+  }
+
+  .Ge_footer a {
+    color: var(--Ge-primary);
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+
+  <header class="Ge_topbar">
+    <span>CSS 变量（自定义属性）演示</span>
+    <a href="index.html">返回首页</a>
+  </header>
+
+  <main class="Ge_container">
+    <section class="Ge_hero">
+      <h1>一页看懂 CSS 变量</h1>
+      <p>在 :root 中定义 --变量名，用 var() 调用；改一处，处处生效</p>
+      <span class="Ge_author">葛聪慧</span>
+    </section>
+
+    <nav class="Ge_switch">
+      <button class="Ge_btn" type="button" onclick="document.body.className=''">靛蓝主题</button>
+      <button class="Ge_btn Ge_btn_green" type="button" onclick="document.body.className='Ge_theme-green'">绿色主题</button>
+      <button class="Ge_btn Ge_btn_warm" type="button" onclick="document.body.className='Ge_theme-warm'">暖橙主题</button>
+    </nav>
+
+    <section class="Ge_grid">
+      <article class="Ge_card">
+        <h3>1. 定义变量</h3>
+        <p>变量写在选择器里，通常放在 :root，全局都能用。必须以 -- 开头。</p>
+        <code class="Ge_code">:root {<br>&nbsp;&nbsp;--Ge-primary: #4f46e5;<br>&nbsp;&nbsp;--Ge-radius: 14px;<br>}</code>
+      </article>
+      <article class="Ge_card">
+        <h3>2. 使用变量</h3>
+        <p>在属性值中用 var() 读取变量，可设置默认值 var(变量, 默认值)。</p>
+        <code class="Ge_code">color: var(--Ge-primary);<br>border-radius: var(--Ge-radius);<br>width: var(--Ge-w, 200px);</code>
+      </article>
+      <article class="Ge_card">
+        <h3>3. 局部覆盖</h3>
+        <p>子元素可重新赋值变量，只影响自身及后代，实现主题切换。</p>
+        <code class="Ge_code">.Ge_theme-green {<br>&nbsp;&nbsp;--Ge-primary: #059669;<br>}</code>
+      </article>
+    </section>
+
+    <section class="Ge_demo_box">
+      <h2>实时效果（点击上方按钮切换主题）</h2>
+      <div class="Ge_demo_bar">这根渐变条、卡片顶边、标题颜色都来自 var(--Ge-primary)</div>
+      <p style="color: var(--Ge-muted); font-size: 14px; line-height: 1.9;">
+        制作：葛聪慧 · 本页颜色、圆角、间距、阴影全部由 CSS 变量统一管理。
+        切换主题时只需改变量的值，无需逐条修改每条样式规则——这正是 CSS 变量的意义：
+        <strong style="color: var(--Ge-primary);">一处定义，多处复用，整体换肤</strong>。
+      </p>
+    </section>
+  </main>
+
+  <footer class="Ge_footer">
+    12-1 CSS变量演示 · 作者：葛聪慧 · <a href="index.html">返回首页</a>
+  </footer>
+
+</body>
+</html>

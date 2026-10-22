@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucide SVG图标 - 葛聪慧</title>
+<style>
+  :root {
+    --Ge-primary: #047857;
+    --Ge-primary-light: #34d399;
+    --Ge-bg: #f0fdf7;
+    --Ge-card: #ffffff;
+    --Ge-text: #1f2937;
+    --Ge-muted: #6b7280;
+    --Ge-border: #e5e7eb;
+    --Ge-radius: 14px;
+    --Ge-gap: 20px;
+    --Ge-title-size: 28px;
+    --Ge-shadow: 0 8px 24px rgba(4, 120, 87, 0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--Ge-bg);
+    color: var(--Ge-text);
+    min-height: 100vh;
+  }
+
+  a { color: var(--Ge-primary); }
+
+  .Ge_topbar {
+    background: var(--Ge-primary);
+    color: #fff;
+    padding: 18px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .Ge_topbar a { color: #fff; text-decoration: none; font-size: 14px; opacity: 0.9; }
+  .Ge_topbar a:hover { opacity: 1; text-decoration: underline; }
+
+  .Ge_container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 36px 20px 60px;
+  }
+
+  .Ge_hero { text-align: center; margin-bottom: 34px; }
+
+  .Ge_hero h1 {
+    font-size: var(--Ge-title-size);
+    margin-bottom: 10px;
+    color: var(--Ge-primary);
+  }
+
+  .Ge_hero p { color: var(--Ge-muted); font-size: 15px; }
+
+  .Ge_author {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 6px 18px;
+    border: 2px solid var(--Ge-primary);
+    border-radius: 999px;
+    color: var(--Ge-primary);
+    font-weight: bold;
+    letter-spacing: 4px;
+  }
+
+  .Ge_section_title {
+    font-size: 20px;
+    color: var(--Ge-primary);
+    margin: 34px 0 16px;
+    padding-left: 12px;
+    border-left: 5px solid var(--Ge-primary);
+    line-height: 1.2;
+  }
+
+  .Ge_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--Ge-gap);
+  }
+
+  .Ge_card {
+    background: var(--Ge-card);
+    border-radius: var(--Ge-radius);
+    padding: 22px;
+    box-shadow: var(--Ge-shadow);
+    border-top: 4px solid var(--Ge-primary);
+  }
+
+  .Ge_card h3 { color: var(--Ge-primary); font-size: 16px; margin-bottom: 10px; }
+
+  .Ge_card p { color: var(--Ge-muted); font-size: 14px; line-height: 1.8; }
+
+  .Ge_code {
+    display: block;
+    margin-top: 12px;
+    padding: 12px;
+    background: #052e2b;
+    color: #6ee7b7;
+    border-radius: 8px;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .Ge_icon_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 14px;
+    background: var(--Ge-card);
+    border-radius: var(--Ge-radius);
+    padding: 22px;
+    box-shadow: var(--Ge-shadow);
+  }
+
+  .Ge_item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 6px;
+    border: 1px solid var(--Ge-border);
+    border-radius: 10px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .Ge_item:hover { transform: translateY(-3px); border-color: var(--Ge-primary); }
+
+  .Ge_item i { width: 28px; height: 28px; color: var(--Ge-primary); }
+
+  .Ge_item svg { width: 28px; height: 28px; display: block; }
+
+  .Ge_item span { font-size: 12px; color: var(--Ge-muted); }
+
+  .Ge_item code { font-size: 11px; color: #9ca3af; font-family: Consolas, monospace; }
+
+  .Ge_demo_box {
+    margin-top: 34px;
+    background: var(--Ge-card);
+    border-radius: var(--Ge-radius);
+    padding: 26px;
+    box-shadow: var(--Ge-shadow);
+  }
+
+  .Ge_demo_box h2 { font-size: 19px; color: var(--Ge-primary); margin-bottom: 8px; }
+
+  .Ge_demo_box > p { color: var(--Ge-muted); font-size: 14px; line-height: 1.8; }
+
+  .Ge_ctrl {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--Ge-muted);
+  }
+
+  .Ge_ctrl b { color: var(--Ge-primary); font-family: Consolas, monospace; }
+
+  .Ge_btn {
+    border: none;
+    cursor: pointer;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    color: #fff;
+    background: var(--Ge-primary);
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .Ge_btn:hover { transform: translateY(-2px); background: var(--Ge-primary-light); }
+  .Ge_btn_rose { background: #dc2626; }
+  .Ge_btn_rose:hover { background: #ef4444; }
+  .Ge_btn_blue { background: #0284c7; }
+  .Ge_btn_blue:hover { background: #38bdf8; }
+
+  .Ge_svg_show {
+    --Ge-sw: 2;
+    --Ge-is: 34px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 26px;
+    margin-top: 20px;
+    padding: 26px 18px;
+    background: var(--Ge-bg);
+    border: 1px dashed var(--Ge-primary);
+    border-radius: 10px;
+    color: var(--Ge-primary);
+    overflow-x: auto;
+  }
+
+  .Ge_svg_show svg {
+    width: var(--Ge-is);
+    height: var(--Ge-is);
+    stroke-width: var(--Ge-sw);
+    display: block;
+  }
+
+  .Ge_svg_show > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--Ge-muted);
+    font-family: Consolas, monospace;
+  }
+
+  .Ge_footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--Ge-muted);
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+  <header class="Ge_topbar">
+    <span>Lucide SVG 图标演示（SVG 形式）</span>
+    <a href="index.html">返回首页</a>
+  </header>
+
+  <main class="Ge_container">
+    <section class="Ge_hero">
+      <h1>Lucide · SVG 矢量图标</h1>
+      <p>每个图标都是一个独立的 &lt;svg&gt; 元素：24×24 视图、stroke 描边、currentColor 取色</p>
+      <span class="Ge_author">葛聪慧</span>
+    </section>
+
+    <h2 class="Ge_section_title">工作原理</h2>
+    <section class="Ge_grid">
+      <article class="Ge_card">
+        <h3>1. 占位符渲染</h3>
+        <p>页面写 &lt;i data-lucide="heart"&gt; 占位，引入 cdn/lucide/lucide.min.js 后调用 createIcons()，把它替换成真正的 svg 元素。</p>
+      </article>
+      <article class="Ge_card">
+        <h3>2. 描边继承颜色</h3>
+        <p>svg 用 stroke="currentColor" 画线，线条颜色跟随父级文字 color；stroke-width 控制粗细，全是标准 SVG 属性。</p>
+        <code class="Ge_code">&lt;svg stroke="currentColor" stroke-width="2"<br>&nbsp;&nbsp;fill="none" viewBox="0 0 24 24"&gt;</code>
+      </article>
+      <article class="Ge_card">
+        <h3>3. 矢量无级缩放</h3>
+        <p>图形由路径 path 描述而非像素，width/height 随便改都不会糊；还能用 CSS 改描边、加动画。</p>
+      </article>
+    </section>
+
+    <h2 class="Ge_section_title">界面操作</h2>
+    <section class="Ge_icon_grid">
+      <div class="Ge_item"><i data-lucide="house"></i><span>主页</span><code>house</code></div>
+      <div class="Ge_item"><i data-lucide="search"></i><span>搜索</span><code>search</code></div>
+      <div class="Ge_item"><i data-lucide="settings"></i><span>设置</span><code>settings</code></div>
+      <div class="Ge_item"><i data-lucide="menu"></i><span>菜单</span><code>menu</code></div>
+      <div class="Ge_item"><i data-lucide="eye"></i><span>可见</span><code>eye</code></div>
+      <div class="Ge_item"><i data-lucide="lock"></i><span>锁定</span><code>lock</code></div>
+      <div class="Ge_item"><i data-lucide="trash-2"></i><span>删除</span><code>trash-2</code></div>
+      <div class="Ge_item"><i data-lucide="download"></i><span>下载</span><code>download</code></div>
+      <div class="Ge_item"><i data-lucide="upload"></i><span>上传</span><code>upload</code></div>
+      <div class="Ge_item"><i data-lucide="refresh-cw"></i><span>刷新</span><code>refresh-cw</code></div>
+      <div class="Ge_item"><i data-lucide="check"></i><span>确认</span><code>check</code></div>
+      <div class="Ge_item"><i data-lucide="x"></i><span>关闭</span><code>x</code></div>
+    </section>
+
+    <h2 class="Ge_section_title">通信与时间</h2>
+    <section class="Ge_icon_grid">
+      <div class="Ge_item"><i data-lucide="mail"></i><span>邮件</span><code>mail</code></div>
+      <div class="Ge_item"><i data-lucide="message-circle"></i><span>消息</span><code>message-circle</code></div>
+      <div class="Ge_item"><i data-lucide="bell"></i><span>通知</span><code>bell</code></div>
+      <div class="Ge_item"><i data-lucide="phone"></i><span>电话</span><code>phone</code></div>
+      <div class="Ge_item"><i data-lucide="calendar"></i><span>日历</span><code>calendar</code></div>
+      <div class="Ge_item"><i data-lucide="clock"></i><span>时钟</span><code>clock</code></div>
+      <div class="Ge_item"><i data-lucide="send"></i><span>发送</span><code>send</code></div>
+      <div class="Ge_item"><i data-lucide="link"></i><span>链接</span><code>link</code></div>
+      <div class="Ge_item"><i data-lucide="share-2"></i><span>分享</span><code>share-2</code></div>
+      <div class="Ge_item"><i data-lucide="map-pin"></i><span>定位</span><code>map-pin</code></div>
+      <div class="Ge_item"><i data-lucide="users"></i><span>群组</span><code>users</code></div>
+      <div class="Ge_item"><i data-lucide="user"></i><span>用户</span><code>user</code></div>
+    </section>
+
+    <h2 class="Ge_section_title">多媒体与文件</h2>
+    <section class="Ge_icon_grid">
+      <div class="Ge_item"><i data-lucide="image"></i><span>图片</span><code>image</code></div>
+      <div class="Ge_item"><i data-lucide="camera"></i><span>相机</span><code>camera</code></div>
+      <div class="Ge_item"><i data-lucide="music"></i><span>音乐</span><code>music</code></div>
+      <div class="Ge_item"><i data-lucide="video"></i><span>视频</span><code>video</code></div>
+      <div class="Ge_item"><i data-lucide="film"></i><span>胶片</span><code>film</code></div>
+      <div class="Ge_item"><i data-lucide="mic"></i><span>麦克风</span><code>mic</code></div>
+      <div class="Ge_item"><i data-lucide="headphones"></i><span>耳机</span><code>headphones</code></div>
+      <div class="Ge_item"><i data-lucide="file-text"></i><span>文档</span><code>file-text</code></div>
+      <div class="Ge_item"><i data-lucide="folder"></i><span>文件夹</span><code>folder</code></div>
+      <div class="Ge_item"><i data-lucide="save"></i><span>保存</span><code>save</code></div>
+      <div class="Ge_item"><i data-lucide="printer"></i><span>打印</span><code>printer</code></div>
+      <div class="Ge_item"><i data-lucide="inbox"></i><span>收件箱</span><code>inbox</code></div>
+    </section>
+
+    <h2 class="Ge_section_title">通用与品牌</h2>
+    <section class="Ge_icon_grid">
+      <div class="Ge_item"><i data-lucide="heart"></i><span>心形</span><code>heart</code></div>
+      <div class="Ge_item"><i data-lucide="star"></i><span>星标</span><code>star</code></div>
+      <div class="Ge_item"><i data-lucide="zap"></i><span>闪电</span><code>zap</code></div>
+      <div class="Ge_item"><i data-lucide="bookmark"></i><span>书签</span><code>bookmark</code></div>
+      <div class="Ge_item"><i data-lucide="flag"></i><span>旗帜</span><code>flag</code></div>
+      <div class="Ge_item"><i data-lucide="tag"></i><span>标签</span><code>tag</code></div>
+      <div class="Ge_item"><i data-lucide="gift"></i><span>礼物</span><code>gift</code></div>
+      <div class="Ge_item"><i data-lucide="award"></i><span>奖项</span><code>award</code></div>
+      <div class="Ge_item"><i data-lucide="coffee"></i><span>咖啡</span><code>coffee</code></div>
+      <div class="Ge_item"><i data-lucide="github"></i><span>GitHub</span><code>github</code></div>
+      <div class="Ge_item"><i data-lucide="twitter"></i><span>Twitter</span><code>twitter</code></div>
+      <div class="Ge_item"><i data-lucide="instagram"></i><span>Instagram</span><code>instagram</code></div>
+      <div class="Ge_item"><i data-lucide="linkedin"></i><span>LinkedIn</span><code>linkedin</code></div>
+      <div class="Ge_item"><i data-lucide="youtube"></i><span>YouTube</span><code>youtube</code></div>
+      <div class="Ge_item"><i data-lucide="figma"></i><span>Figma</span><code>figma</code></div>
+      <div class="Ge_item"><i data-lucide="code"></i><span>代码</span><code>code</code></div>
+    </section>
+
+    <h2 class="Ge_section_title">SVG 特性：直接操作图形属性</h2>
+    <section class="Ge_demo_box">
+      <h2>点击按钮，直接改写 svg 的描边与尺寸</h2>
+      <p>下方图标都是页面上真实的 svg 元素，CSS 修改 stroke-width、width、height 即时生效，文字颜色通过 currentColor 传给描边。</p>
+
+      <div class="Ge_ctrl">
+        <span>描边粗细 stroke-width：<b id="Ge_swVal">2</b></span>
+        <button class="Ge_btn" type="button" onclick="Ge_setStroke('1', '1')">1</button>
+        <button class="Ge_btn" type="button" onclick="Ge_setStroke('1.5', '1.5')">1.5</button>
+        <button class="Ge_btn" type="button" onclick="Ge_setStroke('2', '2')">2</button>
+        <button class="Ge_btn" type="button" onclick="Ge_setStroke('3', '3')">3</button>
+      </div>
+
+      <div class="Ge_ctrl">
+        <span>尺寸 width/height：<b id="Ge_isVal">34px</b></span>
+        <button class="Ge_btn" type="button" onclick="Ge_setSize('24px', '24px')">24px</button>
+        <button class="Ge_btn" type="button" onclick="Ge_setSize('34px', '34px')">34px</button>
+        <button class="Ge_btn" type="button" onclick="Ge_setSize('48px', '48px')">48px</button>
+        <button class="Ge_btn" type="button" onclick="Ge_setSize('64px', '64px')">64px</button>
+      </div>
+
+      <div class="Ge_ctrl">
+        <span>描边颜色（currentColor）：</span>
+        <button class="Ge_btn" type="button" onclick="Ge_setColor('#047857')">翡翠绿</button>
+        <button class="Ge_btn Ge_btn_blue" type="button" onclick="Ge_setColor('#0284c7')">天空蓝</button>
+        <button class="Ge_btn Ge_btn_rose" type="button" onclick="Ge_setColor('#dc2626')">玫瑰红</button>
+      </div>
+
+      <div class="Ge_svg_show" id="Ge_svgShow">
+        <div><i data-lucide="house"></i><span>house</span></div>
+        <div><i data-lucide="heart"></i><span>heart</span></div>
+        <div><i data-lucide="star"></i><span>star</span></div>
+        <div><i data-lucide="rocket"></i><span>rocket</span></div>
+        <div><i data-lucide="lightbulb"></i><span>lightbulb</span></div>
+      </div>
+    </section>
+
+    <h2 class="Ge_section_title">写法与生成的 SVG</h2>
+    <section class="Ge_grid">
+      <article class="Ge_card">
+        <h3>1. 引入本地脚本</h3>
+        <p>脚本已下载到 cdn/lucide/lucide.min.js，图标库自带1700多个 svg 路径数据。</p>
+        <code class="Ge_code">&lt;script src="cdn/lucide/lucide.min.js"&gt;&lt;/script&gt;<br>&lt;script&gt;lucide.createIcons();&lt;/script&gt;</code>
+      </article>
+      <article class="Ge_card">
+        <h3>2. 占位符写法</h3>
+        <p>data-lucide 属性写图标名，渲染后被替换成 svg，同时带上 lucide lucide-heart 类名。</p>
+        <code class="Ge_code">&lt;i data-lucide="heart"&gt;&lt;/i&gt;<br>&lt;i class="Ge_item_icon" data-lucide="search"&gt;&lt;/i&gt;</code>
+      </article>
+      <article class="Ge_card">
+        <h3>3. 渲染出的 SVG 源码</h3>
+        <p>图标就是普通 HTML 里的 svg 标签，路径数据内嵌，不依赖字体文件。</p>
+        <code class="Ge_code">&lt;svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"&gt;&lt;path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/&gt;&lt;/svg&gt;</code>
+      </article>
+    </section>
+
+    <p style="margin-top: 24px; text-align: center; font-size: 14px; color: var(--Ge-muted);">
+      本页共渲染 <b id="Ge_count">0</b> 个 svg 元素（字体图标方案里只有一个不可见的文字字符）
+    </p>
+  </main>
+
+  <footer class="Ge_footer">
+    13-2 Lucide SVG图标 · 作者：葛聪慧 · <a href="index.html">返回首页</a>
+  </footer>
+
+  <script src="cdn/lucide/lucide.min.js"></script>
+  <script>
+    lucide.createIcons();
+
+    document.getElementById('Ge_count').textContent =
+      document.querySelectorAll('#Ge_svgShow svg').length +
+      document.querySelectorAll('.Ge_icon_grid svg').length;
+
+    function Ge_setStroke(Ge_v, Ge_label) {
+      document.getElementById('Ge_svgShow').style.setProperty('--Ge-sw', Ge_v);
+      document.getElementById('Ge_swVal').textContent = Ge_label;
+    }
+
+    function Ge_setSize(Ge_v, Ge_label) {
+      document.getElementById('Ge_svgShow').style.setProperty('--Ge-is', Ge_v);
+      document.getElementById('Ge_isVal').textContent = Ge_label;
+    }
+
+    function Ge_setColor(Ge_color) {
+      document.getElementById('Ge_svgShow').style.color = Ge_color;
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Font Awesome字体图标 - 葛聪慧</title>
+<link rel="stylesheet" href="cdn/fontawesome/css/all.min.css">
+<style>
+  :root {
+    --Ge-primary: #0284c7;
+    --Ge-primary-light: #38bdf8;
+    --Ge-bg: #f0f7ff;
+    --Ge-card: #ffffff;
+    --Ge-text: #1f2937;
+    --Ge-muted: #64748b;
+    --Ge-border: #e2e8f0;
+    --Ge-radius: 14px;
+    --Ge-gap: 20px;
+    --Ge-title-size: 28px;
+    --Ge-shadow: 0 8px 24px rgba(2, 132, 199, 0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--Ge-bg);
+    color: var(--Ge-text);
+    min-height: 100vh;
+  }
+
+  a { color: var(--Ge-primary); }
+
+  .Ge_topbar {
+    background: var(--Ge-primary);
+    color: #fff;
+    padding: 18px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .Ge_topbar a { color: #fff; text-decoration: none; font-size: 14px; opacity: 0.9; }
+  .Ge_topbar a:hover { opacity: 1; text-decoration: underline; }
+
+  .Ge_container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 36px 20px 60px;
+  }
+
+  .Ge_hero { text-align: center; margin-bottom: 34px; }
+
+  .Ge_hero h1 {
+    font-size: var(--Ge-title-size);
+    margin-bottom: 10px;
+    color: var(--Ge-primary);
+  }
+
+  .Ge_hero p { color: var(--Ge-muted); font-size: 15px; }
+
+  .Ge_author {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 6px 18px;
+    border: 2px solid var(--Ge-primary);
+    border-radius: 999px;
+    color: var(--Ge-primary);
+    font-weight: bold;
+    letter-spacing: 4px;
+  }
+
+  .Ge_section_title {
+    font-size: 20px;
+    color: var(--Ge-primary);
+    margin: 34px 0 16px;
+    padding-left: 12px;
+    border-left: 5px solid var(--Ge-primary);
+    line-height: 1.2;
+  }
+
+  .Ge_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--Ge-gap);
+  }
+
+  .Ge_card {
+    background: var(--Ge-card);
+    border-radius: var(--Ge-radius);
+    padding: 22px;
+    box-shadow: var(--Ge-shadow);
+    border-top: 4px solid var(--Ge-primary);
+  }
+
+  .Ge_card h3 { color: var(--Ge-primary); font-size: 16px; margin-bottom: 10px; }
+
+  .Ge_card p { color: var(--Ge-muted); font-size: 14px; line-height: 1.8; }
+
+  .Ge_code {
+    display: block;
+    margin-top: 12px;
+    padding: 12px;
+    background: #0f172a;
+    color: #7dd3fc;
+    border-radius: 8px;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .Ge_icon_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 14px;
+    background: var(--Ge-card);
+    border-radius: var(--Ge-radius);
+    padding: 22px;
+    box-shadow: var(--Ge-shadow);
+  }
+
+  .Ge_item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 6px;
+    border: 1px solid var(--Ge-border);
+    border-radius: 10px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .Ge_item:hover { transform: translateY(-3px); border-color: var(--Ge-primary); }
+
+  .Ge_item i { font-size: 26px; color: var(--Ge-primary); }
+
+  .Ge_item span { font-size: 12px; color: var(--Ge-muted); }
+
+  .Ge_item code { font-size: 11px; color: #94a3b8; font-family: Consolas, monospace; }
+
+  .Ge_demo_box {
+    margin-top: 34px;
+    background: var(--Ge-card);
+    border-radius: var(--Ge-radius);
+    padding: 26px;
+    box-shadow: var(--Ge-shadow);
+  }
+
+  .Ge_demo_box h2 { font-size: 19px; color: var(--Ge-primary); margin-bottom: 8px; }
+
+  .Ge_demo_box > p { color: var(--Ge-muted); font-size: 14px; line-height: 1.8; }
+
+  .Ge_ctrl {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--Ge-muted);
+  }
+
+  .Ge_btn {
+    border: none;
+    cursor: pointer;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    color: #fff;
+    background: var(--Ge-primary);
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .Ge_btn:hover { transform: translateY(-2px); background: var(--Ge-primary-light); }
+  .Ge_btn_rose { background: #dc2626; }
+  .Ge_btn_rose:hover { background: #ef4444; }
+  .Ge_btn_green { background: #059669; }
+  .Ge_btn_green:hover { background: #10b981; }
+
+  .Ge_show {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 26px;
+    margin-top: 20px;
+    padding: 26px 18px;
+    background: var(--Ge-bg);
+    border: 1px dashed var(--Ge-primary);
+    border-radius: 10px;
+    color: var(--Ge-primary);
+    overflow-x: auto;
+  }
+
+  .Ge_show_item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-size: 30px;
+  }
+
+  .Ge_show_item span { font-size: 12px; color: var(--Ge-muted); font-family: Consolas, monospace; }
+
+  .Ge_footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--Ge-muted);
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+  <header class="Ge_topbar">
+    <span>Font Awesome 字体图标演示（字体形式）</span>
+    <a href="index.html">返回首页</a>
+  </header>
+
+  <main class="Ge_container">
+    <section class="Ge_hero">
+      <h1>Font Awesome · 网页字体图标</h1>
+      <p>图标被铸进字体文件，用 class 选字形、用码点取字符，像文字一样放大变色</p>
+      <span class="Ge_author">葛聪慧</span>
+    </section>
+
+    <h2 class="Ge_section_title">工作原理</h2>
+    <section class="Ge_grid">
+      <article class="Ge_card">
+        <h3>1. @font-face 引入字体</h3>
+        <p>样式表链接本地字体文件 cdn/fontawesome/webfonts/fa-solid-900.woff2、fa-regular-400、fa-brands-400，图标本质上是字体里的“字”。</p>
+      </article>
+      <article class="Ge_card">
+        <h3>2. 码点映射字形</h3>
+        <p>每个 class 对应一个 Unicode 码点，:before 伪元素把码点字符画出来，字体文件负责把它渲染成图案。</p>
+        <code class="Ge_code">.fa-house{--fa:"\f015"}<br>.fa-solid:before{content:var(--fa)}</code>
+      </article>
+      <article class="Ge_card">
+        <h3>3. 文字特性全继承</h3>
+        <p>font-size 控制大小、color 控制颜色、text-shadow、transform 都有效，还能用 fa-spin 旋转动画。</p>
+      </article>
+    </section>
+
+    <h2 class="Ge_section_title">实心图标（fa-solid）</h2>
+    <section class="Ge_icon_grid">
+      <div class="Ge_item"><i class="fa-solid fa-house"></i><span>主页</span><code>fa-house</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-magnifying-glass"></i><span>搜索</span><code>fa-magnifying-glass</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-user"></i><span>用户</span><code>fa-user</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-gear"></i><span>设置</span><code>fa-gear</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-heart"></i><span>心形</span><code>fa-heart</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-star"></i><span>星标</span><code>fa-star</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-bell"></i><span>通知</span><code>fa-bell</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-envelope"></i><span>邮件</span><code>fa-envelope</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-calendar"></i><span>日历</span><code>fa-calendar</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-clock"></i><span>时钟</span><code>fa-clock</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-download"></i><span>下载</span><code>fa-download</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-upload"></i><span>上传</span><code>fa-upload</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-trash"></i><span>删除</span><code>fa-trash</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-pen"></i><span>编辑</span><code>fa-pen</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-check"></i><span>成功</span><code>fa-check</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-xmark"></i><span>关闭</span><code>fa-xmark</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-plus"></i><span>添加</span><code>fa-plus</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-bars"></i><span>菜单</span><code>fa-bars</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-eye"></i><span>可见</span><code>fa-eye</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-lock"></i><span>锁定</span><code>fa-lock</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-phone"></i><span>电话</span><code>fa-phone</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-location-dot"></i><span>定位</span><code>fa-location-dot</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-cart-shopping"></i><span>购物车</span><code>fa-cart-shopping</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-bolt"></i><span>闪电</span><code>fa-bolt</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-rocket"></i><span>火箭</span><code>fa-rocket</code></div>
+      <div class="Ge_item"><i class="fa-solid fa-code"></i><span>代码</span><code>fa-code</code></div>
+    </section>
+
+    <h2 class="Ge_section_title">线性图标（fa-regular）</h2>
+    <section class="Ge_icon_grid">
+      <div class="Ge_item"><i class="fa-regular fa-heart"></i><span>心形</span><code>fa-heart</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-star"></i><span>星标</span><code>fa-star</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-bell"></i><span>通知</span><code>fa-bell</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-envelope"></i><span>邮件</span><code>fa-envelope</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-calendar"></i><span>日历</span><code>fa-calendar</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-clock"></i><span>时钟</span><code>fa-clock</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-circle"></i><span>圆形</span><code>fa-circle</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-comment"></i><span>评论</span><code>fa-comment</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-face-smile"></i><span>微笑</span><code>fa-face-smile</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-bookmark"></i><span>书签</span><code>fa-bookmark</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-eye"></i><span>可见</span><code>fa-eye</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-trash-can"></i><span>删除</span><code>fa-trash-can</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-pen-to-square"></i><span>编辑</span><code>fa-pen-to-square</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-circle-check"></i><span>完成</span><code>fa-circle-check</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-user"></i><span>用户</span><code>fa-user</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-moon"></i><span>月亮</span><code>fa-moon</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-file"></i><span>文件</span><code>fa-file</code></div>
+      <div class="Ge_item"><i class="fa-regular fa-folder"></i><span>文件夹</span><code>fa-folder</code></div>
+    </section>
+
+    <h2 class="Ge_section_title">品牌图标（fa-brands）</h2>
+    <section class="Ge_icon_grid">
+      <div class="Ge_item"><i class="fa-brands fa-github"></i><span>GitHub</span><code>fa-github</code></div>
+      <div class="Ge_item"><i class="fa-brands fa-twitter"></i><span>Twitter</span><code>fa-twitter</code></div>
+      <div class="Ge_item"><i class="fa-brands fa-facebook"></i><span>Facebook</span><code>fa-facebook</code></div>
+      <div class="Ge_item"><i class="fa-brands fa-instagram"></i><span>Instagram</span><code>fa-instagram</code></div>
+      <div class="Ge_item"><i class="fa-brands fa-linkedin"></i><span>LinkedIn</span><code>fa-linkedin</code></div>
+      <div class="Ge_item"><i class="fa-brands fa-youtube"></i><span>YouTube</span><code>fa-youtube</code></div>
+      <div class="Ge_item"><i class="fa-brands fa-weibo"></i><span>微博</span><code>fa-weibo</code></div>
+      <div class="Ge_item"><i class="fa-brands fa-qq"></i><span>QQ</span><code>fa-qq</code></div>
+      <div class="Ge_item"><i class="fa-brands fa-html5"></i><span>HTML5</span><code>fa-html5</code></div>
+      <div class="Ge_item"><i class="fa-brands fa-css3-alt"></i><span>CSS3</span><code>fa-css3-alt</code></div>
+      <div class="Ge_item"><i class="fa-brands fa-js"></i><span>JavaScript</span><code>fa-js</code></div>
+      <div class="Ge_item"><i class="fa-brands fa-react"></i><span>React</span><code>fa-react</code></div>
+      <div class="Ge_item"><i class="fa-brands fa-figma"></i><span>Figma</span><code>fa-figma</code></div>
+      <div class="Ge_item"><i class="fa-brands fa-dribbble"></i><span>Dribbble</span><code>fa-dribbble</code></div>
+      <div class="Ge_item"><i class="fa-brands fa-codepen"></i><span>CodePen</span><code>fa-codepen</code></div>
+      <div class="Ge_item"><i class="fa-brands fa-node-js"></i><span>Node.js</span><code>fa-node-js</code></div>
+    </section>
+
+    <h2 class="Ge_section_title">字体特性：像文字一样控制</h2>
+    <section class="Ge_demo_box">
+      <h2>点击按钮，直接改变字号 / 颜色 / 动画</h2>
+      <p>这些图标全是字体字符，所以 font-size、color、transform 对它们天然生效，无需切换图片。</p>
+
+      <div class="Ge_ctrl">
+        <span>字号：</span>
+        <button class="Ge_btn" type="button" onclick="Ge_setSize('')">16px</button>
+        <button class="Ge_btn" type="button" onclick="Ge_setSize('fa-2x')">2倍</button>
+        <button class="Ge_btn" type="button" onclick="Ge_setSize('fa-3x')">3倍</button>
+        <button class="Ge_btn" type="button" onclick="Ge_setSize('fa-4x')">4倍</button>
+      </div>
+
+      <div class="Ge_ctrl">
+        <span>颜色：</span>
+        <button class="Ge_btn" type="button" onclick="Ge_setColor('#0284c7')">天空蓝</button>
+        <button class="Ge_btn Ge_btn_rose" type="button" onclick="Ge_setColor('#dc2626')">玫瑰红</button>
+        <button class="Ge_btn Ge_btn_green" type="button" onclick="Ge_setColor('#059669')">翡翠绿</button>
+      </div>
+
+      <div class="Ge_ctrl">
+        <span>动画：</span>
+        <button class="Ge_btn" type="button" onclick="Ge_toggleSpin()">齿轮旋转 fa-spin</button>
+      </div>
+
+      <div class="Ge_show" id="Ge_show">
+        <div class="Ge_show_item"><i class="fa-solid fa-house"></i><span>house</span></div>
+        <div class="Ge_show_item"><i class="fa-solid fa-heart"></i><span>heart</span></div>
+        <div class="Ge_show_item"><i class="fa-solid fa-star"></i><span>star</span></div>
+        <div class="Ge_show_item"><i class="fa-solid fa-gear" id="Ge_spinIcon"></i><span>gear</span></div>
+        <div class="Ge_show_item"><i class="fa-solid fa-rocket"></i><span>rocket</span></div>
+      </div>
+    </section>
+
+    <h2 class="Ge_section_title">写法与本地文件</h2>
+    <section class="Ge_grid">
+      <article class="Ge_card">
+        <h3>1. 引入本地样式表</h3>
+        <p>CDN 文件已下载到本目录 cdn/ 下，字体在 cdn/fontawesome/webfonts/。</p>
+        <code class="Ge_code">&lt;link rel="stylesheet" href="cdn/fontawesome/css/all.min.css"&gt;</code>
+      </article>
+      <article class="Ge_card">
+        <h3>2. 标签 + class</h3>
+        <p>用 &lt;i&gt; 占位，前缀区分实心、线性、品牌三种字重。</p>
+        <code class="Ge_code">&lt;i class="fa-solid fa-house"&gt;&lt;/i&gt;<br>&lt;i class="fa-regular fa-heart"&gt;&lt;/i&gt;<br>&lt;i class="fa-brands fa-github"&gt;&lt;/i&gt;<br>&lt;i class="fa-solid fa-gear fa-spin"&gt;&lt;/i&gt;</code>
+      </article>
+      <article class="Ge_card">
+        <h3>3. 渲染过程</h3>
+        <p>浏览器加载字体 → 按码点找字形 → 用文字样式上色渲染，所以矢量放大不模糊。</p>
+        <code class="Ge_code">.fa{font-family:"Font Awesome 6 Free"}<br>.fa-2x{font-size:2em}<br>.fa-spin{animation:fa-spin 2s infinite}</code>
+      </article>
+    </section>
+  </main>
+
+  <footer class="Ge_footer">
+    13-1 Font Awesome字体图标 · 作者：葛聪慧 · <a href="index.html">返回首页</a>
+  </footer>
+
+  <script>
+    function Ge_setSize(Ge_cls) {
+      var Ge_list = document.querySelectorAll('#Ge_show i');
+      for (var Ge_i = 0; Ge_i < Ge_list.length; Ge_i++) {
+        Ge_list[Ge_i].classList.remove('fa-2x', 'fa-3x', 'fa-4x');
+        if (Ge_cls) Ge_list[Ge_i].classList.add(Ge_cls);
+      }
+    }
+
+    function Ge_setColor(Ge_color) {
+      document.getElementById('Ge_show').style.color = Ge_color;
+    }
+
+    function Ge_toggleSpin() {
+      document.getElementById('Ge_spinIcon').classList.toggle('fa-spin');
+    }
+  </script>
+
+</body>
+</html>

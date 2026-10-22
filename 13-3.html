@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>移动端底部导航（字体图标）- 葛聪慧</title>
+<link rel="stylesheet" href="font/iconfont.css">
+<style>
+  :root {
+    --Ge-primary: #6d28d9;
+    --Ge-primary-light: #a78bfa;
+    --Ge-bg: #f6f4ff;
+    --Ge-card: #ffffff;
+    --Ge-text: #1f2937;
+    --Ge-muted: #6b7280;
+    --Ge-border: #e5e7eb;
+    --Ge-danger: #ef4444;
+    --Ge-radius: 14px;
+    --Ge-gap: 20px;
+    --Ge-title-size: 28px;
+    --Ge-shadow: 0 8px 24px rgba(109, 40, 217, 0.12);
+    --Ge-tabbar-h: 64px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--Ge-bg);
+    color: var(--Ge-text);
+    min-height: 100vh;
+    /* 给固定的底部导航让出空间 */
+    padding-bottom: calc(var(--Ge-tabbar-h) + 34px);
+  }
+
+  a { color: var(--Ge-primary); }
+
+  .Ge_topbar {
+    background: var(--Ge-primary);
+    color: #fff;
+    padding: 16px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+  }
+
+  .Ge_topbar a { color: #fff; text-decoration: none; font-size: 14px; opacity: 0.9; }
+  .Ge_topbar a:hover { opacity: 1; text-decoration: underline; }
+
+  .Ge_container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 30px 16px 40px;
+  }
+
+  .Ge_hero { text-align: center; margin-bottom: 30px; }
+
+  .Ge_hero h1 {
+    font-size: var(--Ge-title-size);
+    margin-bottom: 10px;
+    color: var(--Ge-primary);
+  }
+
+  .Ge_hero p { color: var(--Ge-muted); font-size: 15px; line-height: 1.7; }
+
+  .Ge_author {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 6px 18px;
+    border: 2px solid var(--Ge-primary);
+    border-radius: 999px;
+    color: var(--Ge-primary);
+    font-weight: bold;
+    letter-spacing: 4px;
+  }
+
+  .Ge_section_title {
+    font-size: 20px;
+    color: var(--Ge-primary);
+    margin: 30px 0 14px;
+    padding-left: 12px;
+    border-left: 5px solid var(--Ge-primary);
+    line-height: 1.2;
+  }
+
+  .Ge_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--Ge-gap);
+  }
+
+  .Ge_card {
+    background: var(--Ge-card);
+    border-radius: var(--Ge-radius);
+    padding: 20px;
+    box-shadow: var(--Ge-shadow);
+    border-top: 4px solid var(--Ge-primary);
+  }
+
+  .Ge_card h3 { color: var(--Ge-primary); font-size: 16px; margin-bottom: 8px; }
+
+  .Ge_card p { color: var(--Ge-muted); font-size: 14px; line-height: 1.8; }
+
+  .Ge_code {
+    display: block;
+    margin-top: 10px;
+    padding: 12px;
+    background: #1e1b3a;
+    color: #c4b5fd;
+    border-radius: 8px;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .Ge_demo_box {
+    background: var(--Ge-card);
+    border-radius: var(--Ge-radius);
+    padding: 22px;
+    box-shadow: var(--Ge-shadow);
+  }
+
+  .Ge_demo_box h2 { font-size: 18px; color: var(--Ge-primary); margin-bottom: 8px; }
+
+  .Ge_demo_box > p { color: var(--Ge-muted); font-size: 14px; line-height: 1.8; }
+
+  .Ge_list { margin-top: 14px; border: 1px solid var(--Ge-border); border-radius: 10px; overflow: hidden; }
+
+  .Ge_list div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    font-size: 14px;
+    color: var(--Ge-text);
+    border-bottom: 1px solid var(--Ge-border);
+    background: #fff;
+  }
+
+  .Ge_list div:last-child { border-bottom: none; }
+  .Ge_list i { color: var(--Ge-primary); font-size: 18px; }
+  .Ge_list span { color: var(--Ge-muted); font-size: 12px; margin-left: auto; }
+
+  .Ge_footer {
+    text-align: center;
+    padding: 22px;
+    color: var(--Ge-muted);
+    font-size: 13px;
+  }
+
+  /* ============ 固定全屏底部导航 ============ */
+  .Ge_tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    background: #fff;
+    border-top: 1px solid var(--Ge-border);
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.08);
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 999;
+  }
+
+  .Ge_tab {
+    flex: 1 1 25%;
+    min-width: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 9px 0 10px;
+    text-decoration: none;
+    color: var(--Ge-muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .Ge_tab.Ge_active { color: var(--Ge-primary); font-weight: bold; }
+
+  .Ge_icon_box {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 28px;
+  }
+
+  .Ge_tab .iconfont { font-size: 24px; line-height: 1; }
+
+  /* 数字徽章：图标右上角 */
+  .Ge_badge {
+    position: absolute;
+    top: -7px;
+    right: -17px;
+    min-width: 17px;
+    height: 15px;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--Ge-danger);
+    color: #fff;
+    font-size: 10px;
+    font-style: normal;
+    line-height: 1;
+    border-radius: 999px;
+    box-shadow: 0 0 0 2px #fff;
+  }
+
+  /* 红点：导航项右上角 */
+  .Ge_dot {
+    position: absolute;
+    top: 5px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--Ge-danger);
+    box-shadow: 0 0 0 2px #fff;
+  }
+</style>
+</head>
+<body>
+
+  <header class="Ge_topbar">
+    <span>移动端固定底部导航（字体图标）</span>
+    <a href="index.html">返回首页</a>
+  </header>
+
+  <main class="Ge_container">
+    <section class="Ge_hero">
+      <h1>iconfont 字体图标 · 底部导航</h1>
+      <p>position: fixed + width: 100% 固定全屏，flex 让 4 个导航项自适应各占 25%</p>
+      <span class="Ge_author">葛聪慧</span>
+    </section>
+
+    <h2 class="Ge_section_title">实现要点</h2>
+    <section class="Ge_grid">
+      <article class="Ge_card">
+        <h3>1. iconfont 字体图标</h3>
+        <p>引入 font/iconfont.css，图标通过 font-family: iconfont + :before 码点渲染，导航用 icon-zhuye、icon-faxian、icon-tongzhi、icon-gouwuche。</p>
+        <code class="Ge_code">&lt;link rel="stylesheet" href="font/iconfont.css"&gt;<br>&lt;i class="iconfont icon-zhuye"&gt;&lt;/i&gt;</code>
+      </article>
+      <article class="Ge_card">
+        <h3>2. 固定 + 全屏宽度</h3>
+        <p>导航用 position: fixed 脱离文档流钉在视口底部，left: 0; right: 0; width: 100% 占满整个屏幕宽度，滚动页面不移动。</p>
+        <code class="Ge_code">position: fixed;<br>left: 0; right: 0; bottom: 0;<br>width: 100%;</code>
+      </article>
+      <article class="Ge_card">
+        <h3>3. 移动端自适应</h3>
+        <p>viewport 适配手机屏幕；导航是 flex 容器，每项 flex: 1 1 25%，任何屏宽都自动均分为 4 项，不写死像素。</p>
+        <code class="Ge_code">display: flex;<br>.Ge_tab { flex: 1 1 25%; }</code>
+      </article>
+    </section>
+
+    <h2 class="Ge_section_title">导航项：数字徽章 + 右上角红点</h2>
+    <section class="Ge_demo_box">
+      <h2>点击底部导航切换（点击后该项红点消失）</h2>
+      <p>每个导航项 = 图标 + 数字徽章（图标右上角的红色胶囊）+ 红点（导航项右上角）。向下滚动，导航始终固定在屏幕底部。</p>
+      <div class="Ge_list">
+        <div><i class="iconfont icon-denglu"></i>徽章：绝对定位在图标右上角，白圈描边压住图标<span>Ge_badge</span></div>
+        <div><i class="iconfont icon-tongzhi"></i>红点：定位在导航项右上角，提示未读消息<span>Ge_dot</span></div>
+        <div><i class="iconfont icon-shezhi"></i>数字超出 99 显示为 99+，胶囊宽度自适应<span>99+</span></div>
+        <div><i class="iconfont icon-bianji"></i>字体图标随 color 继承颜色，选中态变主题色<span>currentColor</span></div>
+        <div><i class="iconfont icon-sousuo"></i>整条导航占满屏幕宽度，左右不留白<span>width:100%</span></div>
+        <div><i class="iconfont icon-shoucang"></i>iOS 底部安全区用 env(safe-area-inset-bottom) 适配<span>safe-area</span></div>
+      </div>
+    </section>
+
+    <h2 class="Ge_section_title">关键代码</h2>
+    <section class="Ge_grid">
+      <article class="Ge_card">
+        <h3>1. 导航结构（4 项）</h3>
+        <code class="Ge_code">&lt;nav class="Ge_tabbar"&gt;<br>&nbsp;&nbsp;&lt;a class="Ge_tab Ge_active"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;span class="Ge_icon_box"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;i class="iconfont icon-zhuye"&gt;&lt;/i&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;b class="Ge_badge"&gt;8&lt;/b&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/span&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;span class="Ge_tab_text"&gt;首页&lt;/span&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;i class="Ge_dot"&gt;&lt;/i&gt;<br>&nbsp;&nbsp;&lt;/a&gt;<br>&nbsp;&nbsp;…共4项<br>&lt;/nav&gt;</code>
+      </article>
+      <article class="Ge_card">
+        <h3>2. 徽章与红点</h3>
+        <code class="Ge_code">.Ge_badge { position: absolute;<br>&nbsp;&nbsp;top: -7px; right: -17px;<br>&nbsp;&nbsp;background: #ef4444; }<br>.Ge_dot { position: absolute;<br>&nbsp;&nbsp;top: 5px; right: 6px;<br>&nbsp;&nbsp;width: 8px; height: 8px; }</code>
+      </article>
+      <article class="Ge_card">
+        <h3>3. 字体图标上色</h3>
+        <p>导航文字是什么颜色，图标就跟着变；选中项只需改 color。</p>
+        <code class="Ge_code">.Ge_tab { color: #6b7280; }<br>.Ge_tab.Ge_active { color: #6d28d9; }<br>.Ge_tab .iconfont { font-size: 24px; }</code>
+      </article>
+    </section>
+  </main>
+
+  <footer class="Ge_footer">
+    13-3 移动端底部导航（字体图标） · 作者：葛聪慧 · <a href="index.html">返回首页</a>
+  </footer>
+
+  <nav class="Ge_tabbar" id="Ge_tabbar">
+    <a class="Ge_tab Ge_active" href="javascript:void(0);" onclick="Ge_setTab(0)">
+      <span class="Ge_icon_box">
+        <i class="iconfont icon-zhuye"></i>
+        <b class="Ge_badge">8</b>
+      </span>
+      <span class="Ge_tab_text">首页</span>
+      <i class="Ge_dot"></i>
+    </a>
+    <a class="Ge_tab" href="javascript:void(0);" onclick="Ge_setTab(1)">
+      <span class="Ge_icon_box">
+        <i class="iconfont icon-faxian"></i>
+        <b class="Ge_badge">5</b>
+      </span>
+      <span class="Ge_tab_text">发现</span>
+      <i class="Ge_dot"></i>
+    </a>
+    <a class="Ge_tab" href="javascript:void(0);" onclick="Ge_setTab(2)">
+      <span class="Ge_icon_box">
+        <i class="iconfont icon-tongzhi"></i>
+        <b class="Ge_badge">99+</b>
+      </span>
+      <span class="Ge_tab_text">通知</span>
+      <i class="Ge_dot"></i>
+    </a>
+    <a class="Ge_tab" href="javascript:void(0);" onclick="Ge_setTab(3)">
+      <span class="Ge_icon_box">
+        <i class="iconfont icon-gouwuche"></i>
+        <b class="Ge_badge">12</b>
+      </span>
+      <span class="Ge_tab_text">购物车</span>
+      <i class="Ge_dot"></i>
+    </a>
+  </nav>
+
+  <script>
+    function Ge_setTab(Ge_index) {
+      var Ge_tabs = document.querySelectorAll('.Ge_tab');
+      for (var Ge_i = 0; Ge_i < Ge_tabs.length; Ge_i++) {
+        var Ge_on = Ge_i === Ge_index;
+        Ge_tabs[Ge_i].classList.toggle('Ge_active', Ge_on);
+        var Ge_dot = Ge_tabs[Ge_i].querySelector('.Ge_dot');
+        if (Ge_dot) Ge_dot.style.display = Ge_on ? 'none' : '';
+      }
+    }
+  </script>
+
+</body>
+</html>

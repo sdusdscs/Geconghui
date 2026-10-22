@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>移动端底部导航（SVG图标）- 葛聪慧</title>
+<style>
+  :root {
+    --Ge-primary: #ea580c;
+    --Ge-primary-light: #fb923c;
+    --Ge-bg: #fff7f2;
+    --Ge-card: #ffffff;
+    --Ge-text: #1f2937;
+    --Ge-muted: #6b7280;
+    --Ge-border: #e5e7eb;
+    --Ge-danger: #ef4444;
+    --Ge-radius: 14px;
+    --Ge-gap: 20px;
+    --Ge-title-size: 28px;
+    --Ge-shadow: 0 8px 24px rgba(234, 88, 12, 0.12);
+    --Ge-tabbar-h: 64px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--Ge-bg);
+    color: var(--Ge-text);
+    min-height: 100vh;
+    /* 给固定的底部导航让出空间 */
+    padding-bottom: calc(var(--Ge-tabbar-h) + 34px);
+  }
+
+  a { color: var(--Ge-primary); }
+
+  .Ge_topbar {
+    background: var(--Ge-primary);
+    color: #fff;
+    padding: 16px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+  }
+
+  .Ge_topbar a { color: #fff; text-decoration: none; font-size: 14px; opacity: 0.9; }
+  .Ge_topbar a:hover { opacity: 1; text-decoration: underline; }
+
+  .Ge_container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 30px 16px 40px;
+  }
+
+  .Ge_hero { text-align: center; margin-bottom: 30px; }
+
+  .Ge_hero h1 {
+    font-size: var(--Ge-title-size);
+    margin-bottom: 10px;
+    color: var(--Ge-primary);
+  }
+
+  .Ge_hero p { color: var(--Ge-muted); font-size: 15px; line-height: 1.7; }
+
+  .Ge_author {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 6px 18px;
+    border: 2px solid var(--Ge-primary);
+    border-radius: 999px;
+    color: var(--Ge-primary);
+    font-weight: bold;
+    letter-spacing: 4px;
+  }
+
+  .Ge_section_title {
+    font-size: 20px;
+    color: var(--Ge-primary);
+    margin: 30px 0 14px;
+    padding-left: 12px;
+    border-left: 5px solid var(--Ge-primary);
+    line-height: 1.2;
+  }
+
+  .Ge_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--Ge-gap);
+  }
+
+  .Ge_card {
+    background: var(--Ge-card);
+    border-radius: var(--Ge-radius);
+    padding: 20px;
+    box-shadow: var(--Ge-shadow);
+    border-top: 4px solid var(--Ge-primary);
+  }
+
+  .Ge_card h3 { color: var(--Ge-primary); font-size: 16px; margin-bottom: 8px; }
+
+  .Ge_card p { color: var(--Ge-muted); font-size: 14px; line-height: 1.8; }
+
+  .Ge_code {
+    display: block;
+    margin-top: 10px;
+    padding: 12px;
+    background: #2b1a0e;
+    color: #fdba74;
+    border-radius: 8px;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .Ge_demo_box {
+    background: var(--Ge-card);
+    border-radius: var(--Ge-radius);
+    padding: 22px;
+    box-shadow: var(--Ge-shadow);
+  }
+
+  .Ge_demo_box h2 { font-size: 18px; color: var(--Ge-primary); margin-bottom: 8px; }
+
+  .Ge_demo_box > p { color: var(--Ge-muted); font-size: 14px; line-height: 1.8; }
+
+  .Ge_list { margin-top: 14px; border: 1px solid var(--Ge-border); border-radius: 10px; overflow: hidden; }
+
+  .Ge_list div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    font-size: 14px;
+    color: var(--Ge-text);
+    border-bottom: 1px solid var(--Ge-border);
+    background: #fff;
+  }
+
+  .Ge_list div:last-child { border-bottom: none; }
+  .Ge_list svg { width: 18px; height: 18px; fill: currentColor; flex: none; }
+  .Ge_list span { color: var(--Ge-muted); font-size: 12px; margin-left: auto; }
+
+  .Ge_footer {
+    text-align: center;
+    padding: 22px;
+    color: var(--Ge-muted);
+    font-size: 13px;
+  }
+
+  /* ============ 固定全屏底部导航 ============ */
+  .Ge_tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    background: #fff;
+    border-top: 1px solid var(--Ge-border);
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.08);
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 999;
+  }
+
+  .Ge_tab {
+    flex: 1 1 25%;
+    min-width: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 9px 0 10px;
+    text-decoration: none;
+    color: var(--Ge-muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .Ge_tab.Ge_active { color: var(--Ge-primary); font-weight: bold; }
+
+  .Ge_icon_box {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 28px;
+  }
+
+  .Ge_tab_icon { width: 24px; height: 24px; fill: currentColor; }
+
+  /* 数字徽章：图标右上角 */
+  .Ge_badge {
+    position: absolute;
+    top: -7px;
+    right: -17px;
+    min-width: 17px;
+    height: 15px;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--Ge-danger);
+    color: #fff;
+    font-size: 10px;
+    font-style: normal;
+    line-height: 1;
+    border-radius: 999px;
+    box-shadow: 0 0 0 2px #fff;
+  }
+
+  /* 红点：导航项右上角 */
+  .Ge_dot {
+    position: absolute;
+    top: 5px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--Ge-danger);
+    box-shadow: 0 0 0 2px #fff;
+  }
+</style>
+</head>
+<body>
+
+  <!-- iconfont 的 SVG 精灵（symbol 定义，来自 font/iconfont.js） -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+        <symbol id="icon-zhuye" viewBox="0 0 1024 1024"><path d="M762.77551 929.959184H261.22449c-40.75102 0-74.187755-33.436735-74.187755-74.710204v-288.914286c0-6.791837-5.22449-12.016327-11.493878-12.016327h-27.689796c-21.942857 0-40.75102-12.538776-49.110204-32.914285-8.359184-19.853061-3.657143-42.840816 11.493878-58.514286l341.159183-343.771429c15.673469-16.195918 37.616327-25.077551 60.604082-25.077551s44.930612 8.881633 61.126531 25.6L914.285714 463.412245c15.15102 15.673469 19.853061 38.661224 11.493878 58.514286-8.359184 20.37551-27.167347 32.914286-49.110204 32.914285h-27.689796c-6.269388 0-11.493878 5.22449-11.493878 12.016327v288.914286c-0.522449 40.75102-33.959184 74.187755-74.710204 74.187755zM512 135.836735c-12.016327 0-22.987755 4.702041-31.346939 13.061224L139.493878 492.669388c-5.22449 5.22449-3.657143 10.971429-2.612245 13.061224 1.044898 2.089796 3.657143 7.314286 10.971428 7.314286h27.689796c29.257143 0 53.289796 24.032653 53.289796 53.812245v288.914286c0 17.763265 14.628571 32.914286 32.391837 32.914285h501.55102c17.763265 0 32.391837-14.628571 32.391837-32.914285v-288.914286c0-29.779592 24.032653-53.812245 53.289796-53.812245h27.689796c6.791837 0 9.926531-5.22449 10.971428-7.314286 1.044898-2.089796 2.612245-7.836735-2.612245-13.061224L543.346939 148.897959c-8.359184-8.359184-19.330612-13.061224-31.346939-13.061224z"></path><path d="M663.510204 929.959184H360.489796v-219.428572c0-45.97551 37.616327-83.591837 83.591837-83.591836h135.836734c45.97551 0 83.591837 37.616327 83.591837 83.591836v219.428572z m-261.22449-41.795919h219.428572v-177.632653c0-22.987755-18.808163-41.795918-41.795919-41.795918H444.081633c-22.987755 0-41.795918 18.808163-41.795919 41.795918v177.632653z"></path></symbol>
+    <symbol id="icon-faxian" viewBox="0 0 1024 1024"><path d="M512 972.8c-253.44 0-460.8-207.36-460.8-460.8S258.56 51.2 512 51.2s460.8 207.36 460.8 460.8-207.36 460.8-460.8 460.8z m0-51.2c225.28 0 409.6-184.32 409.6-409.6S737.28 102.4 512 102.4 102.4 286.72 102.4 512s184.32 409.6 409.6 409.6z m0-204.8c-143.36 0-281.6-104.96-281.6-204.8s138.24-204.8 281.6-204.8 281.6 104.96 281.6 204.8-138.24 204.8-281.6 204.8z m0-51.2c117.76 0 230.4-87.04 230.4-153.6s-112.64-153.6-230.4-153.6-230.4 87.04-230.4 153.6 112.64 153.6 230.4 153.6z m0-51.2c-56.32 0-102.4-46.08-102.4-102.4s46.08-102.4 102.4-102.4 102.4 46.08 102.4 102.4-46.08 102.4-102.4 102.4z m0-51.2c28.16 0 51.2-23.04 51.2-51.2s-23.04-51.2-51.2-51.2-51.2 23.04-51.2 51.2 23.04 51.2 51.2 51.2z"></path></symbol>
+    <symbol id="icon-tongzhi" viewBox="0 0 1024 1024"><path d="M889.828994 749.637494c-1.204099-1.548127-119.205779-166.165631-119.205779-287.435579 0-168.401814-76.202251-254.752898-162.725349-286.919536L607.897867 159.973123c0-52.980346-43.175542-95.983874-95.983874-95.983874S415.930119 107.164791 415.930119 159.973123l0 16.685369c-10.836889 7.912649-16.169326 21.845792-11.868974 35.262893 5.332437 16.857383 23.393919 25.974131 40.251302 20.641693 17.717453-5.676466 36.983034-8.428691 56.936671-8.428691l21.32975 0c115.249454 0 184.055098 89.103309 184.055098 238.239543 0 108.024861 72.933983 235.315303 110.261045 293.456073-57.452713 26.146145-183.023014 76.202251-304.809004 76.202251-121.441962 0-247.356291-50.400134-304.809004-76.546279 37.327062-57.968755 110.089031-184.915169 110.089031-293.112044 0-62.441122 11.524945-114.217369 34.574836-153.952629 8.77272-15.309256 3.612296-34.918864-11.69696-43.691584-15.48127-8.944734-34.918864-3.612296-43.691584 11.69696-28.554342 49.540064-43.175542 112.1532-43.175542 185.947253 0 121.269948-118.00168 285.199395-119.205779 286.919536-5.332437 7.568621-7.396607 16.857383-5.332437 25.974131 2.064169 8.944734 7.912649 16.685369 15.997312 20.985721 5.676466 3.096254 107.336805 57.280699 233.423148 84.458928 21.32975 66.397447 73.966068 111.29313 133.654964 111.29313s112.325214-44.895683 133.654964-111.29313c126.086343-27.178229 227.746682-81.018646 233.423148-83.942886 8.084663-4.472367 13.933143-12.040988 16.169326-20.985721C897.225601 766.666891 895.333445 757.206115 889.828994 749.637494zM501.249118 159.973123c-7.224593 0-14.277171 1.032085-21.32975 1.548127L479.919368 159.973123c0-17.545439 14.449185-31.994625 31.994625-31.994625 17.545439 0 31.994625 14.449185 31.994625 31.994625l0 0.860071c-7.224593-0.516042-14.277171-0.860071-21.32975-0.860071L501.249118 159.973123zM511.913993 928.016126c-22.361834 0-43.175542-13.417101-57.968755-35.262893 19.26558 2.064169 38.531161 3.268268 57.968755 3.268268s38.875189-1.376113 57.968755-3.268268C555.089535 914.599026 534.275827 928.016126 511.913993 928.016126z"></path></symbol>
+    <symbol id="icon-gouwuche" viewBox="0 0 1024 1024"><path d="M864.234539 486.29576l91.521277-222.162012c12.048862-30.593277-5.045397-55.576016-38.270212-55.576016L331.444886 208.557733l-4.89517-34.360208c-5.876248-28.974499-32.498204-50.540838-62.245301-50.540838L109.482156 123.656687C84.575042 123.656687 64.383234 143.718707 64.383234 168.465373s20.191808 44.808687 45.098922 44.808687l132.97897 0 85.976144 423.97279c-55.642443 16.676279-96.184463 67.946794-96.184463 128.669381 0 74.241022 60.574403 134.42606 135.297788 134.42606 74.722363 0 135.297788-60.185038 135.297788-134.42606 0-16.61905-3.179305-32.466523-8.729549-47.159186L676.698443 718.757046c-5.550244 14.692663-8.729549 30.540136-8.729549 47.159186 0 74.241022 60.574403 134.42606 135.297788 134.42606 74.722363 0 135.297788-60.185038 135.297788-134.42606 0-69.046419-52.418172-125.865134-119.858076-133.488926-5.199713-2.078659-10.848064-3.287633-16.795848-3.287633L418.80578 629.139673l-17.697214-87.267896 381.150786 0C815.322699 541.872798 852.146842 516.990212 864.234539 486.29576zM803.266683 810.72594c-24.908136 0-45.098922-20.060998-45.098922-44.808687s20.191808-44.808687 45.098922-44.808687c24.908136 0 45.098922 20.06202 45.098922 44.808687S828.174818 810.72594 803.266683 810.72594zM412.650539 765.917253c0 24.747689-20.19283 44.808687-45.098922 44.808687-24.908136 0-45.098922-20.060998-45.098922-44.808687s20.191808-44.808687 45.098922-44.808687C392.457709 721.107545 412.650539 741.169565 412.650539 765.917253z"></path></symbol>
+    <symbol id="icon-denglu" viewBox="0 0 1024 1024"><path d="M575.215 547.318c53.367-24.316 90.562-78.011 90.562-140.522 0-85.257-69.149-154.383-154.406-154.383-85.299 0-154.427 69.126-154.427 154.383 0 62.49 37.172 116.185 90.562 140.522-87.156 27.24-150.586 108.698-150.586 204.715 0 12.071 9.779 21.827 21.827 21.827s21.827-9.756 21.827-21.827c0-94.161 76.613-170.774 170.776-170.774 94.184 0 170.797 76.613 170.797 170.774 0 12.071 9.756 21.827 21.827 21.827 12.07 0 21.827-9.756 21.827-21.827 0.021-95.994-63.43-177.475-150.586-204.715zM400.621 406.817c0-61.072 49.678-110.729 110.773-110.729 61.072 0 110.75 49.657 110.75 110.729 0 61.094-49.678 110.794-110.75 110.794-61.095 0-110.773-49.7-110.773-110.794z"></path><path d="M511.371 960.81c-246.951 0-447.869-200.918-447.869-447.891 0-246.93 200.919-447.871 447.869-447.871 246.973 0 447.892 200.919 447.892 447.871 0 246.973-200.919 447.891-447.892 447.891z m0-854.269c-224.098 0-406.398 182.301-406.398 406.377s182.3 406.397 406.398 406.397c224.099 0 406.42-182.321 406.42-406.397S735.47 106.541 511.371 106.541z"></path></symbol>
+    <symbol id="icon-more-br" viewBox="0 0 1024 1024"><path d="M863.475712 157.964288C768.909312 63.397888 643.176448 11.317248 509.44 11.317248S249.970688 63.397888 155.404288 157.964288C60.837888 252.530688 8.757248 378.263552 8.757248 512s52.08064 259.469312 146.64704 354.035712c94.5664 94.5664 220.297216 146.644992 354.035712 146.644992 133.736448 0 259.469312-52.08064 354.035712-146.644992S1010.122752 645.736448 1010.122752 512s-52.08064-259.469312-146.64704-354.035712zM509.44 971.722752C255.9488 971.722752 49.717248 765.4912 49.717248 512c0-253.4912 206.231552-459.722752 459.722752-459.722752 253.4912 0 459.722752 206.231552 459.722752 459.722752 0 253.4912-206.231552 459.722752-459.722752 459.722752z"></path><path d="M189.46048 459.689984h104.620032v104.620032H189.46048zM724.287488 459.689984h105.13408v104.620032h-105.13408zM466.343936 459.689984h104.62208v104.620032h-104.62208z"></path></symbol>
+    <symbol id="icon-shezhi" viewBox="0 0 1024 1024"><path d="M697.248 223.168L854.72 496a32 32 0 0 1 0 32l-157.504 272.832a32 32 0 0 1-27.712 16h-315.072a32 32 0 0 1-27.712-16L169.28 528a32 32 0 0 1 0-32l157.504-272.832a32 32 0 0 1 27.712-16h315.072a32 32 0 0 1 27.712 16z m-46.208 48l-278.08-0.032-139.072 240.832 139.072 240.864h278.08l139.072-240.864-139.072-240.832z"></path><path d="M622.848 448a128 128 0 1 1-221.696 128 128 128 0 0 1 221.696-128z m-55.424 32a64 64 0 1 0-110.848 64 64 64 0 0 0 110.848-64z"></path></symbol>
+    <symbol id="icon-sousuo" viewBox="0 0 1024 1024"><path d="M446.112323 177.545051c137.567677 0.219798 252.612525 104.59798 266.162424 241.493333 13.562828 136.895354-78.778182 261.818182-213.617777 289.008485-134.852525 27.203232-268.386263-52.156768-308.945455-183.608889s25.018182-272.252121 151.738182-325.779394A267.235556 267.235556 0 0 1 446.112323 177.545051m0-62.060607c-182.794343 0-330.989899 148.195556-330.989899 330.989899s148.195556 330.989899 330.989899 330.989899 330.989899-148.195556 330.989899-330.989899-148.195556-330.989899-330.989899-330.989899z m431.321212 793.341415a30.849293 30.849293 0 0 1-21.94101-9.102223l-157.220202-157.220202c-11.752727-12.179394-11.584646-31.534545 0.37495-43.50707 11.972525-11.972525 31.327677-12.140606 43.494141-0.37495l157.220202 157.220202a31.036768 31.036768 0 0 1 6.723232 33.810101 31.004444 31.004444 0 0 1-28.651313 19.174142z m0 0"></path></symbol>
+    <symbol id="icon-shoucang" viewBox="0 0 1025 1024"><path d="M768.68416 984.896c-15.936 0-31.36-3.84-45.952-11.456l-186.816-98.24a50.432 50.432 0 0 0-46.272 0L302.76416 973.44a99.712 99.712 0 0 1-121.6-24 96.448 96.448 0 0 1-21.44-79.936l35.712-208.064a49.664 49.664 0 0 0-14.4-44.032L29.86816 470.016a98.112 98.112 0 0 1-24.896-101.12A97.92 97.92 0 0 1 84.52416 301.824l208.96-30.336a49.664 49.664 0 0 0 37.376-27.264L424.30016 54.912C441.06816 21.056 474.92416 0 512.74816 0s71.68 21.056 88.448 54.912l93.44 189.312a49.792 49.792 0 0 0 37.376 27.264l209.024 30.336a97.984 97.984 0 0 1 79.552 67.072 98.24 98.24 0 0 1-24.96 101.12l-151.104 147.392a49.472 49.472 0 0 0-14.4 44.032l35.712 208.064c4.992 29.184-2.56 57.536-21.504 79.936a98.752 98.752 0 0 1-75.648 35.456z m-255.936-164.288c16 0 31.872 3.968 45.824 11.328l186.88 98.304a50.304 50.304 0 0 0 61.504-12.288 48.704 48.704 0 0 0 10.688-40.192l-35.712-208.128A98.56 98.56 0 0 1 810.28416 582.4l151.104-147.392A48.768 48.768 0 0 0 974.12416 384a48.896 48.896 0 0 0-40.128-33.856l-209.024-30.336a98.56 98.56 0 0 1-74.176-53.888l-93.44-189.376C548.78016 59.136 532.07616 48.832 512.74816 48.832s-36.096 10.304-44.672 27.712l-93.44 189.312a98.688 98.688 0 0 1-74.24 53.952l-208.896 30.4A48.64 48.64 0 0 0 51.37216 384a48.64 48.64 0 0 0 12.544 50.944L215.08416 582.4c23.232 22.656 33.856 55.296 28.352 87.232l-35.712 208.128c-2.56 14.72 1.28 29.056 10.688 40.192a50.368 50.368 0 0 0 61.504 12.288l186.88-98.304c14.208-7.36 29.952-11.328 45.952-11.328z"></path></symbol>
+  </svg>
+
+  <header class="Ge_topbar">
+    <span>移动端固定底部导航（SVG 图标）</span>
+    <a href="index.html">返回首页</a>
+  </header>
+
+  <main class="Ge_container">
+    <section class="Ge_hero">
+      <h1>SVG symbol + use · 底部导航</h1>
+      <p>同一个 iconfont 项目，改成 svg 矢量：symbol 定义 + use 引用，颜色用 fill: currentColor 继承</p>
+      <span class="Ge_author">葛聪慧</span>
+    </section>
+
+    <h2 class="Ge_section_title">实现要点</h2>
+    <section class="Ge_grid">
+      <article class="Ge_card">
+        <h3>1. SVG 精灵复用</h3>
+        <p>把 font/iconfont.js 里的4个 symbol（zhuye/faxian/tongzhi/gouwuche）放进页面隐藏 svg，导航用 use 引用，一份路径多处复用。</p>
+        <code class="Ge_code">&lt;svg style="position:absolute;width:0;height:0"&gt;<br>&nbsp;&nbsp;&lt;symbol id="icon-zhuye" viewBox="0 0 1024 1024"&gt;…<br>&lt;/svg&gt;<br>&lt;svg class="Ge_tab_icon"&gt;&lt;use href="#icon-zhuye"&gt;&lt;/use&gt;&lt;/svg&gt;</code>
+      </article>
+      <article class="Ge_card">
+        <h3>2. 固定 + 全屏宽度</h3>
+        <p>与字体方案相同：position: fixed 钉在视口底部，left: 0; right: 0; width: 100% 占满整屏宽度，滚动不跟随。</p>
+        <code class="Ge_code">position: fixed;<br>left: 0; right: 0; bottom: 0;<br>width: 100%;</code>
+      </article>
+      <article class="Ge_card">
+        <h3>3. 自适应与上色</h3>
+        <p>viewport 适配手机屏，导航 flex 每项 flex: 1 1 25% 自动均分；svg 没有 fill 属性时继承 fill: currentColor，跟随文字颜色。</p>
+        <code class="Ge_code">display: flex;<br>.Ge_tab { flex: 1 1 25%; }<br>.Ge_tab_icon { fill: currentColor; }</code>
+      </article>
+    </section>
+
+    <h2 class="Ge_section_title">导航项：数字徽章 + 右上角红点</h2>
+    <section class="Ge_demo_box">
+      <h2>点击底部导航切换（点击后该项红点消失）</h2>
+      <p>每个导航项 = svg 图标 + 数字徽章（图标右上角红色胶囊）+ 红点（导航项右上角）。向下滚动，导航始终固定在屏幕底部。</p>
+      <div class="Ge_list">
+        <div><svg viewBox="0 0 1024 1024" aria-hidden="true"><use href="#icon-denglu"></use></svg>徽章：绝对定位在图标右上角，白圈描边压住图标<span>Ge_badge</span></div>
+        <div><svg viewBox="0 0 1024 1024" aria-hidden="true"><use href="#icon-tongzhi"></use></svg>红点：定位在导航项右上角，提示未读消息<span>Ge_dot</span></div>
+        <div><svg viewBox="0 0 1024 1024" aria-hidden="true"><use href="#icon-more-br"></use></svg>数字超过 99 显示 99+，胶囊宽度自适应内容<span>99+</span></div>
+        <div><svg viewBox="0 0 1024 1024" aria-hidden="true"><use href="#icon-shezhi"></use></svg>svg 用 fill: currentColor 继承文字颜色，选中变主题色<span>currentColor</span></div>
+        <div><svg viewBox="0 0 1024 1024" aria-hidden="true"><use href="#icon-sousuo"></use></svg>矢量路径无级缩放，任何屏宽都不模糊<span>viewBox</span></div>
+        <div><svg viewBox="0 0 1024 1024" aria-hidden="true"><use href="#icon-shoucang"></use></svg>整条导航占满屏幕宽度，左右不留白<span>width:100%</span></div>
+      </div>
+    </section>
+
+    <h2 class="Ge_section_title">关键代码</h2>
+    <section class="Ge_grid">
+      <article class="Ge_card">
+        <h3>1. 导航结构（4 项）</h3>
+        <code class="Ge_code">&lt;nav class="Ge_tabbar"&gt;<br>&nbsp;&nbsp;&lt;a class="Ge_tab Ge_active"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;span class="Ge_icon_box"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;svg class="Ge_tab_icon" viewBox="0 0 1024 1024"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;use href="#icon-zhuye"&gt;&lt;/use&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/svg&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;b class="Ge_badge"&gt;8&lt;/b&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/span&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;span class="Ge_tab_text"&gt;首页&lt;/span&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;i class="Ge_dot"&gt;&lt;/i&gt;<br>&nbsp;&nbsp;&lt;/a&gt;<br>&nbsp;&nbsp;…共4项<br>&lt;/nav&gt;</code>
+      </article>
+      <article class="Ge_card">
+        <h3>2. 徽章与红点</h3>
+        <code class="Ge_code">.Ge_badge { position: absolute;<br>&nbsp;&nbsp;top: -7px; right: -17px;<br>&nbsp;&nbsp;background: #ef4444; }<br>.Ge_dot { position: absolute;<br>&nbsp;&nbsp;top: 5px; right: 6px;<br>&nbsp;&nbsp;width: 8px; height: 8px; }</code>
+      </article>
+      <article class="Ge_card">
+        <h3>3. 与字体图标的区别</h3>
+        <p>不再需要 @font-face 和码点，图标就是页面里的 svg 元素，可直接改路径、加变形动画。</p>
+        <code class="Ge_code">.Ge_tab_icon { width: 24px; height: 24px;<br>&nbsp;&nbsp;fill: currentColor; }<br>.Ge_tab.Ge_active { color: #ea580c; }</code>
+      </article>
+    </section>
+  </main>
+
+  <footer class="Ge_footer">
+    13-4 移动端底部导航（SVG图标） · 作者：葛聪慧 · <a href="index.html">返回首页</a>
+  </footer>
+
+  <nav class="Ge_tabbar" id="Ge_tabbar">
+    <a class="Ge_tab Ge_active" href="javascript:void(0);" onclick="Ge_setTab(0)">
+      <span class="Ge_icon_box">
+        <svg class="Ge_tab_icon" viewBox="0 0 1024 1024" aria-hidden="true"><use href="#icon-zhuye"></use></svg>
+        <b class="Ge_badge">8</b>
+      </span>
+      <span class="Ge_tab_text">首页</span>
+      <i class="Ge_dot"></i>
+    </a>
+    <a class="Ge_tab" href="javascript:void(0);" onclick="Ge_setTab(1)">
+      <span class="Ge_icon_box">
+        <svg class="Ge_tab_icon" viewBox="0 0 1024 1024" aria-hidden="true"><use href="#icon-faxian"></use></svg>
+        <b class="Ge_badge">5</b>
+      </span>
+      <span class="Ge_tab_text">发现</span>
+      <i class="Ge_dot"></i>
+    </a>
+    <a class="Ge_tab" href="javascript:void(0);" onclick="Ge_setTab(2)">
+      <span class="Ge_icon_box">
+        <svg class="Ge_tab_icon" viewBox="0 0 1024 1024" aria-hidden="true"><use href="#icon-tongzhi"></use></svg>
+        <b class="Ge_badge">99+</b>
+      </span>
+      <span class="Ge_tab_text">通知</span>
+      <i class="Ge_dot"></i>
+    </a>
+    <a class="Ge_tab" href="javascript:void(0);" onclick="Ge_setTab(3)">
+      <span class="Ge_icon_box">
+        <svg class="Ge_tab_icon" viewBox="0 0 1024 1024" aria-hidden="true"><use href="#icon-gouwuche"></use></svg>
+        <b class="Ge_badge">12</b>
+      </span>
+      <span class="Ge_tab_text">购物车</span>
+      <i class="Ge_dot"></i>
+    </a>
+  </nav>
+
+  <script>
+    function Ge_setTab(Ge_index) {
+      var Ge_tabs = document.querySelectorAll('.Ge_tab');
+      for (var Ge_i = 0; Ge_i < Ge_tabs.length; Ge_i++) {
+        var Ge_on = Ge_i === Ge_index;
+        Ge_tabs[Ge_i].classList.toggle('Ge_active', Ge_on);
+        var Ge_dot = Ge_tabs[Ge_i].querySelector('.Ge_dot');
+        if (Ge_dot) Ge_dot.style.display = Ge_on ? 'none' : '';
+      }
+    }
+  </script>
+
+</body>
+</html>

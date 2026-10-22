@@ -56,3 +56,21 @@ create skill：提交项目：使用git commit并push当前项目到https://gite
 ```
 创建网页12-1.html,展示css变量，然后提交项目。有文字葛聪慧
 ```
+
+## 2026-10-19-15-56
+
+- 模型：opencode/mimo-v2.6-flash-free
+- 提示词：
+
+```
+编写两个网页13-1.html和13-2的html，分别显示font awesome图标和lucide图前者采用字体图标的形式，后者使用svg的形式。下载相关cdn文件到当前目录下的cdn目录
+```
+
+## 2026-10-19-16-28
+
+- 模型：opencode/mimo-v2.6-flash-free
+- 提示词：
+
+```
+根据font目录下的iconfont的图标，分别完成13-3.html和13-4.html，使用字体图标和svg的方法完成移动端的自适应宽度的固定的下导航，下导航有4项内容，导航项包括数字微章和右上角的红点，全屏宽度
+```

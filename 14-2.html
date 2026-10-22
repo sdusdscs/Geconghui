@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>JavaScript 六种基础数据类型</title>
+<!-- 姓名：葛聪慧，2026-10-08：JavaScript基础数据类型 -->
+<style>
+  body {
+    margin: 0;
+    padding: 20px;
+    background: #1a1a2e;
+    color: #eee;
+    font-family: "Microsoft YaHei", sans-serif;
+  }
+
+  .gch_title {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #e94560;
+  }
+
+  .gch_card {
+    background: #16213e;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    border-left: 4px solid #e94560;
+  }
+
+  .gch_type_name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #0f3460;
+    background: #e94560;
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+
+  .gch_code {
+    background: #0a0a1a;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-family: Consolas, monospace;
+    font-size: 14px;
+    color: #a8d8ea;
+    margin: 8px 0;
+  }
+
+  .gch_result {
+    color: #53d769;
+    font-size: 14px;
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+  <div class="gch_title">JavaScript 六种基础数据类型</div>
+  <div id="gch_output"></div>
+
+  <script>
+    var gch_output = document.getElementById("gch_output");
+
+    var gch_types = [
+      {
+        name: "Number",
+        desc: "数字类型，包括整数和浮点数",
+        code: 'var gch_num1 = 42;\nvar gch_num2 = 3.14;',
+        run: function () {
+          var gch_num1 = 42;
+          var gch_num2 = 3.14;
+          return "gch_num1 = " + gch_num1 + "  typeof → " + typeof gch_num1 + "\ngch_num2 = " + gch_num2 + "  typeof → " + typeof gch_num2;
+        }
+      },
+      {
+        name: "String",
+        desc: "字符串类型，用引号包裹的文本",
+        code: 'var gch_str1 = "葛聪慧";\nvar gch_str2 = "Hello";',
+        run: function () {
+          var gch_str1 = "葛聪慧";
+          var gch_str2 = "Hello";
+          return 'gch_str1 = "' + gch_str1 + '"  typeof → ' + typeof gch_str1 + '\ngch_str2 = "' + gch_str2 + '"  typeof → ' + typeof gch_str2;
+        }
+      },
+      {
+        name: "Boolean",
+        desc: "布尔类型，只有 true 和 false 两个值",
+        code: "var gch_bool1 = true;\nvar gch_bool2 = false;",
+        run: function () {
+          var gch_bool1 = true;
+          var gch_bool2 = false;
+          return "gch_bool1 = " + gch_bool1 + "  typeof → " + typeof gch_bool1 + "\ngch_bool2 = " + gch_bool2 + "  typeof → " + typeof gch_bool2;
+        }
+      },
+      {
+        name: "Undefined",
+        desc: "未定义类型，变量声明但未赋值时的默认值",
+        code: "var gch_undef;\nvar gch_check = typeof gch_undef;",
+        run: function () {
+          var gch_undef;
+          var gch_check = typeof gch_undef;
+          return "gch_undef = " + gch_undef + "  typeof → " + gch_check;
+        }
+      },
+      {
+        name: "Null",
+        desc: "空类型，表示故意赋值的空对象指针",
+        code: "var gch_null = null;\nvar gch_check = typeof gch_null;",
+        run: function () {
+          var gch_null = null;
+          var gch_check = typeof gch_null;
+          return "gch_null = " + gch_null + "  typeof → " + gch_check + '（历史遗留，null 实际是空对象指针）';
+        }
+      },
+      {
+        name: "Symbol",
+        desc: "符号类型（ES6），表示独一无二的值",
+        code: 'var gch_sym1 = Symbol("id");\nvar gch_sym2 = Symbol("id");',
+        run: function () {
+          var gch_sym1 = Symbol("id");
+          var gch_sym2 = Symbol("id");
+          return "gch_sym1 = " + gch_sym1.toString() + "  typeof → " + typeof gch_sym1 + "\ngch_sym2 = " + gch_sym2.toString() + "  typeof → " + typeof gch_sym2 + "\ngch_sym1 === gch_sym2 → " + (gch_sym1 === gch_sym2) + "（每个 Symbol 都是唯一的）";
+        }
+      }
+    ];
+
+    for (var gch_i = 0; gch_i < gch_types.length; gch_i++) {
+      var gch_t = gch_types[gch_i];
+      var gch_html = '<div class="gch_card">'
+        + '<div class="gch_type_name">' + gch_t.name + '</div>'
+        + '<div>' + gch_t.desc + '</div>'
+        + '<div class="gch_code">' + gch_t.code.replace(/\n/g, "<br>") + '</div>'
+        + '<div class="gch_result">▶ 运行结果：<br>' + gch_t.run().replace(/\n/g, "<br>") + '</div>'
+        + '</div>';
+      gch_output.innerHTML += gch_html;
+    }
+  </script>
+</body>
+</html>

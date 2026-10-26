@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>JavaScript 程序结构 - 条件与循环</title>
+<!-- 姓名：葛聪慧，2026-10-08：JS程序结构 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0f0f1a;
+    color: #eee;
+    font-family: "Microsoft YaHei", sans-serif;
+    padding: 20px;
+  }
+
+  .gch_title {
+    text-align: center;
+    font-size: 28px;
+    color: #e94560;
+    margin-bottom: 8px;
+  }
+
+  .gch_name {
+    text-align: center;
+    color: #a8d8ea;
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+
+  .gch_section {
+    margin-bottom: 28px;
+  }
+
+  .gch_section_title {
+    font-size: 22px;
+    color: #e94560;
+    border-left: 4px solid #e94560;
+    padding-left: 12px;
+    margin-bottom: 16px;
+  }
+
+  .gch_card {
+    background: #16213e;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    border-left: 4px solid #0f3460;
+  }
+
+  .gch_card_title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #e94560;
+    margin-bottom: 8px;
+  }
+
+  .gch_code {
+    background: #0a0a1a;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    color: #a8d8ea;
+    margin: 8px 0;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .gch_result {
+    color: #53d769;
+    font-size: 13px;
+    margin-top: 6px;
+    font-family: Consolas, monospace;
+    white-space: pre;
+  }
+</style>
+</head>
+<body>
+  <div class="gch_title">JavaScript 程序结构</div>
+  <div class="gch_name">葛聪慧</div>
+  <div id="gch_output"></div>
+
+  <script>
+    var gch_output = document.getElementById("gch_output");
+
+    function gch_render(gch_items) {
+      var gch_html = "";
+      for (var gch_i = 0; gch_i < gch_items.length; gch_i++) {
+        var gch_item = gch_items[gch_i];
+        gch_html += '<div class="gch_section">'
+          + '<div class="gch_section_title">' + gch_item.section + '</div>';
+        for (var gch_j = 0; gch_j < gch_item.cards.length; gch_j++) {
+          var gch_card = gch_item.cards[gch_j];
+          gch_html += '<div class="gch_card">'
+            + '<div class="gch_card_title">' + gch_card.title + '</div>'
+            + '<div class="gch_code">' + gch_card.code + '</div>'
+            + '<div class="gch_result">▶ ' + gch_card.run() + '</div>'
+            + '</div>';
+        }
+        gch_html += '</div>';
+      }
+      gch_output.innerHTML = gch_html;
+    }
+
+    var gch_data = [
+      {
+        section: "一、条件语句",
+        cards: [
+          {
+            title: "if 语句",
+            code: 'var gch_score = 85;\nif (gch_score >= 60) {\n  var gch_result = "及格";\n}',
+            run: function () {
+              var gch_score = 85;
+              if (gch_score >= 60) {
+                var gch_result = "及格";
+              }
+              return "gch_score = " + gch_score + " → " + gch_result;
+            }
+          },
+          {
+            title: "if...else 语句",
+            code: 'var gch_age = 16;\nif (gch_age >= 18) {\n  var gch_msg = "成年";\n} else {\n  var gch_msg = "未成年";\n}',
+            run: function () {
+              var gch_age = 16;
+              var gch_msg;
+              if (gch_age >= 18) {
+                gch_msg = "成年";
+              } else {
+                gch_msg = "未成年";
+              }
+              return "gch_age = " + gch_age + " → " + gch_msg;
+            }
+          },
+          {
+            title: "if...else if...else 语句",
+            code: 'var gch_score = 78;\nif (gch_score >= 90) {\n  var gch_grade = "优秀";\n} else if (gch_score >= 80) {\n  var gch_grade = "良好";\n} else if (gch_score >= 60) {\n  var gch_grade = "及格";\n} else {\n  var gch_grade = "不及格";\n}',
+            run: function () {
+              var gch_score = 78;
+              var gch_grade;
+              if (gch_score >= 90) {
+                gch_grade = "优秀";
+              } else if (gch_score >= 80) {
+                gch_grade = "良好";
+              } else if (gch_score >= 60) {
+                gch_grade = "及格";
+              } else {
+                gch_grade = "不及格";
+              }
+              return "gch_score = " + gch_score + " → " + gch_grade;
+            }
+          },
+          {
+            title: "switch 语句",
+            code: 'var gch_day = 3;\nswitch (gch_day) {\n  case 1: var gch_name = "周一"; break;\n  case 2: var gch_name = "周二"; break;\n  case 3: var gch_name = "周三"; break;\n  default: var gch_name = "其他";\n}',
+            run: function () {
+              var gch_day = 3;
+              var gch_name;
+              switch (gch_day) {
+                case 1: gch_name = "周一"; break;
+                case 2: gch_name = "周二"; break;
+                case 3: gch_name = "周三"; break;
+                default: gch_name = "其他";
+              }
+              return "gch_day = " + gch_day + " → " + gch_name;
+            }
+          },
+          {
+            title: "三元运算符",
+            code: 'var gch_num = 7;\nvar gch_type = gch_num % 2 === 0 ? "偶数" : "奇数";',
+            run: function () {
+              var gch_num = 7;
+              var gch_type = gch_num % 2 === 0 ? "偶数" : "奇数";
+              return "gch_num = " + gch_num + " → " + gch_type;
+            }
+          }
+        ]
+      },
+      {
+        section: "二、循环语句",
+        cards: [
+          {
+            title: "for 循环",
+            code: 'var gch_sum = 0;\nfor (var gch_i = 1; gch_i <= 5; gch_i++) {\n  gch_sum += gch_i;\n}',
+            run: function () {
+              var gch_sum = 0;
+              for (var gch_i = 1; gch_i <= 5; gch_i++) {
+                gch_sum += gch_i;
+              }
+              return "1+2+3+4+5 = " + gch_sum;
+            }
+          },
+          {
+            title: "while 循环",
+            code: 'var gch_n = 1;\nvar gch_result = "";\nwhile (gch_n <= 5) {\n  gch_result += gch_n + " ";\n  gch_n++;\n}',
+            run: function () {
+              var gch_n = 1;
+              var gch_result = "";
+              while (gch_n <= 5) {
+                gch_result += gch_n + " ";
+                gch_n++;
+              }
+              return "输出: " + gch_result.trim();
+            }
+          },
+          {
+            title: "do...while 循环",
+            code: 'var gch_count = 0;\nvar gch_val = 10;\ndo {\n  gch_count++;\n  gch_val = Math.floor(gch_val / 3);\n} while (gch_val > 0);',
+            run: function () {
+              var gch_count = 0;
+              var gch_val = 10;
+              do {
+                gch_count++;
+                gch_val = Math.floor(gch_val / 3);
+              } while (gch_val > 0);
+              return "10 连续除以3直到为0，循环次数 = " + gch_count;
+            }
+          },
+          {
+            title: "for...in 遍历对象",
+            code: 'var gch_person = { name: "葛聪慧", age: 20, city: "济南" };\nvar gch_keys = "";\nfor (var gch_k in gch_person) {\n  gch_keys += gch_k + ":" + gch_person[gch_k] + " ";\n}',
+            run: function () {
+              var gch_person = { name: "葛聪慧", age: 20, city: "济南" };
+              var gch_keys = "";
+              for (var gch_k in gch_person) {
+                gch_keys += gch_k + ":" + gch_person[gch_k] + "  ";
+              }
+              return gch_keys.trim();
+            }
+          },
+          {
+            title: "break 跳出循环",
+            code: 'var gch_found = -1;\nfor (var gch_i = 0; gch_i < 10; gch_i++) {\n  if (gch_i * gch_i > 30) {\n    gch_found = gch_i;\n    break;\n  }\n}',
+            run: function () {
+              var gch_found = -1;
+              for (var gch_i = 0; gch_i < 10; gch_i++) {
+                if (gch_i * gch_i > 30) {
+                  gch_found = gch_i;
+                  break;
+                }
+              }
+              return "第一个平方>30的数 = " + gch_found + "（" + gch_found + "²=" + (gch_found * gch_found) + "）";
+            }
+          },
+          {
+            title: "continue 跳过本次",
+            code: 'var gch_even = "";\nfor (var gch_i = 1; gch_i <= 10; gch_i++) {\n  if (gch_i % 2 !== 0) continue;\n  gch_even += gch_i + " ";\n}',
+            run: function () {
+              var gch_even = "";
+              for (var gch_i = 1; gch_i <= 10; gch_i++) {
+                if (gch_i % 2 !== 0) continue;
+                gch_even += gch_i + " ";
+              }
+              return "1~10中的偶数: " + gch_even.trim();
+            }
+          }
+        ]
+      }
+    ];
+
+    gch_render(gch_data);
+  </script>
+</body>
+</html>

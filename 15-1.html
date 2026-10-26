@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>数7游戏</title>
+<!-- 姓名：葛聪慧，2026-10-08：数7游戏 -->
+<style>
+  body {
+    margin: 0;
+    padding: 20px;
+    background: #0f0f1a;
+    color: #eee;
+    font-family: "Microsoft YaHei", sans-serif;
+  }
+
+  .gch_title {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 24px;
+    color: #e94560;
+  }
+
+  .gch_name {
+    text-align: center;
+    font-size: 18px;
+    color: #a8d8ea;
+    margin-bottom: 20px;
+  }
+
+  .gch_grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 8px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .gch_box {
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: transform 0.2s;
+  }
+
+  .gch_box:hover {
+    transform: scale(1.15);
+  }
+
+  .gch_normal {
+    background: #16213e;
+    color: #a8d8ea;
+    border: 1px solid #0f3460;
+  }
+
+  .gch_skip {
+    background: #e94560;
+    color: transparent;
+    border: 1px solid #e94560;
+    box-shadow: 0 0 10px rgba(233, 69, 96, 0.4);
+  }
+</style>
+</head>
+<body>
+  <div class="gch_title">数7游戏</div>
+  <div class="gch_name">葛聪慧</div>
+  <div class="gch_grid" id="gch_grid"></div>
+
+  <script>
+    var gch_grid = document.getElementById("gch_grid");
+
+    for (var gch_i = 1; gch_i <= 100; gch_i++) {
+      var gch_box = document.createElement("div");
+      gch_box.className = "gch_box";
+
+      var gch_isMultiple = gch_i % 7 === 0;
+      var gch_contains7 = String(gch_i).indexOf("7") !== -1;
+
+      if (gch_isMultiple || gch_contains7) {
+        gch_box.classList.add("gch_skip");
+      } else {
+        gch_box.classList.add("gch_normal");
+        gch_box.textContent = gch_i;
+      }
+
+      gch_grid.appendChild(gch_box);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>汽车上市时间表</title>
+<!-- 姓名：葛聪慧，2026-10-29：汽车上市时间表格（16-4） -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #fff;
+    color: #333;
+    font-family: "SimSun", "宋体", "Songti SC", serif;
+    padding: 10px 0 0;
+  }
+
+  .Ge_card {
+    width: 780px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #e4ecf7;
+    border-radius: 2px;
+    padding-bottom: 68px;
+  }
+
+  /* ================= 标签页 ================= */
+  .Ge_tabbar {
+    display: flex;
+    height: 88px;
+    background: #fff;
+  }
+
+  .Ge_tab {
+    width: 246px;
+    height: 88px;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 31px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    outline: none;
+    transition: background .15s, color .15s;
+  }
+
+  .Ge_tabOn {
+    background: #fff;
+    color: #18395f;
+    box-shadow: inset 0 4px 0 #1c4a78;
+  }
+
+  .Ge_tabOff {
+    background: #dbe6f3;
+    color: #1d4f80;
+    border-left: 1px solid #cfddef;
+    border-right: 1px solid #cfddef;
+  }
+
+  .Ge_tabOff:hover { background: #d0e0f2; }
+
+  .Ge_tabrest {
+    flex: 1;
+    border-bottom: 1px solid #e7eff8;
+  }
+
+  /* ================= 表头 ================= */
+  .Ge_head,
+  .Ge_row {
+    display: grid;
+    grid-template-columns: 178px 1fr 232px;
+    align-items: center;
+    padding: 0 55px 0 45px;
+  }
+
+  .Ge_head {
+    height: 60px;
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #3a3a3a;
+    border-bottom: 1px dotted #dfe7f1;
+  }
+
+  .Ge_head span:nth-child(2) { padding-left: 0; }
+
+  .Ge_head span:nth-child(3),
+  .Ge_row span:nth-child(3) { text-align: right; }
+
+  /* ================= 数据行 ================= */
+  .Ge_row {
+    height: 63px;
+    font-size: 24px;
+    border-bottom: 1px dotted #dfe7f1;
+    transition: background .15s;
+  }
+
+  .Ge_row:last-child { border-bottom: none; }
+
+  .Ge_row:hover { background: #f7fbff; }
+
+  .Ge_date { color: #6e6e6e; }
+  .Ge_model { color: #14567f; }
+  .Ge_price { color: #1b466b; }
+
+  /* ================= 页脚 ================= */
+  .Ge_footer {
+    width: 780px;
+    margin: 18px auto 24px;
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    font-family: "Microsoft YaHei", sans-serif;
+  }
+
+  .Ge_footer a { color: #1d4f80; text-decoration: none; }
+  .Ge_footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+  <div class="Ge_card">
+    <!-- 标签页：可点击切换 -->
+    <div class="Ge_tabbar" role="tablist">
+      <button class="Ge_tab Ge_tabOn" role="tab" aria-selected="true" data-idx="0">最新上市</button>
+      <button class="Ge_tab Ge_tabOff" role="tab" aria-selected="false" data-idx="1">即将上市</button>
+      <div class="Ge_tabrest"></div>
+    </div>
+
+    <!-- 表头 -->
+    <div class="Ge_head">
+      <span>上市时间</span>
+      <span>品牌/车型</span>
+      <span>售价（万元）</span>
+    </div>
+
+    <!-- 数据区 -->
+    <div id="Ge_rows"></div>
+  </div>
+
+  <div class="Ge_footer">
+    葛聪慧 &nbsp;·&nbsp; 汽车上市时间表 &nbsp;|&nbsp; <a href="index.html">返回首页</a>
+  </div>
+
+  <script>
+    var Ge_data = [
+      [
+        { date: "12月13日", model: "沃尔沃S60L", price: "26.99-38.49" },
+        { date: "12月12日", model: "Jeep牧马人龙腾典藏", price: "47.99-59.99" },
+        { date: "12月10日", model: "一汽大众高尔夫7", price: "11.89-18.29" },
+        { date: "12月6日", model: "2014款古思特", price: "419.0-666.0" },
+        { date: "12月5日", model: "起亚新款K5", price: "15.98-25.18" },
+        { date: "12月5日", model: "2014款奥德赛", price: "22.98-28.68" }
+      ],
+      [
+        { date: "12月20日", model: "领克01", price: "15.88-22.08" },
+        { date: "12月18日", model: "全新宝马5系", price: "43.99-59.99" },
+        { date: "12月15日", model: "比亚迪宋PLUS", price: "12.98-16.98" },
+        { date: "12月12日", model: "沃尔沃XC60", price: "36.29-47.99" },
+        { date: "12月10日", model: "一汽丰田亚洲龙", price: "19.98-28.98" },
+        { date: "12月8日", model: "广汽传祺GM8", price: "17.98-26.98" }
+      ]
+    ];
+
+    var Ge_rowsBox = document.getElementById("Ge_rows");
+    var Ge_tabBtns = document.querySelectorAll(".Ge_tab");
+
+    function Ge_render(idx) {
+      var Ge_list = Ge_data[idx];
+      var Ge_html = "";
+      for (var Ge_i = 0; Ge_i < Ge_list.length; Ge_i++) {
+        var Ge_r = Ge_list[Ge_i];
+        Ge_html += '<div class="Ge_row">'
+          + '<span class="Ge_date">' + Ge_r.date + '</span>'
+          + '<span class="Ge_model">' + Ge_r.model + '</span>'
+          + '<span class="Ge_price">' + Ge_r.price + '</span>'
+          + '</div>';
+      }
+      Ge_rowsBox.innerHTML = Ge_html;
+
+      for (var Ge_j = 0; Ge_j < Ge_tabBtns.length; Ge_j++) {
+        var Ge_on = (Number(Ge_tabBtns[Ge_j].getAttribute("data-idx")) === idx);
+        Ge_tabBtns[Ge_j].className = "Ge_tab " + (Ge_on ? "Ge_tabOn" : "Ge_tabOff");
+        Ge_tabBtns[Ge_j].setAttribute("aria-selected", Ge_on ? "true" : "false");
+      }
+    }
+
+    for (var Ge_k = 0; Ge_k < Ge_tabBtns.length; Ge_k++) {
+      Ge_tabBtns[Ge_k].onclick = function () {
+        Ge_render(Number(this.getAttribute("data-idx")));
+      };
+    }
+
+    Ge_render(0);
+  </script>
+</body>
+</html>

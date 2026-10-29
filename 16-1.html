@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript 主要数组方法可视化</title>
+<!-- 姓名：葛聪慧，2026-10-29：JavaScript 数组方法可视化演示 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0f0f1a;
+    color: #e9e9f0;
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  a { text-decoration: none; }
+
+  .Ge_back {
+    display: inline-block;
+    margin: 16px 0 0 20px;
+    padding: 8px 16px;
+    background: #16213e;
+    color: #a8d8ea;
+    border: 1px solid #0f3460;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all .3s ease;
+  }
+
+  .Ge_back:hover {
+    background: #e94560;
+    color: #fff;
+    transform: translateY(-2px);
+  }
+
+  .Ge_hero {
+    text-align: center;
+    padding: 40px 20px 30px;
+    background: linear-gradient(135deg, #16213e 0%, #0f0f1a 60%, #221b3a 100%);
+    border-bottom: 2px solid #16213e;
+  }
+
+  .Ge_hero h1 {
+    font-size: 34px;
+    color: #e94560;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .Ge_hero p {
+    color: #a8d8ea;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  .Ge_author {
+    margin-top: 8px;
+    color: #ffd166;
+    font-size: 14px;
+  }
+
+  .Ge_wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .Ge_sectionTitle {
+    font-size: 20px;
+    color: #a8d8ea;
+    margin: 32px 0 14px;
+    padding-left: 12px;
+    border-left: 4px solid #e94560;
+  }
+
+  /* ============ 交互实验室 ============ */
+  .Ge_lab {
+    background: #16213e;
+    border: 1px solid #0f3460;
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .Ge_labStage {
+    background: #0a0a1a;
+    border-radius: 10px;
+    padding: 22px 16px 14px;
+    min-height: 110px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .Ge_cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .Ge_box {
+    min-width: 56px;
+    padding: 10px 12px;
+    background: #1d3557;
+    border: 2px solid #457b9d;
+    border-radius: 8px;
+    color: #d6f1ff;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .35);
+  }
+
+  .Ge_idx {
+    font-size: 11px;
+    color: #6c7a99;
+  }
+
+  .Ge_add {
+    background: #14532d;
+    border-color: #22c55e;
+    color: #bbf7d0;
+    box-shadow: 0 0 12px rgba(34, 197, 94, .45);
+  }
+
+  .Ge_mod {
+    background: #4a3208;
+    border-color: #f59e0b;
+    color: #fde68a;
+    box-shadow: 0 0 12px rgba(245, 158, 11, .4);
+  }
+
+  .Ge_del {
+    background: #4c1020;
+    border-color: #ef4444;
+    color: #fecaca;
+    text-decoration: line-through;
+    opacity: .75;
+  }
+
+  .Ge_hit {
+    background: #3b1d5e;
+    border-color: #a855f7;
+    color: #e9d5ff;
+    box-shadow: 0 0 14px rgba(168, 85, 247, .5);
+  }
+
+  .Ge_empty {
+    color: #6c7a99;
+    font-size: 14px;
+    padding: 14px;
+  }
+
+  .Ge_value {
+    padding: 10px 18px;
+    background: #0f3460;
+    border: 2px dashed #a8d8ea;
+    border-radius: 8px;
+    color: #a8d8ea;
+    font-family: Consolas, monospace;
+    font-size: 15px;
+  }
+
+  .Ge_labBar {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .Ge_input {
+    width: 150px;
+    padding: 8px 10px;
+    background: #0a0a1a;
+    border: 1px solid #0f3460;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .Ge_input:focus { border-color: #e94560; }
+
+  .Ge_btn {
+    padding: 8px 14px;
+    background: #0f3460;
+    color: #d6f1ff;
+    border: 1px solid #457b9d;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .25s ease;
+  }
+
+  .Ge_btn:hover {
+    background: #e94560;
+    border-color: #e94560;
+    color: #fff;
+    transform: translateY(-2px);
+  }
+
+  .Ge_warn { border-color: #f59e0b; color: #fde68a; }
+  .Ge_ghost { background: transparent; }
+
+  .Ge_labLog {
+    margin-top: 14px;
+    background: #0a0a1a;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.9;
+    max-height: 170px;
+    overflow-y: auto;
+  }
+
+  .Ge_logRow { border-bottom: 1px dashed #1d2b45; padding: 4px 0; }
+  .Ge_logCode { color: #ffd166; font-family: Consolas, monospace; }
+  .Ge_logRet { color: #22c55e; }
+  .Ge_logArr { color: #a8d8ea; }
+
+  .Ge_tip { color: #6c7a99; font-size: 13px; margin-top: 10px; }
+
+  /* ============ 图例 ============ */
+  .Ge_legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin: 14px 0 0;
+    font-size: 13px;
+    color: #a8d8ea;
+  }
+
+  .Ge_legend span i {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    margin-right: 6px;
+    vertical-align: -2px;
+  }
+
+  .Ge_lgAdd { background: #22c55e; }
+  .Ge_lgMod { background: #f59e0b; }
+  .Ge_lgDel { background: #ef4444; }
+  .Ge_lgHit { background: #a855f7; }
+  .Ge_lgNor { background: #457b9d; }
+
+  /* ============ 分类标签页 ============ */
+  .Ge_tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 20px 0 18px;
+    align-items: center;
+  }
+
+  .Ge_tab {
+    padding: 7px 14px;
+    background: #16213e;
+    color: #a8d8ea;
+    border: 1px solid #0f3460;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .25s ease;
+  }
+
+  .Ge_tab:hover { border-color: #e94560; }
+
+  .Ge_tabOn {
+    background: #e94560;
+    border-color: #e94560;
+    color: #fff;
+  }
+
+  .Ge_playAll {
+    margin-left: auto;
+    padding: 7px 16px;
+    background: #22c55e;
+    color: #052e16;
+    border: none;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .Ge_playAll:hover { background: #16a34a; }
+
+  /* ============ 方法卡片 ============ */
+  .Ge_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 16px;
+  }
+
+  .Ge_card {
+    background: #16213e;
+    border: 1px solid #0f3460;
+    border-left: 4px solid #e94560;
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .Ge_cardHead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .Ge_name {
+    font-family: Consolas, monospace;
+    font-size: 17px;
+    font-weight: bold;
+    color: #0f3460;
+    background: #ffd166;
+    padding: 2px 10px;
+    border-radius: 4px;
+  }
+
+  .Ge_cat {
+    font-size: 12px;
+    color: #a8d8ea;
+    border: 1px solid #0f3460;
+    padding: 2px 8px;
+    border-radius: 12px;
+  }
+
+  .Ge_mut {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 12px;
+  }
+
+  .Ge_mutYes { background: #4c1020; color: #fecaca; border: 1px solid #ef4444; }
+  .Ge_mutNo { background: #14532d; color: #bbf7d0; border: 1px solid #22c55e; }
+
+  .Ge_desc {
+    font-size: 13px;
+    color: #b9c6de;
+    line-height: 1.7;
+    margin-bottom: 8px;
+  }
+
+  .Ge_code {
+    background: #0a0a1a;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    color: #7ee787;
+    margin-bottom: 10px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+
+  .Ge_stage {
+    background: #0a0a1a;
+    border-radius: 8px;
+    padding: 12px;
+  }
+
+  .Ge_stageRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 8px;
+    min-height: 46px;
+  }
+
+  .Ge_rowLabel {
+    font-size: 12px;
+    color: #6c7a99;
+    margin: 6px 0 4px;
+  }
+
+  .Ge_arrow {
+    text-align: center;
+    color: #e94560;
+    font-size: 16px;
+    line-height: 1.2;
+    margin: 2px 0;
+  }
+
+  .Ge_ret {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #a8d8ea;
+    word-break: break-all;
+  }
+
+  .Ge_ret b {
+    color: #ffd166;
+    font-family: Consolas, monospace;
+  }
+
+  .Ge_type {
+    color: #6c7a99;
+    font-size: 12px;
+  }
+
+  .Ge_run {
+    margin-top: 12px;
+    align-self: flex-start;
+    padding: 6px 14px;
+    background: transparent;
+    color: #a8d8ea;
+    border: 1px solid #a8d8ea;
+    border-radius: 16px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .25s ease;
+  }
+
+  .Ge_run:hover {
+    background: #e94560;
+    border-color: #e94560;
+    color: #fff;
+  }
+
+  @keyframes Ge_drop {
+    0%   { transform: translateY(-16px) scale(.8); opacity: 0; }
+    60%  { transform: translateY(2px) scale(1.08); opacity: 1; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+  }
+
+  .Ge_play .Ge_cell { animation: Ge_drop .45s ease backwards both; }
+  .Ge_play .Ge_value { animation: Ge_drop .5s ease backwards both; }
+
+  .Ge_hide { display: none; }
+
+  .Ge_footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #16213e;
+    color: #6c7a99;
+    font-size: 13px;
+  }
+
+  .Ge_footer a { color: #a8d8ea; }
+  .Ge_footer a:hover { color: #e94560; }
+</style>
+</head>
+<body>
+
+  <a class="Ge_back" href="index.html">&larr; 返回首页</a>
+
+  <header class="Ge_hero">
+    <h1>JavaScript 主要数组方法</h1>
+    <p>每个方法都用「调用前的原数组 &rarr; 调用后的结果」的方块图直观展示，颜色标出新增、修改、删除与命中的元素</p>
+    <p class="Ge_author">姓名：葛聪慧 &nbsp;·&nbsp; 本节演示数组共 22 个常用方法</p>
+  </header>
+
+  <main class="Ge_wrap">
+
+    <h2 class="Ge_sectionTitle">一、交互实验室：亲手操作数组</h2>
+    <section class="Ge_lab">
+      <div class="Ge_labStage" id="Ge_labStage"></div>
+
+      <div class="Ge_labBar">
+        <input class="Ge_input" id="Ge_input" placeholder="输入值，如 66">
+        <button class="Ge_btn" data-act="unshift">unshift 头部添加</button>
+        <button class="Ge_btn" data-act="push">push 尾部添加</button>
+        <button class="Ge_btn Ge_warn" data-act="shift">shift 头部删除</button>
+        <button class="Ge_btn Ge_warn" data-act="pop">pop 尾部删除</button>
+        <button class="Ge_btn" data-act="sort">sort 升序</button>
+        <button class="Ge_btn" data-act="reverse">reverse 反转</button>
+        <button class="Ge_btn" data-act="clear">清空</button>
+        <button class="Ge_btn Ge_ghost" data-act="reset">重置演示数组</button>
+        <span class="Ge_tip" id="Ge_lenTip"></span>
+      </div>
+
+      <div class="Ge_legend">
+        <span><i class="Ge_lgNor"></i>原有元素</span>
+        <span><i class="Ge_lgAdd"></i>新增元素</span>
+        <span><i class="Ge_lgMod"></i>被修改 / 位置变化</span>
+        <span><i class="Ge_lgDel"></i>被删除的元素</span>
+        <span><i class="Ge_lgHit"></i>查找命中的元素</span>
+      </div>
+
+      <div class="Ge_labLog" id="Ge_labLog"></div>
+    </section>
+
+    <h2 class="Ge_sectionTitle">二、方法对照表：点「▶ 运行」看动画</h2>
+    <div class="Ge_tabs" id="Ge_tabs"></div>
+    <section class="Ge_grid" id="Ge_grid"></section>
+
+  </main>
+
+  <footer class="Ge_footer">
+    葛聪慧 &nbsp;·&nbsp; JavaScript 数组方法可视化 &nbsp;|&nbsp; <a href="index.html">返回首页</a>
+  </footer>
+
+  <script>
+    var Ge_base = [10, 5, 40, 25, 8];
+
+    /* ---------- 工具函数 ---------- */
+    function Ge_str(v) {
+      if (Array.isArray(v)) return "[" + v.map(Ge_str).join(", ") + "]";
+      if (typeof v === "string") return '"' + v + '"';
+      return String(v);
+    }
+
+    function Ge_boxText(v) {
+      if (Array.isArray(v)) return "[" + v.map(Ge_boxText).join(",") + "]";
+      return String(v);
+    }
+
+    function Ge_typeOf(v) {
+      if (Array.isArray(v)) return "array";
+      return typeof v;
+    }
+
+    function Ge_boxes(list, mark) {
+      var html = "";
+      if (!list.length) return '<div class="Ge_empty">空数组 [ ]</div>';
+      for (var i = 0; i < list.length; i++) {
+        var cls = "Ge_box";
+        if (mark.add && mark.add.indexOf(i) !== -1) cls += " Ge_add";
+        if (mark.mod && mark.mod.indexOf(i) !== -1) cls += " Ge_mod";
+        if (mark.del && mark.del.indexOf(i) !== -1) cls += " Ge_del";
+        if (mark.hit && mark.hit.indexOf(i) !== -1) cls += " Ge_hit";
+        html += '<div class="Ge_cell" style="animation-delay:' + (i * 0.06).toFixed(2) + 's">'
+              + '<div class="' + cls + '">' + Ge_boxText(list[i]) + '</div>'
+              + '<span class="Ge_idx">[' + i + ']</span>'
+              + '</div>';
+      }
+      return html;
+    }
+
+    /* ---------- 22 个数组方法定义 ---------- */
+    var Ge_methods = [
+      {
+        name: "push()", cat: "增删", mut: true,
+        desc: "在数组末尾追加一个或多个元素，改变原数组，返回追加后的新长度。",
+        code: "Ge_arr.push(60, 70);",
+        add: [5, 6],
+        run: function (a) { return { arr: a, v: a.push(60, 70) }; }
+      },
+      {
+        name: "pop()", cat: "增删", mut: true,
+        desc: "删除并返回数组的最后一个元素，数组长度减 1（栈的“出栈”）。",
+        code: "Ge_arr.pop();",
+        del: [4],
+        run: function (a) { return { arr: a, v: a.pop() }; }
+      },
+      {
+        name: "unshift()", cat: "增删", mut: true,
+        desc: "在数组开头插入一个或多个元素，其余元素依次后移，返回新长度。",
+        code: "Ge_arr.unshift(0);",
+        add: [0],
+        run: function (a) { return { arr: a, v: a.unshift(0) }; }
+      },
+      {
+        name: "shift()", cat: "增删", mut: true,
+        desc: "删除并返回数组的第一个元素，其余元素依次前移（队列的“出队”）。",
+        code: "Ge_arr.shift();",
+        del: [0],
+        run: function (a) { return { arr: a, v: a.shift() }; }
+      },
+      {
+        name: "splice()", cat: "增删", mut: true,
+        desc: "万能增删改：从指定位置删除若干元素，并可在该位置插入新元素，返回被删除的元素组成的数组。",
+        code: 'Ge_arr.splice(1, 2, "A", "B");\n// 从索引1开始删2个，再插入 A、B',
+        del: [1, 2],
+        add: [1, 2],
+        run: function (a) { return { arr: a, v: a.splice(1, 2, "A", "B") }; }
+      },
+      {
+        name: "slice()", cat: "截取拼接", mut: false,
+        desc: "截取片段：返回从 start 到 end（不含 end）的新数组，原数组不变。",
+        code: "Ge_arr.slice(1, 4);",
+        run: function (a) { var r = a.slice(1, 4); return { arr: r, v: r }; }
+      },
+      {
+        name: "concat()", cat: "截取拼接", mut: false,
+        desc: "合并数组：把参数接到尾部生成新数组，原数组不变。",
+        code: "Ge_arr.concat([100, 200]);",
+        add: [5, 6],
+        run: function (a) { var r = a.concat([100, 200]); return { arr: r, v: r }; }
+      },
+      {
+        name: "join()", cat: "截取拼接", mut: false,
+        desc: "把数组所有元素用指定分隔符连成一个字符串，常用于拼接 URL 或展示列表。",
+        code: 'Ge_arr.join("-");',
+        run: function (a) { var r = a.join("-"); return { arr: r, v: r }; }
+      },
+      {
+        name: "indexOf()", cat: "查找判断", mut: false,
+        desc: "从前往后查找元素第一次出现的位置，找不到返回 -1。",
+        code: "Ge_arr.indexOf(40);",
+        hit: [2],
+        run: function (a) { return { arr: a, v: a.indexOf(40) }; }
+      },
+      {
+        name: "includes()", cat: "查找判断", mut: false,
+        desc: "判断数组是否包含某个元素，返回 true / false（比 indexOf 更语义化）。",
+        code: "Ge_arr.includes(40);",
+        hit: [2],
+        run: function (a) { return { arr: a, v: a.includes(40) }; }
+      },
+      {
+        name: "find()", cat: "查找判断", mut: false,
+        desc: "返回第一个满足回调条件的元素本身，找不到返回 undefined。",
+        code: "Ge_arr.find(function (n) { return n > 20; });",
+        hit: [2],
+        run: function (a) { return { arr: a, v: a.find(function (n) { return n > 20; }) }; }
+      },
+      {
+        name: "findIndex()", cat: "查找判断", mut: false,
+        desc: "返回第一个满足回调条件的元素的索引，找不到返回 -1。",
+        code: "Ge_arr.findIndex(function (n) { return n > 20; });",
+        hit: [2],
+        run: function (a) { return { arr: a, v: a.findIndex(function (n) { return n > 20; }) }; }
+      },
+      {
+        name: "some()", cat: "查找判断", mut: false,
+        desc: "只要有一个元素满足条件就返回 true（找到一个即停止遍历）。",
+        code: "Ge_arr.some(function (n) { return n > 30; });",
+        hit: [2],
+        run: function (a) { return { arr: a, v: a.some(function (n) { return n > 30; }) }; }
+      },
+      {
+        name: "every()", cat: "查找判断", mut: false,
+        desc: "要求所有元素都满足条件才返回 true（有一个不满足立即返回 false）。",
+        code: "Ge_arr.every(function (n) { return n > 3; });",
+        run: function (a) { return { arr: a, v: a.every(function (n) { return n > 3; }) }; }
+      },
+      {
+        name: "forEach()", cat: "遍历转换", mut: false,
+        desc: "依次把每个元素交给回调处理，没有返回值（返回 undefined），相当于简化的 for 循环。",
+        code: "Ge_arr.forEach(function (n, i) {\n  Ge_log.push('第' + i + '个：' + n);\n});",
+        run: function (a) {
+          var Ge_out = [];
+          a.forEach(function (n, i) { Ge_out.push("第 " + i + " 个 → " + n); });
+          return { arr: a, v: undefined, log: Ge_out.join("  |  ") };
+        }
+      },
+      {
+        name: "map()", cat: "遍历转换", mut: false,
+        desc: "把每个元素按规则加工后，返回同样长度的新数组（一对一映射）。",
+        code: "Ge_arr.map(function (n) { return n * 2; });",
+        mod: [0, 1, 2, 3, 4],
+        run: function (a) { var r = a.map(function (n) { return n * 2; }); return { arr: r, v: r }; }
+      },
+      {
+        name: "filter()", cat: "遍历转换", mut: false,
+        desc: "筛选出满足条件的元素，返回新数组，长度通常比原数组短。",
+        code: "Ge_arr.filter(function (n) { return n > 10; });",
+        run: function (a) { var r = a.filter(function (n) { return n > 10; }); return { arr: r, v: r }; }
+      },
+      {
+        name: "reduce()", cat: "遍历转换", mut: false,
+        desc: "从左到右把元素“累积”成一个值（求和、求积、拼接都可以）。",
+        code: "Ge_arr.reduce(function (s, n) { return s + n; }, 0);",
+        run: function (a) { return { arr: a, v: a.reduce(function (s, n) { return s + n; }, 0) }; }
+      },
+      {
+        name: "reverse()", cat: "排序重组", mut: true,
+        desc: "把数组元素顺序原地颠倒，返回的是原数组本身。",
+        code: "Ge_arr.reverse();",
+        mod: [0, 1, 2, 3, 4],
+        run: function (a) { return { arr: a, v: a.reverse() }; }
+      },
+      {
+        name: "sort() 默认", cat: "排序重组", mut: true,
+        desc: "注意：不带参数时按字符串的字典序排序，所以 10 排在了 5 的前面。",
+        code: "Ge_arr.sort();",
+        mod: [0, 1, 2, 3, 4],
+        run: function (a) { return { arr: a, v: a.sort() }; }
+      },
+      {
+        name: "sort(比较函数)", cat: "排序重组", mut: true,
+        desc: "传入比较函数才能真正按数值排序：返回值小于 0 时 a 排在 b 前面。",
+        code: "Ge_arr.sort(function (a, b) { return a - b; });",
+        mod: [0, 1, 2, 3, 4],
+        run: function (a) { return { arr: a, v: a.sort(function (x, y) { return x - y; }) }; }
+      },
+      {
+        name: "flat()", cat: "排序重组", mut: false,
+        desc: "把嵌套的子数组“拉平”；参数表示拉平的层数，用 Infinity 可一次拉平到底。",
+        before: [1, [2, 3], [4, [5]]],
+        code: "Ge_arr.flat(2);",
+        run: function (a) { var r = a.flat(2); return { arr: r, v: r }; }
+      }
+    ];
+
+    /* ---------- 渲染卡片区 ---------- */
+    var Ge_grid = document.getElementById("Ge_grid");
+    var Ge_html = "";
+
+    for (var Ge_i = 0; Ge_i < Ge_methods.length; Ge_i++) {
+      var Ge_m = Ge_methods[Ge_i];
+      var Ge_before = Ge_m.before ? Ge_m.before.slice() : Ge_base.slice();
+      var Ge_res = Ge_m.run(Ge_before.slice());
+      var Ge_mark = { add: Ge_m.add, mod: Ge_m.mod, del: Ge_m.del, hit: Ge_m.hit };
+      var Ge_afterHtml = Array.isArray(Ge_res.arr)
+        ? Ge_boxes(Ge_res.arr, { add: Ge_m.add, mod: Ge_m.mod, hit: Ge_m.hit })
+        : '<div class="Ge_value">' + Ge_boxText(Ge_res.arr) + '</div>';
+
+      var Ge_badge = Ge_m.mut
+        ? '<span class="Ge_mut Ge_mutYes">改变原数组</span>'
+        : '<span class="Ge_mut Ge_mutNo">原数组不变</span>';
+
+      Ge_html += '<article class="Ge_card" data-cat="' + Ge_m.cat + '">'
+        + '<div class="Ge_cardHead">'
+        + '<span class="Ge_name">' + Ge_m.name + '</span>'
+        + '<span class="Ge_cat">' + Ge_m.cat + '</span>'
+        + Ge_badge
+        + '</div>'
+        + '<p class="Ge_desc">' + Ge_m.desc + '</p>'
+        + '<div class="Ge_code">' + Ge_m.code + '</div>'
+        + '<div class="Ge_stage">'
+        + '<div class="Ge_rowLabel">调用前：' + Ge_str(Ge_before) + '</div>'
+        + '<div class="Ge_stageRow">' + Ge_boxes(Ge_before, { del: Ge_m.del, hit: Ge_m.hit }) + '</div>'
+        + '<div class="Ge_arrow">&#8681; 调用 ' + Ge_m.name + ' &#8681;</div>'
+        + '<div class="Ge_rowLabel">' + (Ge_m.mut ? "调用后（原数组被改变）" : "返回值（原数组不变）") + '</div>'
+        + '<div class="Ge_stageRow">' + Ge_afterHtml + '</div>'
+        + '<div class="Ge_ret">返回值 &rarr; <b>' + Ge_str(Ge_res.v) + '</b> <span class="Ge_type">（' + Ge_typeOf(Ge_res.v) + '）</span></div>'
+        + (Ge_res.log ? '<div class="Ge_ret">回调输出 &rarr; <b>' + Ge_res.log + '</b></div>' : '')
+        + '</div>'
+        + '<button class="Ge_run">&#9654; 运行</button>'
+        + '</article>';
+    }
+
+    Ge_grid.innerHTML = Ge_html;
+
+    var Ge_playBtns = Ge_grid.querySelectorAll(".Ge_run");
+    for (var Ge_j = 0; Ge_j < Ge_playBtns.length; Ge_j++) {
+      Ge_playBtns[Ge_j].onclick = function () {
+        var Ge_stage = this.parentNode.querySelector(".Ge_stage");
+        Ge_stage.classList.remove("Ge_play");
+        void Ge_stage.offsetWidth;
+        Ge_stage.classList.add("Ge_play");
+      };
+    }
+
+    /* ---------- 分类标签页 ---------- */
+    var Ge_tabsBox = document.getElementById("Ge_tabs");
+    var Ge_cats = ["全部"];
+    for (var Ge_k = 0; Ge_k < Ge_methods.length; Ge_k++) {
+      if (Ge_cats.indexOf(Ge_methods[Ge_k].cat) === -1) Ge_cats.push(Ge_methods[Ge_k].cat);
+    }
+
+    var Ge_tabHtml = "";
+    for (var Ge_c = 0; Ge_c < Ge_cats.length; Ge_c++) {
+      Ge_tabHtml += '<button class="Ge_tab' + (Ge_c === 0 ? " Ge_tabOn" : "") + '" data-cat="' + Ge_cats[Ge_c] + '">'
+        + Ge_cats[Ge_c] + '</button>';
+    }
+    Ge_tabHtml += '<button class="Ge_playAll" id="Ge_playAll">&#9654; 全部播放动画</button>';
+    Ge_tabsBox.innerHTML = Ge_tabHtml;
+
+    var Ge_tabBtns = Ge_tabsBox.querySelectorAll(".Ge_tab");
+    var Ge_cards = Ge_grid.querySelectorAll(".Ge_card");
+
+    for (var Ge_t = 0; Ge_t < Ge_tabBtns.length; Ge_t++) {
+      Ge_tabBtns[Ge_t].onclick = function () {
+        for (var Ge_a = 0; Ge_a < Ge_tabBtns.length; Ge_a++) Ge_tabBtns[Ge_a].classList.remove("Ge_tabOn");
+        this.classList.add("Ge_tabOn");
+        var Ge_cur = this.getAttribute("data-cat");
+        for (var Ge_b = 0; Ge_b < Ge_cards.length; Ge_b++) {
+          var Ge_card = Ge_cards[Ge_b];
+          if (Ge_cur === "全部" || Ge_card.getAttribute("data-cat") === Ge_cur) {
+            Ge_card.classList.remove("Ge_hide");
+          } else {
+            Ge_card.classList.add("Ge_hide");
+          }
+        }
+      };
+    }
+
+    document.getElementById("Ge_playAll").onclick = function () {
+      for (var Ge_p = 0; Ge_p < Ge_playBtns.length; Ge_p++) Ge_playBtns[Ge_p].onclick.call(Ge_playBtns[Ge_p]);
+    };
+
+    /* ---------- 交互实验室 ---------- */
+    var Ge_labStage = document.getElementById("Ge_labStage");
+    var Ge_labLog = document.getElementById("Ge_labLog");
+    var Ge_input = document.getElementById("Ge_input");
+    var Ge_lenTip = document.getElementById("Ge_lenTip");
+    var Ge_lab = Ge_base.slice();
+    var Ge_flash = { add: [], del: [] };
+
+    function Ge_draw() {
+      var html = "";
+      for (var i = 0; i < Ge_lab.length; i++) {
+        var cls = "Ge_box";
+        if (Ge_flash.add.indexOf(i) !== -1) cls += " Ge_add";
+        if (Ge_flash.del.indexOf(i) !== -1) cls += " Ge_del";
+        html += '<div class="Ge_cell" style="animation-delay:' + (i * 0.05).toFixed(2) + 's">'
+          + '<div class="' + cls + '">' + Ge_boxText(Ge_lab[i]) + '</div>'
+          + '<span class="Ge_idx">[' + i + ']</span>'
+          + '</div>';
+      }
+      if (!Ge_lab.length) html = '<div class="Ge_empty">空数组 [ ] &nbsp; 可以点「重置演示数组」恢复</div>';
+      Ge_labStage.innerHTML = html;
+      Ge_lenTip.textContent = "当前数组：" + Ge_str(Ge_lab) + "，length = " + Ge_lab.length;
+
+      Ge_labStage.classList.remove("Ge_play");
+      void Ge_labStage.offsetWidth;
+      Ge_labStage.classList.add("Ge_play");
+    }
+
+    function Ge_writeLog(code, ret, arr) {
+      var row = document.createElement("div");
+      row.className = "Ge_logRow";
+      row.innerHTML = '<span class="Ge_logCode">' + code + '</span> &nbsp;→&nbsp; '
+        + '<span class="Ge_logRet">返回值：' + Ge_str(ret) + '</span> &nbsp;|&nbsp; '
+        + '<span class="Ge_logArr">当前数组：' + Ge_str(arr) + '</span>';
+      Ge_labLog.insertBefore(row, Ge_labLog.firstChild);
+    }
+
+    var Ge_labBtns = document.querySelectorAll(".Ge_labBar .Ge_btn");
+    for (var Ge_b2 = 0; Ge_b2 < Ge_labBtns.length; Ge_b2++) {
+      Ge_labBtns[Ge_b2].onclick = function () {
+        var act = this.getAttribute("data-act");
+        var ret = null;
+        var code = "";
+        var raw = Ge_input.value.trim();
+        var val = raw === "" ? null : (isNaN(raw) ? raw : Number(raw));
+
+        if (act === "push") {
+          if (val === null) { Ge_input.focus(); return; }
+          code = "Ge_arr.push(" + Ge_str(val) + ")";
+          ret = Ge_lab.push(val);
+          Ge_flash = { add: [Ge_lab.length - 1], del: [] };
+        } else if (act === "unshift") {
+          if (val === null) { Ge_input.focus(); return; }
+          code = "Ge_arr.unshift(" + Ge_str(val) + ")";
+          ret = Ge_lab.unshift(val);
+          Ge_flash = { add: [0], del: [] };
+        } else if (act === "pop") {
+          code = "Ge_arr.pop()";
+          if (!Ge_lab.length) { Ge_flash = { add: [], del: [] }; Ge_draw(); return; }
+          ret = Ge_lab.pop();
+          Ge_flash = { add: [], del: [] };
+        } else if (act === "shift") {
+          code = "Ge_arr.shift()";
+          if (!Ge_lab.length) { Ge_flash = { add: [], del: [] }; Ge_draw(); return; }
+          ret = Ge_lab.shift();
+          Ge_flash = { add: [], del: [] };
+        } else if (act === "sort") {
+          code = "Ge_arr.sort(function(a,b){ return a-b; })";
+          ret = Ge_lab.sort(function (a, b) { return a - b; });
+          Ge_flash = { add: [], del: [] };
+        } else if (act === "reverse") {
+          code = "Ge_arr.reverse()";
+          ret = Ge_lab.reverse();
+          Ge_flash = { add: [], del: [] };
+        } else if (act === "clear") {
+          code = "Ge_arr.length = 0";
+          Ge_lab.length = 0;
+          ret = undefined;
+          Ge_flash = { add: [], del: [] };
+        } else {
+          code = "Ge_arr = [10, 5, 40, 25, 8]";
+          Ge_lab = Ge_base.slice();
+          ret = Ge_lab.length;
+          Ge_flash = { add: [], del: [] };
+        }
+
+        Ge_draw();
+        Ge_writeLog(code, ret, Ge_lab);
+        Ge_input.value = "";
+      };
+    }
+
+    Ge_draw();
+    Ge_writeLog("Ge_arr = [10, 5, 40, 25, 8]", "初始化完成", Ge_lab);
+  </script>
+</body>
+</html>

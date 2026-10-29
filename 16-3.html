@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>淘宝 - 夏季上新 解锁潮流穿搭</title>
+<!-- 姓名：葛聪慧，2026-10-29：仿淘宝首页首屏（16-3） -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #fff;
+    color: #333;
+    font-family: "Microsoft YaHei", "PingFang SC", Tahoma, sans-serif;
+    font-size: 13px;
+  }
+
+  a { text-decoration: none; color: inherit; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* ================= 顶部促销条 ================= */
+  .Ge_promoBar {
+    height: 26px;
+    background: linear-gradient(90deg, #f7554b 0%, #ff7d6e 35%, #ff9c8c 55%, #f7554b 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: .5px;
+  }
+
+  .Ge_promoIcon {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: #fff;
+    color: #f7554b;
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-size: 11px;
+    font-weight: bold;
+  }
+
+  .Ge_promoTxt { text-shadow: 0 1px 1px rgba(180, 40, 30, .35); }
+
+  .Ge_promoGo {
+    background: #fff;
+    color: #e4393c;
+    border: none;
+    border-radius: 3px;
+    padding: 2px 11px;
+    font-size: 12px;
+    line-height: 18px;
+    transition: all .2s;
+  }
+
+  .Ge_promoGo:hover { background: #ffe9e6; transform: translateY(-1px); }
+
+  /* ================= 头部 ================= */
+  .Ge_header {
+    background: radial-gradient(75% 130% at 45% 0%, #ffdcd4 0%, #fff2ee 42%, #fff 100%);
+    padding: 4px 0 0;
+  }
+
+  .Ge_container { width: 1064px; margin: 0 auto; }
+
+  .Ge_headerInner {
+    display: flex;
+    align-items: center;
+    height: 58px;
+  }
+
+  .Ge_logo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1;
+    width: 142px;
+    position: relative;
+  }
+
+  .Ge_logoName {
+    font-size: 38px;
+    font-weight: 700;
+    color: #ff5000;
+    letter-spacing: 2px;
+    font-family: "Microsoft YaHei", sans-serif;
+  }
+
+  .Ge_logoEn {
+    font-size: 10px;
+    color: #ff5000;
+    letter-spacing: 1.5px;
+    margin-top: 3px;
+  }
+
+  .Ge_logoEn em { font-style: normal; font-size: 8px; vertical-align: super; }
+
+  .Ge_sellBadge {
+    width: 44px;
+    margin-left: 2px;
+    border: 1px solid #f0d3cc;
+    background: rgba(255, 255, 255, .75);
+    border-radius: 4px;
+    text-align: center;
+    padding: 2px 0 3px;
+    line-height: 1.22;
+    font-size: 14px;
+    color: #e4393c;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .Ge_sellBadge b { display: block; color: #444; font-weight: 700; }
+
+  .Ge_search {
+    width: 613px;
+    margin-left: 30px;
+    display: flex;
+    align-items: center;
+    height: 34px;
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    border-radius: 17px;
+    padding: 2px 3px 2px 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+  }
+
+  .Ge_searchType {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 28px;
+    padding: 0 10px 0 12px;
+    background: #f6f6f6;
+    border-radius: 14px 0 0 14px;
+    border-right: 1px solid #e8e8e8;
+    color: #666;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .Ge_caret { font-size: 10px; color: #999; }
+
+  .Ge_searchInput {
+    flex: 1;
+    height: 28px;
+    border: none;
+    outline: none;
+    padding: 0 12px;
+    font-size: 13px;
+    color: #333;
+    background: transparent;
+  }
+
+  .Ge_searchBtn {
+    width: 56px;
+    height: 28px;
+    border: none;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #ff7a2f, #ff5000);
+    color: #fff;
+    font-size: 13px;
+    letter-spacing: 2px;
+    transition: filter .2s;
+  }
+
+  .Ge_searchBtn:hover { filter: brightness(1.08); }
+
+  /* ================= 主内容三栏 ================= */
+  .Ge_main {
+    display: grid;
+    grid-template-columns: 204px 1fr 200px;
+    gap: 9px;
+    margin-top: 6px;
+  }
+
+  /* ---------- 左侧分类 ---------- */
+  .Ge_cate {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, .07);
+    overflow: hidden;
+  }
+
+  .Ge_cateTitle {
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid #f4f4f4;
+  }
+
+  .Ge_catePromo {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 12px 6px;
+    font-size: 11px;
+    color: #ff4d00;
+    white-space: nowrap;
+  }
+
+  .Ge_catePromo i {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: #ff9a3d;
+    display: inline-block;
+    margin-right: 3px;
+    vertical-align: 2px;
+  }
+
+  .Ge_cateList { padding: 2px 8px 10px 12px; }
+
+  .Ge_cateItem {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    height: 25px;
+    padding: 0 6px;
+    border-radius: 4px;
+    font-size: 12.5px;
+    color: #333;
+    white-space: nowrap;
+    transition: all .18s;
+  }
+
+  .Ge_cateItem:hover { background: #fff4ef; color: #ff5000; }
+
+  .Ge_cateIcon { width: 15px; height: 15px; flex: 0 0 15px; }
+  .Ge_cateIcon svg { display: block; }
+
+  /* ---------- 中间轮播 ---------- */
+  .Ge_banner {
+    position: relative;
+    height: 270px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #7aa558 0%, #6a9a4e 45%, #5c8a43 100%);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+  }
+
+  .Ge_bannerText {
+    position: absolute;
+    left: 34px;
+    top: 74px;
+    z-index: 4;
+    color: #fff;
+  }
+
+  .Ge_t1 {
+    font-size: 22px;
+    letter-spacing: 2px;
+    font-weight: 400;
+    opacity: .96;
+  }
+
+  .Ge_t2 {
+    font-size: 33px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-top: 6px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, .18);
+  }
+
+  .Ge_t3 {
+    font-size: 13px;
+    margin-top: 14px;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, .92);
+  }
+
+  .Ge_arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 46px;
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 30px;
+    line-height: 40px;
+    opacity: .65;
+    z-index: 5;
+    transition: all .2s;
+  }
+
+  .Ge_arrow:hover { opacity: 1; background: rgba(0, 0, 0, .08); }
+  .Ge_prev { left: 2px; }
+  .Ge_next { right: 2px; }
+
+  .Ge_dots {
+    position: absolute;
+    left: 26px;
+    bottom: 14px;
+    display: flex;
+    gap: 7px;
+    z-index: 5;
+  }
+
+  .Ge_dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: none;
+    padding: 0;
+    background: rgba(255, 255, 255, .5);
+    transition: all .25s;
+  }
+
+  .Ge_dotOn { background: #fff; width: 16px; border-radius: 4px; }
+
+  /* 服饰插画 */
+  .Ge_art {
+    position: absolute;
+    right: 12px;
+    top: 0;
+    width: 340px;
+    height: 268px;
+    z-index: 3;
+    filter: drop-shadow(0 10px 16px rgba(0, 0, 0, .16));
+  }
+
+  .Ge_shirt {
+    position: absolute;
+    left: 4px;
+    top: 52px;
+    width: 96px;
+    height: 118px;
+    border-radius: 8px 8px 4px 4px;
+    background-color: #fff;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(110, 140, 165, .55) 0 1px, transparent 1px 11px),
+      repeating-linear-gradient(90deg, rgba(110, 140, 165, .55) 0 1px, transparent 1px 11px),
+      repeating-linear-gradient(0deg, rgba(110, 140, 165, .22) 0 6px, transparent 6px 22px),
+      repeating-linear-gradient(90deg, rgba(110, 140, 165, .22) 0 6px, transparent 6px 22px);
+    transform: rotate(3deg);
+  }
+
+  .Ge_shirt::before,
+  .Ge_shirt::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    width: 26px;
+    height: 74px;
+    border-radius: 8px;
+    background: inherit;
+  }
+
+  .Ge_shirt::before { left: -21px; transform: rotate(10deg); }
+  .Ge_shirt::after { right: -21px; transform: rotate(-10deg); }
+
+  .Ge_collar {
+    position: absolute;
+    left: 50%;
+    top: -1px;
+    width: 32px;
+    height: 20px;
+    margin-left: -16px;
+    background: #fff;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+
+  .Ge_skirt {
+    position: absolute;
+    left: 104px;
+    top: 72px;
+    width: 134px;
+    height: 172px;
+    background: repeating-linear-gradient(90deg, #fff 0 9px, #e6ebef 9px 18px);
+    clip-path: polygon(22% 0, 78% 0, 100% 100%, 0 100%);
+    transform: rotate(-4deg);
+  }
+
+  .Ge_skirt::before {
+    content: "";
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    top: 0;
+    height: 14px;
+    background: #fff;
+    border-bottom: 1px solid #e2e8ec;
+  }
+
+  .Ge_hat {
+    position: absolute;
+    left: 138px;
+    top: 30px;
+    width: 124px;
+    height: 44px;
+    border-radius: 50%;
+    background: repeating-linear-gradient(45deg, #94b8d3 0 3px, #aecbdf 3px 6px);
+    transform: rotate(-7deg);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, .12);
+  }
+
+  .Ge_hat::before {
+    content: "";
+    position: absolute;
+    left: 29px;
+    top: -36px;
+    width: 66px;
+    height: 52px;
+    border-radius: 50% 50% 42% 42%;
+    background: inherit;
+  }
+
+  .Ge_hat::after {
+    content: "";
+    position: absolute;
+    left: 26px;
+    top: -10px;
+    width: 72px;
+    height: 13px;
+    border-radius: 7px;
+    background: repeating-linear-gradient(45deg, #efa8c3 0 4px, #f7c6d8 4px 8px);
+    transform: rotate(2deg);
+  }
+
+  /* ---------- 右侧活动卡 ---------- */
+  .Ge_promos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 270px;
+  }
+
+  .Ge_promoCard {
+    flex: 1;
+    border-radius: 6px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+    transition: transform .2s, box-shadow .2s;
+  }
+
+  .Ge_promoCard:hover { transform: translateX(-3px); box-shadow: 0 4px 12px rgba(0, 0, 0, .15); }
+
+  .Ge_promoCard h3 { font-size: 14px; font-weight: 700; letter-spacing: .5px; line-height: 1.5; }
+  .Ge_promoCard p { font-size: 11px; opacity: .92; letter-spacing: .5px; margin-top: 1px; }
+
+  .Ge_promoArt {
+    font-size: 26px;
+    line-height: 1;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .2));
+    transform: rotate(-6deg);
+    white-space: nowrap;
+  }
+
+  .Ge_p1 { background: linear-gradient(120deg, #ff7b3d 0%, #ff4f24 100%); }
+  .Ge_p2 { background: linear-gradient(120deg, #f4538c 0%, #e01f5e 100%); }
+  .Ge_p3 { background: linear-gradient(120deg, #9d6d3d 0%, #6c4322 100%); }
+  .Ge_p4 { background: linear-gradient(120deg, #2f8cf0 0%, #0f63d6 100%); }
+
+  /* ================= 页脚 ================= */
+  .Ge_footer {
+    border-top: 1px solid #f0f0f0;
+    margin-top: 26px;
+    padding: 16px 0 22px;
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+  }
+
+  .Ge_footer a { color: #ff5000; }
+  .Ge_footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+  <!-- 顶部促销条 -->
+  <div class="Ge_promoBar">
+    <span class="Ge_promoIcon">11.11</span>
+    <span class="Ge_promoTxt">天猫双11火热开启，专属福利限时领，好物低价格别错过</span>
+    <button class="Ge_promoGo">去逛逛</button>
+  </div>
+
+  <!-- 头部：logo + 搜索 -->
+  <div class="Ge_header">
+    <div class="Ge_container">
+      <div class="Ge_headerInner">
+        <div class="Ge_logo">
+          <div class="Ge_logoName">淘宝</div>
+          <div class="Ge_logoEn">Taobao.com<em>™</em></div>
+        </div>
+        <div class="Ge_sellBadge">热卖<b>商品</b></div>
+
+        <div class="Ge_search">
+          <div class="Ge_searchType">宝贝<span class="Ge_caret">▾</span></div>
+          <input class="Ge_searchInput" type="text" placeholder="">
+          <button class="Ge_searchBtn">搜索</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主内容三栏 -->
+  <div class="Ge_container">
+    <div class="Ge_main">
+
+      <!-- 左：分类 -->
+      <div class="Ge_cate">
+        <div class="Ge_cateTitle">分类</div>
+        <div class="Ge_catePromo">
+          <span><i></i>券后低至7.2折起</span>
+          <span><i></i>爆款8.5折起</span>
+        </div>
+        <div class="Ge_cateList" id="Ge_cateList"></div>
+      </div>
+
+      <!-- 中：轮播 -->
+      <div class="Ge_banner" id="Ge_banner">
+        <div class="Ge_art">
+          <div class="Ge_skirt"></div>
+          <div class="Ge_shirt"><span class="Ge_collar"></span></div>
+          <div class="Ge_hat"></div>
+        </div>
+
+        <div class="Ge_bannerText">
+          <div class="Ge_t1" id="Ge_t1">夏季上新</div>
+          <div class="Ge_t2" id="Ge_t2">解锁潮流穿搭</div>
+          <div class="Ge_t3" id="Ge_t3">当季爆款 一键焕新</div>
+        </div>
+
+        <button class="Ge_arrow Ge_prev" id="Ge_prev">&lsaquo;</button>
+        <button class="Ge_arrow Ge_next" id="Ge_next">&rsaquo;</button>
+        <div class="Ge_dots" id="Ge_dots"></div>
+      </div>
+
+      <!-- 右：活动卡 -->
+      <div class="Ge_promos">
+        <div class="Ge_promoCard Ge_p1">
+          <div>
+            <h3>品质家居</h3>
+            <p>超值优惠</p>
+          </div>
+          <div class="Ge_promoArt">🛏️🛋️</div>
+        </div>
+        <div class="Ge_promoCard Ge_p2">
+          <div>
+            <h3>精致美妆</h3>
+            <p>品质之选</p>
+          </div>
+          <div class="Ge_promoArt">💄🧴</div>
+        </div>
+        <div class="Ge_promoCard Ge_p3">
+          <div>
+            <h3>品质五金</h3>
+            <p>超值特惠</p>
+          </div>
+          <div class="Ge_promoArt">🔧🪛</div>
+        </div>
+        <div class="Ge_promoCard Ge_p4">
+          <div>
+            <h3>超值百货</h3>
+            <p>省钱省心</p>
+          </div>
+          <div class="Ge_promoArt">🧴🧼</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="Ge_footer">
+    葛聪慧 &nbsp;·&nbsp; 仿淘宝首页首屏练习 &nbsp;|&nbsp; <a href="index.html">返回首页</a>
+  </div>
+
+  <script>
+    /* ---------- 左侧分类数据（含线条小图标） ---------- */
+    var Ge_icons = {
+      pc: '<rect x="2" y="3" width="12" height="8.5" rx="1"/><path d="M6 14h4M8 11.5V14"/>',
+      phone: '<rect x="5" y="1.8" width="6" height="12.4" rx="1.4"/><path d="M7.4 12.5h1.2"/>',
+      factory: '<path d="M2.2 13.5V7.2l3.6 1.8V7.2l3.6 1.8V7.2l3.6 1.8v4.5z"/><path d="M1.6 13.5h12.8"/>',
+      sofa: '<path d="M2 9V7.2a1 1 0 011-1h10a1 1 0 011 1V9"/><path d="M1.2 9.4a1 1 0 011 1v2.2h11.6v-2.2a1 1 0 011-1"/><path d="M3.4 9.2V6.2M12.6 9.2V6.2"/>',
+      dress: '<path d="M6.1 2.2h3.8l-1.1 2.6 2.9 8.4H4.3l2.9-8.4z"/>',
+      shoe: '<path d="M1.8 11.2h6.3l5.1 1.9v1.4H1.8z"/><path d="M8.1 11.2V8.6M2.2 9.4h4.4"/>',
+      car: '<path d="M1.8 11.8h12.4V9.2l-2.1-3.1H5.9L3.8 9.2H1.8z"/><circle cx="5" cy="12.6" r="1.1"/><circle cx="11" cy="12.6" r="1.1"/>',
+      cup: '<path d="M3 4.8h7.2v5.6a2.8 2.8 0 01-2.8 2.8H5.8A2.8 2.8 0 013 10.4z"/><path d="M10.2 6.4h1.6a1.8 1.8 0 010 3.6h-1.6"/><path d="M5.2 2.2V3.6M7.8 2.2V3.6"/>',
+      baby: '<circle cx="8" cy="5" r="2.8"/><path d="M3.2 14.2c0-2.7 2.2-4.6 4.8-4.6s4.8 1.9 4.8 4.6"/>'
+    };
+
+    var Ge_cates = [
+      { icon: "pc", txt: "电脑 / 配件 / 办公 / 文具" },
+      { icon: "phone", txt: "家电 / 手机 / 通讯 / 数码" },
+      { icon: "factory", txt: "工业品 / 商业 / 农业 / 定制" },
+      { icon: "sofa", txt: "家具 / 家装 / 家居 / 厨具" },
+      { icon: "dress", txt: "女装 / 男装 / 内衣 / 配饰" },
+      { icon: "shoe", txt: "女鞋 / 男鞋 / 运动 / 户外" },
+      { icon: "car", txt: "汽车 / 珠宝 / 文玩 / 箱包" },
+      { icon: "cup", txt: "食品 / 鲜花 / 酒水 / 健康" },
+      { icon: "baby", txt: "母婴 / 童装 / 玩具 / 宠物" }
+    ];
+
+    var Ge_listBox = document.getElementById("Ge_cateList");
+    var Ge_cateHtml = "";
+    for (var Ge_i = 0; Ge_i < Ge_cates.length; Ge_i++) {
+      Ge_cateHtml += '<a class="Ge_cateItem" href="javascript:;">'
+        + '<span class="Ge_cateIcon"><svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="#9a9a9a" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">'
+        + Ge_icons[Ge_cates[Ge_i].icon] + '</svg></span>'
+        + '<span>' + Ge_cates[Ge_i].txt + '</span></a>';
+    }
+    Ge_listBox.innerHTML = Ge_cateHtml;
+
+    /* ---------- 轮播 ---------- */
+    var Ge_slides = [
+      { t1: "夏季上新", t2: "解锁潮流穿搭", t3: "当季爆款 一键焕新", bg: "linear-gradient(135deg,#7aa558 0%,#6a9a4e 45%,#5c8a43 100%)" },
+      { t1: "秋冬焕新", t2: "温暖好物推荐", t3: "新品上市 限时抢购", bg: "linear-gradient(135deg,#b8823f 0%,#a2663a 45%,#8a4f2c 100%)" },
+      { t1: "美妆专场", t2: "精致生活必备", t3: "大牌好物 低至5折", bg: "linear-gradient(135deg,#e56a9a 0%,#d5477f 45%,#bd2d68 100%)" },
+      { t1: "数码家电", t2: "科技改变生活", t3: "以旧换新 补贴到手", bg: "linear-gradient(135deg,#4f8bd6 0%,#3b74c4 45%,#2b5da8 100%)" },
+      { t1: "家居好物", t2: "住进理想生活", t3: "品质家居 超值优惠", bg: "linear-gradient(135deg,#6c7fa8 0%,#566a95 45%,#455780 100%)" }
+    ];
+
+    var Ge_banner = document.getElementById("Ge_banner");
+    var Ge_t1 = document.getElementById("Ge_t1");
+    var Ge_t2 = document.getElementById("Ge_t2");
+    var Ge_t3 = document.getElementById("Ge_t3");
+    var Ge_dots = document.getElementById("Ge_dots");
+    var Ge_cur = 0;
+
+    var Ge_dotHtml = "";
+    for (var Ge_d = 0; Ge_d < Ge_slides.length; Ge_d++) {
+      Ge_dotHtml += '<button class="Ge_dot' + (Ge_d === 0 ? " Ge_dotOn" : "") + '" data-idx="' + Ge_d + '"></button>';
+    }
+    Ge_dots.innerHTML = Ge_dotHtml;
+
+    var Ge_dotBtns = Ge_dots.querySelectorAll(".Ge_dot");
+
+    function Ge_show(idx) {
+      Ge_cur = (idx + Ge_slides.length) % Ge_slides.length;
+      var s = Ge_slides[Ge_cur];
+      Ge_t1.textContent = s.t1;
+      Ge_t2.textContent = s.t2;
+      Ge_t3.textContent = s.t3;
+      Ge_banner.style.background = s.bg;
+      for (var i = 0; i < Ge_dotBtns.length; i++) {
+        if (i === Ge_cur) Ge_dotBtns[i].classList.add("Ge_dotOn");
+        else Ge_dotBtns[i].classList.remove("Ge_dotOn");
+      }
+    }
+
+    for (var Ge_b = 0; Ge_b < Ge_dotBtns.length; Ge_b++) {
+      Ge_dotBtns[Ge_b].onclick = function () {
+        Ge_show(Number(this.getAttribute("data-idx")));
+      };
+    }
+
+    document.getElementById("Ge_prev").onclick = function () { Ge_show(Ge_cur - 1); };
+    document.getElementById("Ge_next").onclick = function () { Ge_show(Ge_cur + 1); };
+
+    var Ge_timer = setInterval(function () { Ge_show(Ge_cur + 1); }, 5000);
+    Ge_banner.onmouseenter = function () { clearInterval(Ge_timer); };
+    Ge_banner.onmouseleave = function () {
+      clearInterval(Ge_timer);
+      Ge_timer = setInterval(function () { Ge_show(Ge_cur + 1); }, 5000);
+    };
+  </script>
+</body>
+</html>

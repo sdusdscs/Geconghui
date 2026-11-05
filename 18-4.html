@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>ECharts 图表 - 葛聪慧</title>
+<!-- 姓名：葛聪慧，2026-10-29：ECharts柱状图与饼图 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #f5f7fa;
+    font-family: "Microsoft YaHei", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+  }
+
+  .gch_title {
+    font-size: 24px;
+    color: #1f3a5f;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .gch_sub {
+    color: #7a8ba0;
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .gch_chart_row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  .gch_chart_box {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(31, 58, 95, 0.12);
+    padding: 16px;
+    flex: 1;
+    min-width: 380px;
+  }
+
+  .gch_chart_title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #1f3a5f;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    border-left: 4px solid #4a90d9;
+  }
+
+  .gch_chart {
+    width: 100%;
+    height: 380px;
+  }
+</style>
+</head>
+<body>
+  <div class="gch_title">ECharts 数据可视化</div>
+  <div class="gch_sub">葛聪慧 · 基于本地 echarts（cdn/echarts/echarts.min.js）</div>
+
+  <div class="gch_chart_row">
+    <div class="gch_chart_box">
+      <div class="gch_chart_title">月度销售额统计（柱状图）</div>
+      <div id="gch_bar_chart" class="gch_chart"></div>
+    </div>
+    <div class="gch_chart_box">
+      <div class="gch_chart_title">商品销售占比（饼图）</div>
+      <div id="gch_pie_chart" class="gch_chart"></div>
+    </div>
+  </div>
+
+  <script src="cdn/echarts/echarts.min.js"></script>
+  <script>
+    var gch_bar = echarts.init(document.getElementById("gch_bar_chart"));
+    var gch_barOption = {
+      tooltip: {
+        trigger: "axis"
+      },
+      legend: {
+        data: ["销售额"],
+        top: 5
+      },
+      grid: {
+        left: "8%",
+        right: "6%",
+        bottom: "10%",
+        containLabel: true
+      },
+      xAxis: {
+        type: "category",
+        data: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+        axisLabel: {
+          fontSize: 12
+        }
+      },
+      yAxis: {
+        type: "value",
+        name: "万元",
+        axisLabel: {
+          fontSize: 12
+        }
+      },
+      series: [
+        {
+          name: "销售额",
+          type: "bar",
+          data: [120, 200, 150, 80, 170, 210, 260, 230, 190, 280, 240, 310],
+          itemStyle: {
+            borderRadius: [6, 6, 0, 0],
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: "#4a90d9" },
+              { offset: 1, color: "#7ac3ff" }
+            ])
+          },
+          label: {
+            show: true,
+            position: "top",
+            fontSize: 11
+          }
+        }
+      ]
+    };
+    gch_bar.setOption(gch_barOption);
+
+    window.addEventListener("resize", function () {
+      gch_bar.resize();
+    });
+
+    var gch_pie = echarts.init(document.getElementById("gch_pie_chart"));
+    var gch_pieOption = {
+      tooltip: {
+        trigger: "item",
+        formatter: "{a} <br/>{b} : {c} 件 ({d}%)"
+      },
+      legend: {
+        orient: "horizontal",
+        bottom: 5,
+        fontSize: 12
+      },
+      series: [
+        {
+          name: "销售占比",
+          type: "pie",
+          radius: ["40%", "68%"],
+          center: ["50%", "48%"],
+          itemStyle: {
+            borderRadius: 8,
+            borderColor: "#fff",
+            borderWidth: 2
+          },
+          label: {
+            fontSize: 12
+          },
+          data: [
+            { value: 1048, name: "手机数码" },
+            { value: 835, name: "家用电器" },
+            { value: 610, name: "服饰鞋包" },
+            { value: 428, name: "食品生鲜" },
+            { value: 356, name: "美妆个护" },
+            { value: 289, name: "图书文娱" }
+          ]
+        }
+      ]
+    };
+    gch_pie.setOption(gch_pieOption);
+
+    window.addEventListener("resize", function () {
+      gch_pie.resize();
+    });
+  </script>
+</body>
+</html>

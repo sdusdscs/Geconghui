@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Canvas 动画 - 葛聪慧</title>
+<!-- 姓名：葛聪慧，2026-10-29：Canvas粒子动画 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0b0b1a;
+    overflow: hidden;
+    font-family: "Microsoft YaHei", sans-serif;
+  }
+
+  #gch_canvas {
+    display: block;
+  }
+
+  .gch_caption {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    letter-spacing: 2px;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+  <canvas id="gch_canvas"></canvas>
+  <div class="gch_caption">Canvas 粒子动画 · 葛聪慧</div>
+
+  <script>
+    var gch_canvas = document.getElementById("gch_canvas");
+    var gch_ctx = gch_canvas.getContext("2d");
+    var gch_w = gch_canvas.width = window.innerWidth;
+    var gch_h = gch_canvas.height = window.innerHeight;
+
+    window.addEventListener("resize", function () {
+      gch_w = gch_canvas.width = window.innerWidth;
+      gch_h = gch_canvas.height = window.innerHeight;
+    });
+
+    var gch_particles = [];
+    var gch_num = 120;
+
+    function gch_init() {
+      for (var gch_i = 0; gch_i < gch_num; gch_i++) {
+        gch_particles.push({
+          x: Math.random() * gch_w,
+          y: Math.random() * gch_h,
+          vx: (Math.random() - 0.5) * 0.9,
+          vy: (Math.random() - 0.5) * 0.9,
+          r: Math.random() * 2.5 + 1,
+          c: "hsla(" + (Math.random() * 360) + ", 80%, 60%, 0.9)"
+        });
+      }
+    }
+
+    function gch_draw() {
+      gch_ctx.clearRect(0, 0, gch_w, gch_h);
+
+      for (var gch_i = 0; gch_i < gch_particles.length; gch_i++) {
+        var gch_p = gch_particles[gch_i];
+        gch_p.x += gch_p.vx;
+        gch_p.y += gch_p.vy;
+
+        if (gch_p.x < 0 || gch_p.x > gch_w) gch_p.vx *= -1;
+        if (gch_p.y < 0 || gch_p.y > gch_h) gch_p.vy *= -1;
+
+        for (var gch_j = gch_i + 1; gch_j < gch_particles.length; gch_j++) {
+          var gch_q = gch_particles[gch_j];
+          var gch_dx = gch_p.x - gch_q.x;
+          var gch_dy = gch_p.y - gch_q.y;
+          var gch_dist = Math.sqrt(gch_dx * gch_dx + gch_dy * gch_dy);
+          if (gch_dist < 120) {
+            gch_ctx.strokeStyle = "rgba(255,255,255," + (1 - gch_dist / 120) * 0.4 + ")";
+            gch_ctx.lineWidth = 0.6;
+            gch_ctx.beginPath();
+            gch_ctx.moveTo(gch_p.x, gch_p.y);
+            gch_ctx.lineTo(gch_q.x, gch_q.y);
+            gch_ctx.stroke();
+          }
+        }
+
+        gch_ctx.beginPath();
+        gch_ctx.fillStyle = gch_p.c;
+        gch_ctx.arc(gch_p.x, gch_p.y, gch_p.r, 0, Math.PI * 2);
+        gch_ctx.fill();
+      }
+
+      var gch_time = Date.now() / 1000;
+      var gch_cx = gch_w / 2;
+      var gch_cy = gch_h / 2;
+      gch_ctx.save();
+      gch_ctx.font = "bold " + (48 + Math.sin(gch_time * 2) * 6) + "px \"Microsoft YaHei\"";
+      gch_ctx.textAlign = "center";
+      gch_ctx.textBaseline = "middle";
+      gch_ctx.shadowColor = "#00d4ff";
+      gch_ctx.shadowBlur = 30 + Math.sin(gch_time * 3) * 15;
+      var gch_grad = gch_ctx.createLinearGradient(gch_cx - 120, 0, gch_cx + 120, 0);
+      gch_grad.addColorStop(0, "#00d4ff");
+      gch_grad.addColorStop(0.5, "#e94560");
+      gch_grad.addColorStop(1, "#ffc107");
+      gch_ctx.fillStyle = gch_grad;
+      gch_ctx.fillText("葛聪慧", gch_cx, gch_cy);
+      gch_ctx.restore();
+
+      requestAnimationFrame(gch_draw);
+    }
+
+    gch_init();
+    gch_draw();
+  </script>
+</body>
+</html>

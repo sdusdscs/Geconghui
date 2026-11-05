@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>电商系统架构图 - Canvas</title>
+<!-- 姓名：葛聪慧，2026-10-29：Canvas电商系统架构图 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0f1520;
+    font-family: "Microsoft YaHei", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .gch_title {
+    color: #e94560;
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+  }
+
+  .gch_header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  canvas {
+    background: #16202e;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  }
+</style>
+</head>
+<body>
+  <div class="gch_title">电商系统架构图（Canvas 绘制）</div>
+  <div class="gch_header">姓名：葛聪慧</div>
+  <canvas id="gch_canvas" width="1000" height="700"></canvas>
+
+  <script>
+    var gch_canvas = document.getElementById("gch_canvas");
+    var gch_ctx = gch_canvas.getContext("2d");
+
+    var gch_boxW = 200;
+    var gch_boxH = 48;
+    var gch_r = 8;
+
+    function gch_box(gch_x, gch_y, gch_text, gch_color, gch_sub) {
+      gch_ctx.save();
+      gch_ctx.beginPath();
+      gch_ctx.roundRect(gch_x, gch_y, gch_boxW, gch_boxH, gch_r);
+      gch_ctx.fillStyle = gch_color;
+      gch_ctx.fill();
+      gch_ctx.strokeStyle = "rgba(255,255,255,0.45)";
+      gch_ctx.lineWidth = 1.5;
+      gch_ctx.stroke();
+      gch_ctx.fillStyle = "#fff";
+      gch_ctx.font = "bold 16px \"Microsoft YaHei\"";
+      gch_ctx.textAlign = "center";
+      gch_ctx.textBaseline = "middle";
+      gch_ctx.fillText(gch_text, gch_x + gch_boxW / 2, gch_y + gch_boxH / 2 - 9);
+      if (gch_sub) {
+        gch_ctx.fillStyle = "rgba(255,255,255,0.75)";
+        gch_ctx.font = "12px \"Microsoft YaHei\"";
+        gch_ctx.fillText(gch_sub, gch_x + gch_boxW / 2, gch_y + gch_boxH / 2 + 13);
+      }
+      gch_ctx.restore();
+    }
+
+    function gch_bigBox(gch_x, gch_y, gch_w, gch_h, gch_label, gch_color) {
+      gch_ctx.save();
+      gch_ctx.strokeStyle = gch_color;
+      gch_ctx.lineWidth = 2;
+      gch_ctx.setLineDash([6, 4]);
+      gch_ctx.beginPath();
+      gch_ctx.roundRect(gch_x, gch_y, gch_w, gch_h, gch_r);
+      gch_ctx.stroke();
+      gch_ctx.setLineDash([]);
+      gch_ctx.fillStyle = gch_color;
+      gch_ctx.font = "bold 15px \"Microsoft YaHei\"";
+      gch_ctx.textAlign = "center";
+      gch_ctx.fillText(gch_label, gch_x + gch_w / 2, gch_y + 22);
+      gch_ctx.restore();
+    }
+
+    function gch_line(gch_x1, gch_y1, gch_x2, gch_y2) {
+      gch_ctx.save();
+      gch_ctx.strokeStyle = "rgba(255,255,255,0.6)";
+      gch_ctx.lineWidth = 1.5;
+      gch_ctx.beginPath();
+      gch_ctx.moveTo(gch_x1, gch_y1);
+      gch_ctx.lineTo(gch_x2, gch_y2);
+      gch_ctx.stroke();
+      gch_ctx.restore();
+    }
+
+    function gch_arrow(gch_x1, gch_y1, gch_x2, gch_y2) {
+      gch_line(gch_x1, gch_y1, gch_x2, gch_y2);
+      var gch_angle = Math.atan2(gch_y2 - gch_y1, gch_x2 - gch_x1);
+      gch_ctx.save();
+      gch_ctx.fillStyle = "rgba(255,255,255,0.6)";
+      gch_ctx.beginPath();
+      gch_ctx.moveTo(gch_x2, gch_y2);
+      gch_ctx.lineTo(gch_x2 - 10 * Math.cos(gch_angle - 0.4), gch_y2 - 10 * Math.sin(gch_angle - 0.4));
+      gch_ctx.lineTo(gch_x2 - 10 * Math.cos(gch_angle + 0.4), gch_y2 - 10 * Math.sin(gch_angle + 0.4));
+      gch_ctx.closePath();
+      gch_ctx.fill();
+      gch_ctx.restore();
+    }
+
+    function gch_draw() {
+      gch_ctx.clearRect(0, 0, 1000, 700);
+
+      // 第一层：接入层
+      gch_bigBox(30, 40, 300, 110, "接入层 Access", "#4ecdc4");
+      gch_box(70, 70, "PC 浏览器", "#1e3a5f");
+      gch_box(70, 120, "移动端 H5", "#1e3a5f");
+      gch_box(200, 70, "App", "#1e3a5f");
+      gch_box(200, 120, "小程序", "#1e3a5f");
+      gch_line(260, 118, 260, 150);
+
+      // 第二层：网关
+      gch_box(380, 90, "统一网关 Gateway", "#2a4d3f", "负载均衡 · 限流");
+      gch_arrow(150, 150, 430, 114);
+      gch_arrow(150, 150, 430, 114);
+      gch_arrow(155, 155, 435, 118);
+      gch_arrow(160, 160, 440, 122);
+
+      // 第三层：业务服务
+      gch_bigBox(30, 250, 940, 200, "业务服务层 Service", "#e94560");
+      gch_box(60, 300, "用户服务", "#3a3f8f");
+      gch_box(280, 300, "商品服务", "#3a3f8f");
+      gch_box(500, 300, "订单服务", "#3a3f8f");
+      gch_box(720, 300, "支付服务", "#3a3f8f");
+      gch_box(170, 370, "购物车服务", "#5a3f8f");
+      gch_box(390, 370, "库存服务", "#5a3f8f");
+      gch_box(610, 370, "物流服务", "#5a3f8f");
+      gch_box(720, 370, "营销中心", "#5a3f8f");
+      gch_arrow(480, 150, 250, 250);
+      gch_arrow(480, 150, 480, 250);
+      gch_arrow(480, 150, 700, 250);
+
+      // 第四层：数据层
+      gch_bigBox(30, 520, 940, 150, "数据存储层 Data", "#f39c12");
+      gch_box(60, 580, "MySQL 主库", "#7a4a12");
+      gch_box(280, 580, "Redis 缓存", "#7a4a12");
+      gch_box(500, 580, "Elasticsearch", "#7a4a12");
+      gch_box(720, 580, "消息队列 MQ", "#7a4a12");
+      gch_line(160, 450, 160, 520);
+      gch_line(380, 450, 380, 520);
+      gch_line(600, 450, 600, 520);
+      gch_line(820, 450, 820, 520);
+    }
+
+    gch_draw();
+  </script>
+</body>
+</html>

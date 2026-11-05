@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>数据可视化大屏</title>
+<!-- 姓名：葛聪慧，2026-10-29：电商数据大屏 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #040b18;
+    color: #e0f2ff;
+    font-family: "Microsoft YaHei", sans-serif;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  .gch_screen {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "left center right"
+      "left center right-bottom";
+    gap: 12px;
+    padding: 14px;
+    height: 100vh;
+  }
+
+  .gch_panel {
+    background: linear-gradient(160deg, rgba(20,40,80,0.6), rgba(10,20,40,0.9));
+    border: 1px solid rgba(74,144,217,0.35);
+    border-radius: 8px;
+    padding: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gch_panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    border-top: 2px solid #4a90d9;
+    border-left: 2px solid #4a90d9;
+  }
+
+  .gch_panel_title {
+    font-size: 15px;
+    color: #8fd3ff;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(74,144,217,0.3);
+    text-align: center;
+    letter-spacing: 2px;
+  }
+
+  .gch_col_left {
+    grid-area: left;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .gch_col_right {
+    grid-area: right;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .gch_center {
+    grid-area: center;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .gch_map_area {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .gch_chart {
+    width: 100%;
+    height: 100%;
+  }
+
+  .gch_chart_sm {
+    width: 100%;
+    height: 100%;
+  }
+
+  .gch_header {
+    text-align: center;
+    padding: 10px 0 4px;
+    background: linear-gradient(180deg, rgba(10,20,40,0.2), transparent);
+  }
+
+  .gch_header h1 {
+    font-size: 26px;
+    color: #4ac9ff;
+    letter-spacing: 6px;
+    text-shadow: 0 0 20px rgba(74,201,255,0.5);
+  }
+
+  .gch_stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 6px;
+    font-size: 14px;
+    color: #a8d8ea;
+    border-bottom: 1px dashed rgba(74,144,217,0.2);
+  }
+
+  .gch_stat .gch_val {
+    color: #ffd75e;
+    font-weight: bold;
+    font-size: 16px;
+  }
+</style>
+</head>
+<body>
+  <div class="gch_header">
+    <h1>智慧电商运营数据大屏</h1>
+  </div>
+
+  <div class="gch_screen">
+    <!-- 左列 -->
+    <div class="gch_col_left">
+      <div class="gch_panel" style="flex:1;">
+        <div class="gch_panel_title">销售趋势</div>
+        <div id="gch_trend" class="gch_chart_sm"></div>
+      </div>
+      <div class="gch_panel" style="flex:1;">
+        <div class="gch_panel_title">品类占比</div>
+        <div id="gch_cat" class="gch_chart_sm"></div>
+      </div>
+    </div>
+
+    <!-- 中列：上面地理图，下面数据 -->
+    <div class="gch_center">
+      <div class="gch_panel">
+        <div class="gch_panel_title">全国订单分布（地理信息）</div>
+        <div id="gch_map" class="gch_chart" style="height:380px;"></div>
+      </div>
+      <div class="gch_panel gch_map_area">
+        <div class="gch_panel_title">核心指标</div>
+        <div id="gch_kpi" class="gch_chart"></div>
+      </div>
+    </div>
+
+    <!-- 右列 -->
+    <div class="gch_col_right">
+      <div class="gch_panel" style="flex:1;">
+        <div class="gch_panel_title">热销商品 TOP5</div>
+        <div id="gch_hot" class="gch_chart_sm"></div>
+      </div>
+      <div class="gch_panel" style="flex:1;">
+        <div class="gch_panel_title">用户增长</div>
+        <div id="gch_growth" class="gch_chart_sm"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="cdn/echarts/echarts.min.js"></script>
+  <script>
+    // 销售趋势
+    var gch_trend = echarts.init(document.getElementById("gch_trend"));
+    gch_trend.setOption({
+      grid: { left: "6%", right: "6%", top: "8%", bottom: "12%", containLabel: true },
+      xAxis: { type: "category", data: ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"], axisLabel: { color: "#7aa9d8" } },
+      yAxis: { type: "value", axisLabel: { color: "#7aa9d8" }, splitLine: { lineStyle: { color: "rgba(76,144,217,0.15)" } } },
+      series: [{
+        type: "line", smooth: true, symbolSize: 4,
+        data: [120,150,110,180,210,160,240,280,200,300,260,340],
+        lineStyle: { color: "#4ac9ff", width: 2 },
+        itemStyle: { color: "#4ac9ff" },
+        areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:"rgba(74,201,255,0.5)"},{offset:1,color:"rgba(74,201,255,0)"}]) }
+      }]
+    });
+
+    // 品类占比
+    var gch_cat = echarts.init(document.getElementById("gch_cat"));
+    gch_cat.setOption({
+      tooltip: { trigger: "item" },
+      series: [{
+        type: "pie", radius: ["35%","65%"], center: ["50%","55%"],
+        data: [
+          { value: 35, name: "数码", itemStyle: { color: "#e94560" } },
+          { value: 28, name: "家电", itemStyle: { color: "#4ac9ff" } },
+          { value: 20, name: "服饰", itemStyle: { color: "#ffd75e" } },
+          { value: 17, name: "食品", itemStyle: { color: "#53d769" } }
+        ],
+        label: { color: "#cfe6ff", fontSize: 10 },
+        itemStyle: { borderColor: "#0b1830", borderWidth: 2 }
+      }]
+    });
+
+    // 核心指标
+    var gch_kpiHtml = ""
+      + '<div class="gch_stat"><span>今日销售额</span><span class="gch_val">¥ 8,620,000</span></div>'
+      + '<div class="gch_stat"><span>今日订单数</span><span class="gch_val">42,560</span></div>'
+      + '<div class="gch_stat"><span>活跃用户</span><span class="gch_val">1,285,900</span></div>'
+      + '<div class="gch_stat"><span>转化率</span><span class="gch_val">3.86%</span></div>'
+      + '<div class="gch_stat"><span>客单价</span><span class="gch_val">¥ 202.5</span></div>'
+      + '<div class="gch_stat"><span>库存周转</span><span class="gch_val">45 天</span></div>'
+      + '<div class="gch_stat"><span>次日达占比</span><span class="gch_val">86.2%</span></div>';
+    document.getElementById("gch_kpi").innerHTML = gch_kpiHtml;
+
+    // 热销商品 TOP5
+    var gch_hot = echarts.init(document.getElementById("gch_hot"));
+    gch_hot.setOption({
+      grid: { left: "12%", right: "8%", top: "6%", bottom: "10%" },
+      xAxis: { type: "value", axisLabel: { color: "#7aa9d8" }, splitLine: { lineStyle: { color: "rgba(76,144,217,0.15)" } } },
+      yAxis: { type: "category", inverse: true, data: ["手机","平板","耳机","电视","手表"], axisLabel: { color: "#cfe6ff" } },
+      series: [{
+        type: "bar", barWidth: 14,
+        data: [920, 780, 650, 540, 410],
+        itemStyle: { borderRadius: [0,7,7,0], color: new echarts.graphic.LinearGradient(1,0,0,0,[{offset:0,color:"#e94560"},{offset:1,color:"#4ac9ff"}]) },
+        label: { show: true, position: "right", color: "#ffd75e" }
+      }]
+    });
+
+    // 用户增长
+    var gch_growth = echarts.init(document.getElementById("gch_growth"));
+    gch_growth.setOption({
+      grid: { left: "8%", right: "6%", top: "10%", bottom: "12%" },
+      xAxis: { type: "category", data: ["Q1","Q2","Q3","Q4"], axisLabel: { color: "#7aa9d8" } },
+      yAxis: { type: "value", axisLabel: { color: "#7aa9d8" }, splitLine: { lineStyle: { color: "rgba(76,144,217,0.15)" } } },
+      series: [{
+        type: "bar", barWidth: 30,
+        data: [520, 760, 1080, 1480],
+        itemStyle: {
+          borderRadius: [6,6,0,0],
+          color: new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:"#53d769"},{offset:1,color:"#4ac9ff"}])
+        }
+      }]
+    });
+
+    // 全国订单分布（地理信息图）
+    var gch_map = echarts.init(document.getElementById("gch_map"));
+    var gch_geoData = [
+      { name: "北京", value: 12 }, { name: "上海", value: 15 }, { name: "广东", value: 22 },
+      { name: "江苏", value: 18 }, { name: "浙江", value: 19 }, { name: "山东", value: 11 },
+      { name: "四川", value: 14 }, { name: "湖北", value: 10 }, { name: "福建", value: 13 },
+      { name: "河南", value: 9 }, { name: "湖南", value: 8 }, { name: "河北", value: 7 }
+    ];
+
+    function gch_mapOption() {
+      return {
+        backgroundColor: "transparent",
+        tooltip: { trigger: "item", formatter: function (gch_p) { return gch_p.name + "：订单量 " + gch_p.value + " 万"; } },
+        geo: {
+          map: "china",
+          roam: true,
+          zoom: 1.1,
+          itemStyle: {
+            areaColor: "#123a63",
+            borderColor: "#4ac9ff",
+            emphasis: { label: { color: "#fff" } }
+          },
+          label: { show: false }
+        },
+        series: [
+          {
+            type: "effectScatter",
+            coordinateSystem: "geo",
+            data: gch_geoData,
+            symbolSize: function (gch_v) { return 4 + gch_v * 0.8; },
+            rippleEffect: { scale: 3, brushType: "stroke" },
+            itemStyle: { color: "#ffd75e", shadowBlur: 10, shadowColor: "#ffd75e" },
+            label: { show: true, position: "right", color: "#ffd75e", fontSize: 10, formatter: "{b}" }
+          }
+        ]
+      };
+    }
+
+    fetch("cdn/geojson/china.json")
+      .then(function (gch_res) { return gch_res.json(); })
+      .then(function (gch_geoJson) {
+        echarts.registerMap("china", gch_geoJson);
+        gch_map.setOption(gch_mapOption());
+      })
+      .catch(function () {
+        gch_map.setOption({
+          title: {
+            text: "地图数据加载失败",
+            left: "center",
+            top: "middle",
+            textStyle: { color: "#e94560", fontSize: 14 }
+          }
+        });
+      });
+  </script>
+</body>
+</html>

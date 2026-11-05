@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Three.js 3D 图表</title>
+<!-- 姓名：葛聪慧，2026-10-29：Three.js 3D柱状图与3D饼图 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0f1520;
+    font-family: "Microsoft YaHei", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .gch_title {
+    font-size: 22px;
+    color: #4a90d9;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .gch_sub {
+    color: #7a8ba0;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .gch_row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 1300px;
+  }
+
+  .gch_box {
+    background: #16202e;
+    border-radius: 10px;
+    padding-top: 8px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  .gch_box_label {
+    text-align: center;
+    color: #a8d8ea;
+    font-size: 14px;
+    padding-bottom: 4px;
+  }
+
+  .gch_box canvas {
+    border-radius: 0 0 10px 10px;
+  }
+</style>
+</head>
+<body>
+  <div class="gch_title">Three.js 3D 数据可视化</div>
+  <div class="gch_sub">葛聪慧 · 基于本地 three（cdn/three/three.min.js）· 鼠标拖动旋转视角</div>
+
+  <div class="gch_row">
+    <div class="gch_box">
+      <div class="gch_box_label">3D 柱状图 · 月度销售额</div>
+      <div id="gch_bar3d"></div>
+    </div>
+    <div class="gch_box">
+      <div class="gch_box_label">3D 饼图 · 销售占比</div>
+      <div id="gch_pie3d"></div>
+    </div>
+  </div>
+
+  <script src="cdn/three/three.min.js"></script>
+  <script>
+    function gch_makeCanvas(gch_w, gch_h) {
+      var gch_canvas = document.createElement("canvas");
+      gch_canvas.width = gch_w;
+      gch_canvas.height = gch_h;
+      return gch_canvas;
+    }
+
+    function gch_trackBall(gch_el, gch_camera, gch_renderer) {
+      var gch_rotY = 0;
+      var gch_rotX = 0;
+      var gch_dragging = false;
+      var gch_lastX = 0;
+      var gch_lastY = 0;
+
+      gch_el.addEventListener("mousedown", function (gch_e) {
+        gch_dragging = true;
+        gch_lastX = gch_e.clientX;
+        gch_lastY = gch_e.clientY;
+      });
+      window.addEventListener("mouseup", function () {
+        gch_dragging = false;
+      });
+      window.addEventListener("mousemove", function (gch_e) {
+        if (!gch_dragging) return;
+        var gch_dx = gch_e.clientX - gch_lastX;
+        var gch_dy = gch_e.clientY - gch_lastY;
+        gch_lastX = gch_e.clientX;
+        gch_lastY = gch_e.clientY;
+        gch_rotY += gch_dx * 0.01;
+        gch_rotX += gch_dy * 0.01;
+        gch_camera.position.x = 12 * Math.sin(gch_rotY) * Math.cos(gch_rotX);
+        gch_camera.position.y = 8 * Math.sin(gch_rotX);
+        gch_camera.position.z = 12 * Math.cos(gch_rotY) * Math.cos(gch_rotX);
+        gch_camera.lookAt(0, 3, 0);
+      });
+    }
+
+    function gch_createBarChart() {
+      var gch_w = 560, gch_h = 420;
+      var gch_renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      gch_renderer.setSize(gch_w, gch_h);
+      gch_renderer.setPixelRatio(window.devicePixelRatio);
+      document.getElementById("gch_bar3d").appendChild(gch_renderer.domElement);
+
+      var gch_scene = new THREE.Scene();
+      var gch_camera = new THREE.PerspectiveCamera(45, gch_w / gch_h, 0.1, 100);
+      gch_camera.position.set(12, 8, 12);
+      gch_camera.lookAt(0, 3, 0);
+
+      var gch_ambient = new THREE.AmbientLight(0xffffff, 0.5);
+      gch_scene.add(gch_ambient);
+      var gch_dir = new THREE.DirectionalLight(0xffffff, 0.8);
+      gch_dir.position.set(8, 12, 6);
+      gch_scene.add(gch_dir);
+
+      var gch_data = [3, 7, 4, 9, 6, 8, 11, 10, 7, 12, 9, 13];
+      var gch_colors = [0x4a90d9, 0xe94560, 0xffc107, 0x53d769, 0x9b59b6, 0x4ecdc4];
+      var gch_gap = 1.6;
+
+      for (var gch_i = 0; gch_i < gch_data.length; gch_i++) {
+        var gch_h = gch_data[gch_i] * 0.55;
+        var gch_geo = new THREE.BoxGeometry(1, gch_h, 1);
+        var gch_mat = new THREE.MeshPhongMaterial({ color: gch_colors[gch_i % gch_colors.length] });
+        var gch_cube = new THREE.Mesh(gch_geo, gch_mat);
+        gch_cube.position.set((gch_i - (gch_data.length - 1) / 2) * gch_gap, gch_h / 2, 0);
+        gch_scene.add(gch_cube);
+      }
+
+      // 底面网格
+      var gch_grid = new THREE.GridHelper(24, 12, 0x4a90d9, 0x2a3a55);
+      gch_grid.position.y = 0;
+      gch_scene.add(gch_grid);
+
+      gch_trackBall(gch_renderer.domElement, gch_camera, gch_renderer);
+
+      function gch_animate() {
+        requestAnimationFrame(gch_animate);
+        gch_renderer.render(gch_scene, gch_camera);
+      }
+      gch_animate();
+    }
+
+    function gch_createPieChart() {
+      var gch_w = 560, gch_h = 420;
+      var gch_renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      gch_renderer.setSize(gch_w, gch_h);
+      gch_renderer.setPixelRatio(window.devicePixelRatio);
+      document.getElementById("gch_pie3d").appendChild(gch_renderer.domElement);
+
+      var gch_scene = new THREE.Scene();
+      var gch_camera = new THREE.PerspectiveCamera(45, gch_w / gch_h, 0.1, 100);
+      gch_camera.position.set(0, 8, 12);
+      gch_camera.lookAt(0, 0, 0);
+
+      var gch_ambient = new THREE.AmbientLight(0xffffff, 0.5);
+      gch_scene.add(gch_ambient);
+      var gch_dir = new THREE.DirectionalLight(0xffffff, 0.8);
+      gch_dir.position.set(6, 10, 6);
+      gch_scene.add(gch_dir);
+
+      var gch_data = [
+        { value: 30, color: 0xe94560 },
+        { value: 22, color: 0xffc107 },
+        { value: 18, color: 0x53d769 },
+        { value: 16, color: 0x4a90d9 },
+        { value: 14, color: 0x9b59b6 }
+      ];
+      var gch_total = 0;
+      for (var gch_i = 0; gch_i < gch_data.length; gch_i++) gch_total += gch_data[gch_i].value;
+
+      var gch_segR = 4.2;
+      var gch_segT = 0.9;
+      var gch_angle = 0;
+
+      function gch_roundedRect(gch_w, gch_h, gch_r) {
+        var gch_shape = new THREE.Shape();
+        gch_shape.moveTo(-gch_w / 2 + gch_r, -gch_h / 2);
+        gch_shape.lineTo(gch_w / 2 - gch_r, -gch_h / 2);
+        gch_shape.quadraticCurveTo(gch_w / 2, -gch_h / 2, gch_w / 2, -gch_h / 2 + gch_r);
+        gch_shape.lineTo(gch_w / 2, gch_h / 2 - gch_r);
+        gch_shape.quadraticCurveTo(gch_w / 2, gch_h / 2, gch_w / 2 - gch_r, gch_h / 2);
+        gch_shape.lineTo(-gch_w / 2 + gch_r, gch_h / 2);
+        gch_shape.quadraticCurveTo(-gch_w / 2, gch_h / 2, -gch_w / 2, gch_h / 2 - gch_r);
+        gch_shape.lineTo(-gch_w / 2, -gch_h / 2 + gch_r);
+        gch_shape.quadraticCurveTo(-gch_w / 2, -gch_h / 2, -gch_w / 2 + gch_r, -gch_h / 2);
+        return gch_shape;
+      }
+
+      for (var gch_i = 0; gch_i < gch_data.length; gch_i++) {
+        var gch_frac = gch_data[gch_i].value / gch_total;
+        var gch_sweep = gch_frac * Math.PI * 2;
+
+        var gch_shape = gch_roundedRect(gch_segR, gch_segT, 0.35);
+        var gch_extrude = new THREE.ExtrudeGeometry(gch_shape, { steps: 1, depth: 0.5, bevelEnabled: false });
+        var gch_mat = new THREE.MeshPhongMaterial({ color: gch_data[gch_i].color, side: THREE.DoubleSide });
+        var gch_mesh = new THREE.Mesh(gch_extrude, gch_mat);
+
+        var gch_mid = gch_angle + gch_sweep / 2;
+        gch_mesh.rotation.z = -gch_mid;
+        gch_scene.add(gch_mesh);
+
+        gch_angle += gch_sweep;
+      }
+
+      gch_trackBall(gch_renderer.domElement, gch_camera, gch_renderer);
+
+      function gch_animate() {
+        requestAnimationFrame(gch_animate);
+        gch_renderer.render(gch_scene, gch_camera);
+      }
+      gch_animate();
+    }
+
+    gch_createBarChart();
+    gch_createPieChart();
+  </script>
+</body>
+</html>

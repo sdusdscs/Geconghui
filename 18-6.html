@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>智能客服系统流程图与ER图</title>
+<!-- 姓名：葛聪慧，2026-10-29：Mermaid流程图与ER图 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #f5f7fa;
+    font-family: "Microsoft YaHei", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+  }
+
+  .gch_title {
+    font-size: 24px;
+    color: #1f3a5f;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .gch_sub {
+    color: #7a8ba0;
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .gch_section {
+    width: 100%;
+    max-width: 1100px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(31, 58, 95, 0.12);
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+
+  .gch_section_title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1f3a5f;
+    margin-bottom: 16px;
+    padding-left: 10px;
+    border-left: 4px solid #4a90d9;
+  }
+
+  .gch_mermaid {
+    text-align: center;
+    overflow-x: auto;
+  }
+</style>
+</head>
+<body>
+  <div class="gch_title">智能客服系统 · Mermaid 图表</div>
+  <div class="gch_sub">葛聪慧 · 基于本地 mermaid（cdn/mermaid/mermaid.min.js）</div>
+
+  <div class="gch_section">
+    <div class="gch_section_title">一、智能客服系统处理流程图</div>
+    <div class="gch_mermaid">
+      <pre class="gch_mermaid_src">
+flowchart TD
+    A[用户发起咨询] --> B[会话接入]
+    B --> C{是否为常见问题}
+    C -->|是| D[命中FAQ知识库]
+    C -->|否| E{意图识别}
+    E -->|售前咨询| F[商品推荐引擎]
+    E -->|售后问题| G[工单系统]
+    E -->|其他/模糊| H[人工客服转接]
+    D --> I{答案置信度是否达标}
+    I -->|达标| J[直接回复用户]
+    I -->|不达标| K[RAG检索增强生成]
+    F --> L[生成个性化回复]
+    G --> M[创建工单并跟踪]
+    J --> Z[对话结束]
+    K --> Z
+    L --> Z
+    M --> Z
+    H --> Z
+      </pre>
+    </div>
+  </div>
+
+  <div class="gch_section">
+    <div class="gch_section_title">二、智能客服系统数据库ER图</div>
+    <div class="gch_mermaid">
+      <pre class="gch_mermaid_src">
+erDiagram
+    USER ||--o{ SESSION : "发起"
+    SESSION ||--o{ MESSAGE : "包含"
+    SESSION ||--o{ INTENT : "识别"
+    USER ||--o{ FEEDBACK : "提交"
+    MESSAGE ||--o| FEEDBACK : "评价"
+    KNOWLEDGE ||--o{ ANSWER : "生成"
+    INTENT ||--o{ KNOWLEDGE : "检索"
+    MESSAGE }o--|| KNOWLEDGE : "匹配引用"
+
+    USER {
+        int user_id PK
+        string nickname
+        string phone
+        datetime created_at
+    }
+    SESSION {
+        int session_id PK
+        int user_id FK
+        string channel
+        datetime start_time
+        datetime end_time
+    }
+    MESSAGE {
+        int message_id PK
+        int session_id FK
+        string role
+        string content
+        datetime send_time
+    }
+    FEEDBACK {
+        int feedback_id PK
+        int message_id FK
+        int user_id FK
+        int rating
+        string comment
+    }
+    INTENT {
+        int intent_id PK
+        string name
+        string description
+    }
+    KNOWLEDGE {
+        int knowledge_id PK
+        string title
+        string category
+        string content
+        int intent_id FK
+    }
+    ANSWER {
+        int answer_id PK
+        int knowledge_id FK
+        string text
+        float confidence
+    }
+      </pre>
+    </div>
+  </div>
+
+  <script src="cdn/mermaid/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "default",
+      securityLevel: "loose",
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true
+      }
+    });
+  </script>
+</body>
+</html>

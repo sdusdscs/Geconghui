@@ -5,8 +5,8 @@ description: "Commits all changes and pushes to GitHub remote. Invoke when user 
 
 # 提交项目到 GitHub（commit + push）
 
-将当前项目的所有改动用 `git commit` 提交，并推送到远程仓库
-`https://gitee.com/ge-conghui/geconghui2026`。
+将当前项目的所有改动用 `git commit` 提交，并推送到 GitHub 远程仓库
+`https://github.com/sdusdscs/Geconghui`。
 
 ## 步骤
 
@@ -18,11 +18,11 @@ description: "Commits all changes and pushes to GitHub remote. Invoke when user 
    git log --oneline -5
    ```
 
-2. 若没有指向 `https://gitee.com/ge-conghui/geconghui2026.git` 的远程，则添加
+2. 若没有指向 `https://github.com/sdusdscs/Geconghui.git` 的远程，则添加
    （已有同名 `github` 但地址不符时，用 `git remote set-url github <url>` 修正）：
 
    ```powershell
-   git remote add github https://gitee.com/ge-conghui/geconghui2026.git
+   git remote add github https://github.com/sdusdscs/Geconghui.git
    ```
 
 3. 暂存全部改动：

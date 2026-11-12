@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智能客服知识库系统 · RAG 问答</title>
+<!-- 姓名：葛聪慧，2026-11-12：知识库文件上传 + 知识库管理 + RAG 智能客服问答（16-6） -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0b0b14;
+    color: #e9e9f0;
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    font-size: 14px;
+    padding: 16px 0 40px;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-thumb { background: #22304d; border-radius: 3px; }
+
+  .Ge_app { width: 100%; max-width: 960px; margin: 0 auto; padding: 0 16px; }
+
+  /* ================= 顶部 ================= */
+  .Ge_top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #131a2e;
+    border: 1px solid #1d2b45;
+    border-radius: 14px;
+  }
+
+  .Ge_brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
+  .Ge_logo {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #10b981, #0ea5e9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 17px;
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(16, 185, 129, .3);
+  }
+
+  .Ge_brandTxt h1 { font-size: 16px; font-weight: 700; color: #eef2fb; letter-spacing: .5px; }
+  .Ge_brandTxt p { font-size: 12px; color: #7d8db0; margin-top: 2px; }
+
+  .Ge_topActions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+
+  .Ge_ghostBtn {
+    padding: 7px 12px;
+    background: transparent;
+    border: 1px solid #25365a;
+    border-radius: 9px;
+    color: #a8d8ea;
+    font-size: 12.5px;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all .2s;
+  }
+
+  .Ge_ghostBtn:hover { border-color: #10b981; color: #fff; background: rgba(16, 185, 129, .1); }
+
+  .Ge_ghostWarm { color: #ffc9a3; }
+  .Ge_ghostWarm:hover { border-color: #f59e0b; background: rgba(245, 158, 11, .12); }
+
+  /* ================= 面板 ================= */
+  .Ge_panel {
+    margin-top: 14px;
+    background: #131a2e;
+    border: 1px solid #1d2b45;
+    border-radius: 14px;
+    padding: 16px;
+  }
+
+  .Ge_panelHead { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+
+  .Ge_panelHead h2 { font-size: 15px; color: #eef2fb; letter-spacing: .5px; }
+
+  .Ge_panelHead h2 i {
+    font-style: normal;
+    font-size: 11px;
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, .4);
+    border-radius: 10px;
+    padding: 1px 8px;
+    margin-left: 8px;
+  }
+
+  .Ge_stats { font-size: 12px; color: #8fa3c7; }
+  .Ge_stats b { color: #10b981; font-weight: 700; }
+
+  /* ================= 上传 ================= */
+  .Ge_drop {
+    border: 2px dashed #25365a;
+    border-radius: 12px;
+    padding: 22px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+    background: #0e1425;
+  }
+
+  .Ge_drop:hover, .Ge_dropOver { border-color: #10b981; background: rgba(16, 185, 129, .06); }
+
+  .Ge_dropIcon { font-size: 26px; }
+
+  .Ge_drop p { margin-top: 8px; color: #c7d3e8; font-size: 13.5px; }
+
+  .Ge_pick { color: #10b981; cursor: pointer; text-decoration: underline; }
+
+  .Ge_drop .Ge_small { margin-top: 6px; font-size: 11.5px; color: #5f6f92; }
+
+  .Ge_uplog { margin-top: 10px; font-size: 12px; color: #8fa3c7; line-height: 1.9; min-height: 0; }
+  .Ge_uplog .Ge_ok { color: #34d399; }
+  .Ge_uplog .Ge_bad { color: #ff8f9b; }
+
+  /* ================= 文档表格 ================= */
+  .Ge_table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+  .Ge_table th {
+    text-align: left;
+    padding: 9px 10px;
+    color: #8fa3c7;
+    font-weight: 400;
+    border-bottom: 1px solid #1e2d4a;
+    white-space: nowrap;
+  }
+
+  .Ge_table td { padding: 10px; border-bottom: 1px dotted #22304d; color: #dbe4f5; word-break: break-all; }
+
+  .Ge_table tr:hover td { background: rgba(16, 185, 129, .04); }
+
+  .Ge_typeTag {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    border: 1px solid #25365a;
+    color: #a8d8ea;
+    text-transform: uppercase;
+  }
+
+  .Ge_linkBtn {
+    background: none;
+    border: none;
+    color: #10b981;
+    cursor: pointer;
+    font-size: 12.5px;
+    padding: 2px 6px;
+  }
+
+  .Ge_linkBtn:hover { text-decoration: underline; }
+
+  .Ge_linkBtn.Ge_danger { color: #ff8f9b; }
+
+  .Ge_emptyTip { text-align: center; color: #5f6f92; font-size: 13px; padding: 22px 0 8px; }
+
+  /* ================= 问答 ================= */
+  .Ge_llmRow { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #8fa3c7; }
+  .Ge_llmRow input { accent-color: #10b981; width: 15px; height: 15px; cursor: pointer; }
+
+  .Ge_chat {
+    height: 380px;
+    overflow-y: auto;
+    background: #0e1425;
+    border: 1px solid #1e2d4a;
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .Ge_msg { display: flex; gap: 10px; align-items: flex-start; animation: Ge_in .25s ease both; }
+  .Ge_msgUser { flex-direction: row-reverse; }
+
+  .Ge_avatar {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .Ge_avaUser { background: #1d3557; color: #a8d8ea; border: 1px solid #2b4a6f; }
+  .Ge_avaAi { background: linear-gradient(135deg, #10b981, #0ea5e9); color: #fff; }
+
+  .Ge_bubble {
+    max-width: min(660px, 82%);
+    padding: 11px 13px;
+    border-radius: 13px;
+    font-size: 13.5px;
+    line-height: 1.85;
+    word-break: break-word;
+  }
+
+  .Ge_bubbleUser { background: linear-gradient(135deg, #0ea5e9, #0369a1); color: #fff; border-top-right-radius: 4px; white-space: pre-wrap; }
+  .Ge_bubbleAi { background: #141d33; border: 1px solid #1e2d4a; color: #e6ecf7; border-top-left-radius: 4px; }
+  .Ge_bubbleErr { border-color: #7f2c3a; background: #1f1219; color: #ffc3c3; }
+
+  .Ge_retrieved {
+    font-size: 11.5px;
+    color: #6f7fa3;
+    margin-bottom: 8px;
+    padding-bottom: 7px;
+    border-bottom: 1px dashed #22304d;
+  }
+
+  .Ge_sources { margin-top: 9px; padding-top: 8px; border-top: 1px dashed #22304d; }
+
+  .Ge_sources h4 { font-size: 11.5px; color: #8fa3c7; font-weight: 400; margin-bottom: 6px; }
+
+  .Ge_srcItem {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    font-size: 11.5px;
+    color: #9fb0cf;
+    padding: 4px 8px;
+    background: #0d1526;
+    border: 1px solid #1e2d4a;
+    border-radius: 7px;
+    margin-bottom: 5px;
+  }
+
+  .Ge_srcItem b { color: #34d399; font-weight: 400; flex: 0 0 auto; }
+  .Ge_srcItem span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+  .Ge_bubble mark { background: rgba(16, 185, 129, .28); color: #d9ffe9; padding: 0 2px; border-radius: 3px; }
+
+  .Ge_bubble pre {
+    background: #0a1020;
+    border: 1px solid #1e2d4a;
+    border-radius: 8px;
+    padding: 9px 11px;
+    margin: 7px 0;
+    overflow-x: auto;
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    color: #9be0b0;
+    white-space: pre;
+  }
+
+  .Ge_codeInline { background: #0a1020; border: 1px solid #1e2d4a; border-radius: 4px; padding: 1px 5px; font-family: Consolas, monospace; font-size: 12px; color: #9be0b0; }
+
+  .Ge_cursor { display: inline-block; width: 7px; height: 14px; background: #10b981; border-radius: 1px; vertical-align: -2px; margin-left: 3px; animation: Ge_blink .9s steps(1) infinite; }
+
+  .Ge_think {
+    display: none;
+    margin-bottom: 9px;
+    border: 1px dashed #2a3b5c;
+    border-radius: 10px;
+    background: #0d1526;
+    overflow: hidden;
+  }
+
+  .Ge_thinkHead { display: flex; justify-content: space-between; padding: 6px 10px; font-size: 11.5px; color: #8fa3c7; cursor: pointer; user-select: none; }
+  .Ge_thinkHead span:last-child { color: #10b981; }
+  .Ge_thinkBody { padding: 0 10px 8px; font-size: 12px; line-height: 1.7; color: #8f9ab8; max-height: 130px; overflow-y: auto; white-space: pre-wrap; }
+  .Ge_thinkFold .Ge_thinkBody { display: none; }
+
+  /* 输入区 */
+  .Ge_chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+
+  .Ge_chip {
+    padding: 6px 13px;
+    background: #141d33;
+    border: 1px solid #25365a;
+    border-radius: 18px;
+    color: #a8d8ea;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .Ge_chip:hover { border-color: #10b981; color: #fff; transform: translateY(-1px); }
+
+  .Ge_inputWrap {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    margin-top: 12px;
+    padding: 9px 9px 9px 13px;
+    background: #0e1425;
+    border: 1px solid #1d2b45;
+    border-radius: 12px;
+    transition: border-color .2s, box-shadow .2s;
+  }
+
+  .Ge_inputWrap:focus-within { border-color: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, .12); }
+
+  .Ge_inputWrap textarea {
+    flex: 1;
+    min-height: 24px;
+    max-height: 120px;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    color: #eef2fb;
+    font-family: inherit;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  .Ge_inputWrap textarea::placeholder { color: #5f6f92; }
+
+  .Ge_send {
+    flex: 0 0 auto;
+    padding: 8px 17px;
+    background: linear-gradient(135deg, #10b981, #0ea5e9);
+    border: none;
+    border-radius: 9px;
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .Ge_send:hover { filter: brightness(1.08); }
+  .Ge_sendStop { background: #12232a; border: 1px solid #10b981; color: #a7f3d0; }
+
+  .Ge_qaHint { margin-top: 8px; font-size: 11.5px; color: #5f6f92; display: flex; justify-content: space-between; gap: 10px; }
+  .Ge_qaHint b { color: #a8d8ea; font-weight: 400; }
+
+  /* ================= 预览弹窗 ================= */
+  .Ge_modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 8, 15, .72);
+    z-index: 50;
+    padding: 24px 16px;
+    overflow-y: auto;
+  }
+
+  .Ge_modalOn { display: block; }
+
+  .Ge_modalBox {
+    max-width: 760px;
+    margin: 0 auto;
+    background: #131a2e;
+    border: 1px solid #1d2b45;
+    border-radius: 14px;
+    padding: 18px;
+  }
+
+  .Ge_modalHead { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; }
+
+  .Ge_modalHead h3 { font-size: 15px; color: #eef2fb; }
+
+  .Ge_modalMeta { font-size: 12px; color: #8fa3c7; margin-bottom: 12px; }
+
+  .Ge_chunkBox { background: #0e1425; border: 1px solid #1e2d4a; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
+
+  .Ge_chunkBox b { font-size: 11.5px; color: #34d399; font-weight: 400; display: block; margin-bottom: 5px; }
+
+  .Ge_chunkBox p { font-size: 12.5px; line-height: 1.8; color: #c9d4ea; white-space: pre-wrap; }
+
+  /* ================= 接口配置弹窗 ================= */
+  .Ge_cfgField { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+  .Ge_cfgField label { font-size: 12px; color: #8fa3c7; }
+  .Ge_cfgField input {
+    width: 100%;
+    padding: 9px 12px;
+    background: #0b1120;
+    border: 1px solid #1d2b45;
+    border-radius: 8px;
+    color: #e6ecf7;
+    font-size: 13px;
+    font-family: Consolas, "Microsoft YaHei", monospace;
+    outline: none;
+  }
+  .Ge_cfgField input:focus { border-color: #10b981; }
+
+  @keyframes Ge_in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes Ge_blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  @media (max-width: 640px) {
+    .Ge_app { padding: 0 10px; }
+    .Ge_top { flex-direction: column; align-items: flex-start; }
+    .Ge_bubble { max-width: 86%; }
+    .Ge_table th:nth-child(3), .Ge_table td:nth-child(3) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="Ge_app">
+
+    <!-- 顶部 -->
+    <div class="Ge_top">
+      <div class="Ge_brand">
+        <div class="Ge_logo">知</div>
+        <div class="Ge_brandTxt">
+          <h1>智能客服知识库系统</h1>
+          <p>本地文件上传 · 解析分块 · RAG 检索增强问答</p>
+        </div>
+      </div>
+      <div class="Ge_topActions">
+        <button class="Ge_ghostBtn Ge_ghostWarm" id="Ge_sampleBtn">载入示例知识库（2 个）</button>
+        <button class="Ge_ghostBtn" id="Ge_cfgBtn">接口配置</button>
+        <a class="Ge_ghostBtn" href="index.html">返回首页</a>
+      </div>
+    </div>
+
+    <!-- ① 上传模块 -->
+    <div class="Ge_panel">
+      <div class="Ge_panelHead">
+        <h2>① 知识库文件上传<i>支持 PDF / TXT / MD</i></h2>
+      </div>
+      <div class="Ge_drop" id="Ge_drop">
+        <div class="Ge_dropIcon">📂</div>
+        <p>把文件拖到这里，或 <label class="Ge_pick">点击选择文件<input type="file" id="Ge_fileInput" multiple accept=".txt,.md,.markdown,.pdf,.json,.csv" hidden></label></p>
+        <p class="Ge_small">TXT / MD 直接解析并自动按 GBK 兜底；PDF 自动联网加载 pdf.js 解析文字层。文件只在本地浏览器内解析。</p>
+      </div>
+      <div class="Ge_uplog" id="Ge_uplog"></div>
+    </div>
+
+    <!-- ② 管理模块 -->
+    <div class="Ge_panel">
+      <div class="Ge_panelHead">
+        <h2>② 知识库管理</h2>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <span class="Ge_stats" id="Ge_stats"></span>
+          <button class="Ge_linkBtn Ge_danger" id="Ge_clearBtn">清空知识库</button>
+        </div>
+      </div>
+      <div id="Ge_docList"></div>
+    </div>
+
+    <!-- ③ 问答模块 -->
+    <div class="Ge_panel">
+      <div class="Ge_panelHead">
+        <h2>③ 智能客服问答<i>RAG 检索增强</i></h2>
+        <label class="Ge_llmRow">
+          <input type="checkbox" id="Ge_llmOn">
+          增强模式：调用大模型生成回答（需在「接口配置」中填好 Key）
+        </label>
+      </div>
+
+      <div class="Ge_chat" id="Ge_chat">
+        <div class="Ge_msg Ge_msgAi">
+          <div class="Ge_avatar Ge_avaAi">客</div>
+          <div class="Ge_bubble Ge_bubbleAi">
+            您好，我是「葛聪慧数码生活馆」的智能客服。请先在上方上传知识库文件（或点右上角「载入示例知识库」），然后就可以向我提问了。我会先检索知识库，再基于命中的内容回答，并标注引用来源。
+          </div>
+        </div>
+      </div>
+
+      <div class="Ge_chips">
+        <button class="Ge_chip" data-q="退换货政策是什么？">退换货政策是什么？</button>
+        <button class="Ge_chip" data-q="台灯保修多久？">台灯保修多久？</button>
+        <button class="Ge_chip" data-q="台灯怎么连接 WiFi？">台灯怎么连 WiFi？</button>
+        <button class="Ge_chip" data-q="发货时间是什么时候？">发货时间是什么时候？</button>
+        <button class="Ge_chip" data-q="台灯连不上 WiFi 怎么办？">连不上 WiFi 怎么办？</button>
+      </div>
+
+      <div class="Ge_inputWrap">
+        <textarea id="Ge_input" rows="1" placeholder="输入问题，Enter 发送，Shift + Enter 换行"></textarea>
+        <button class="Ge_send" id="Ge_sendBtn">发送</button>
+      </div>
+      <div class="Ge_qaHint">
+        <span>状态：<b id="Ge_status">就绪</b></span>
+        <span>检索过程与命中片段均在控制台（F12 → Console）打印</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 预览弹窗 -->
+  <div class="Ge_modal" id="Ge_previewModal">
+    <div class="Ge_modalBox">
+      <div class="Ge_modalHead">
+        <h3 id="Ge_pvName"></h3>
+        <button class="Ge_ghostBtn" id="Ge_pvClose">关闭</button>
+      </div>
+      <div class="Ge_modalMeta" id="Ge_pvMeta"></div>
+      <div id="Ge_pvChunks"></div>
+    </div>
+  </div>
+
+  <!-- 接口配置弹窗 -->
+  <div class="Ge_modal" id="Ge_cfgModal">
+    <div class="Ge_modalBox">
+      <div class="Ge_modalHead">
+        <h3>大模型接口配置（增强模式）</h3>
+        <button class="Ge_ghostBtn" id="Ge_cfgClose">关闭</button>
+      </div>
+      <div class="Ge_cfgField">
+        <label>API Key</label>
+        <input id="Ge_keyInput" type="text" spellcheck="false">
+      </div>
+      <div class="Ge_cfgField">
+        <label>OpenAI Base URL</label>
+        <input id="Ge_baseInput" type="text" spellcheck="false">
+      </div>
+      <div class="Ge_cfgField">
+        <label>Model ID</label>
+        <input id="Ge_modelInput" type="text" spellcheck="false">
+      </div>
+      <div class="Ge_cfgField">
+        <label>检索片段数量 top-K</label>
+        <input id="Ge_topkInput" type="number" min="1" max="8">
+      </div>
+      <button class="Ge_send" id="Ge_cfgSave" style="margin-top:4px;">保存并关闭</button>
+      <p class="Ge_qaHint" style="margin-top:10px;">密钥仅保存在本机浏览器 localStorage，静态页面会暴露密钥，请勿部署到公网。</p>
+    </div>
+  </div>
+
+  <script>
+    /* =====================================================
+       Ge_ 前缀：智能客服知识库系统（上传 / 管理 / RAG 问答）
+    ===================================================== */
+
+    /* ============ 大模型接口配置（与 16-5 共用 localStorage） ============ */
+    var Ge_cfg = {
+      key: localStorage.getItem("Ge_api_key") || "",
+      base: localStorage.getItem("Ge_api_base") || "https://api.qnaigc.com/v1",
+      model: localStorage.getItem("Ge_api_model") || "qiniu/conatus-free",
+      topk: Number(localStorage.getItem("Ge_kb_topk")) || 3
+    };
+
+    /* ============ 示例知识库内容（与目录下两个 kb-*.txt 文件一致） ============ */
+    var Ge_SAMPLE_FAQ = "智能客服常见问题知识库\n店铺：葛聪慧数码生活馆\n说明：本知识库用于智能客服问答系统（RAG 检索增强问答）。\n\n问：你们店的发货时间是什么时候？\n答：每天下午 4 点前下单的订单当日发货，4 点之后的订单次日发货。节假日顺延，发货后 1-3 天送达，偏远地区 3-5 天。\n\n问：支持哪些退换货政策？\n答：自签收之日起 7 天内，商品未使用、包装完好可无理由退货；15 天内出现质量问题可换货。退货运费由买家承担（质量问题除外），退款将在商品入库验收后 1-3 个工作日内原路返回。\n\n问：商品有保修吗？保修多久？\n答：全系智能台灯整机保修 1 年，LED 灯板保修 3 年。保修期内非人为损坏免费维修，需提供订单号或发票。\n\n问：怎么开发票？\n答：支持电子普通发票和增值税专用发票。下单时在“发票信息”中填写抬头即可，电子发票在发货后 24 小时内发送到您的邮箱。\n\n问：有哪些支付方式？\n答：支持微信支付、支付宝、银联卡以及货到付款（限江浙沪地区）。会员积分可在结算时抵扣现金，100 积分抵 1 元。\n\n问：会员有什么优惠？\n答：注册即送 500 积分；会员日（每月 8 日）全场 95 折；累计消费满 2000 元升级黄金会员，享 92 折与优先客服通道。\n\n问：台灯可以连 WiFi 吗？\n答：可以。X1 智能护眼台灯支持 2.4GHz WiFi，通过“葛聪慧家居”App 完成配网后可远程控制、定时开关和调节亮度色温。\n\n问：配送范围包括哪些地区？\n答：全国除港澳台及部分海岛地区外均可配送。新疆、西藏、内蒙古部分地区需补运费 10 元，下单时系统会自动提示。\n\n问：订单可以修改地址吗？\n答：发货前可以在“我的订单-订单详情”中修改收货地址；一旦发货则无法修改，可联系客服尝试拦截快递。\n\n问：如何联系人工客服？\n答：在线客服工作时间为每日 9:00-21:00，您也可以拨打 400-800-1234，或发送邮件到 service@gchshop.cn，我们会在 1 个工作日内回复。";
+
+    var Ge_SAMPLE_MANUAL = "X1 智能护眼台灯产品手册\n型号：GCH-X1  厂商：葛聪慧数码生活馆\n\n一、产品概述\nX1 智能护眼台灯是一款面向学习与办公场景的智能照明产品，采用全光谱 LED 灯珠，显色指数 Ra≥95，无可视频闪，支持无级调光与色温调节（3000K-6500K），可通过 App 与语音音箱控制。\n\n二、主要功能\n1. 五档亮度记忆：短触触摸条调节亮度，长按 2 秒自动记忆当前亮度。\n2. 色温调节：上滑色温条变冷光，适合学习；下滑变暖光，适合睡前阅读。\n3. 坐姿提醒：开启后内置红外传感器检测到低头距离过近会语音提醒“请注意坐姿”。\n4. 定时关灯：App 内可设置 30/45/60 分钟定时关灯，伴睡模式灯光会在 10 分钟内渐暗熄灭。\n5. 番茄钟模式：App 内开启后，每学习 25 分钟灯光闪烁三次提醒休息 5 分钟。\n\n三、技术参数\n额定功率 12W；输入 100-240V 50/60Hz；照度中心 ≥600lx（30cm）；色温 3000K-6500K；显色指数 Ra≥95；频闪豁免级（IEEE 1789）；灯杆高度 45cm；底座直径 18cm；净重 1.2kg。\n\n四、安装与使用\n1. 将灯杆插入底座卡槽并旋紧固定螺丝。\n2. 接通电源后触摸开关开机，首次开机默认 4000K 中性光、亮度 60%。\n3. App 配网：下载“葛聪慧家居”App，注册登录后点击右上角“+”，长按台灯触摸条上的 WiFi 图标 5 秒，指示灯快闪后按提示输入家庭 WiFi 密码（仅支持 2.4GHz）完成配网。\n4. 语音控制：支持小爱同学、天猫精灵，在对应 App 中绑定“葛聪慧家居”技能即可用“打开台灯”“把灯调亮一点”等指令控制。\n\n五、注意事项\n请勿在潮湿环境或浴室中使用；请勿自行拆卸灯板与底座，否则失去保修资格；清洁时请先断电并用干布擦拭；长期不用请拔掉电源。儿童使用时请在成人指导下操作。\n\n六、常见故障排查\n灯不亮：检查电源适配器是否插紧、插座是否通电；长按开关 10 秒可恢复出厂设置。\n连不上 WiFi：确认 WiFi 为 2.4GHz 频段，路由器不要开启无线隔离；将台灯放在路由器 3 米内重试配网。\nApp 找不到设备：请确认手机与台灯连接同一 WiFi，并检查手机定位权限是否开启。\n触摸不灵敏：断电 1 分钟后重新通电，若仍不灵敏请联系售后更换触摸板。\n\n七、售后服务\n整机保修 1 年、灯板保修 3 年；保修期内非人为损坏免费维修。维修请携带订单号联系客服，寄回运费由商家承担（质量问题），维修周期一般为 7 个工作日。";
+
+    /* ============ 全局状态 ============ */
+    var Ge_docs = [];          /* [{id,name,type,size,time,chunks:[{idx,text}]}] */
+    var Ge_index = { items: [], df: {}, N: 0 };
+    var Ge_busy = false;
+    var Ge_ctrl = null;
+
+    /* ============ DOM ============ */
+    var Ge_chat = document.getElementById("Ge_chat");
+    var Ge_input = document.getElementById("Ge_input");
+    var Ge_sendBtn = document.getElementById("Ge_sendBtn");
+    var Ge_statusEl = document.getElementById("Ge_status");
+    var Ge_docList = document.getElementById("Ge_docList");
+    var Ge_statsEl = document.getElementById("Ge_stats");
+    var Ge_uplog = document.getElementById("Ge_uplog");
+    var Ge_drop = document.getElementById("Ge_drop");
+    var Ge_fileInput = document.getElementById("Ge_fileInput");
+    var Ge_llmOn = document.getElementById("Ge_llmOn");
+
+    /* ============ 通用小工具 ============ */
+    function Ge_esc(Ge_s) {
+      return String(Ge_s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function Ge_setStatus(Ge_t) { Ge_statusEl.textContent = Ge_t; }
+
+    function Ge_log(Ge_txt, Ge_bad) {
+      var Ge_line = document.createElement("div");
+      Ge_line.className = Ge_bad ? "Ge_bad" : "Ge_ok";
+      Ge_line.textContent = "· " + Ge_txt;
+      Ge_uplog.appendChild(Ge_line);
+      Ge_uplog.scrollTop = Ge_uplog.scrollHeight;
+    }
+
+    function Ge_now() {
+      var Ge_d = new Date();
+      function Ge_p(n) { return n < 10 ? "0" + n : n; }
+      return Ge_p(Ge_d.getMonth() + 1) + "-" + Ge_p(Ge_d.getDate()) + " " + Ge_p(Ge_d.getHours()) + ":" + Ge_p(Ge_d.getMinutes());
+    }
+
+    /* 极简 Markdown（大模型输出用） */
+    function Ge_md(Ge_src) {
+      var Ge_stash = [];
+      var Ge_s = String(Ge_src);
+      Ge_s = Ge_s.replace(/```[a-zA-Z]*\n?([\s\S]*?)```/g, function (Ge_m, Ge_code) {
+        Ge_stash.push("<pre><code>" + Ge_esc(Ge_code.replace(/\n$/, "")) + "</code></pre>");
+        return "\u0001" + (Ge_stash.length - 1) + "\u0001";
+      });
+      Ge_s = Ge_esc(Ge_s);
+      Ge_s = Ge_s.replace(/`([^`\n]+)`/g, '<code class="Ge_codeInline">$1</code>');
+      Ge_s = Ge_s.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
+      Ge_s = Ge_s.replace(/^#{1,4}\s*(.+)$/gm, "<strong>$1</strong>");
+      Ge_s = Ge_s.replace(/^\s*[-*]\s+(.+)$/gm, "· $1");
+      Ge_s = Ge_s.replace(/\n/g, "<br>");
+      Ge_s = Ge_s.replace(/\u0001(\d+)\u0001/g, function (Ge_m, Ge_i) { return Ge_stash[Number(Ge_i)]; });
+      return Ge_s;
+    }
+
+    /* ============ 中文分词（二元切分 + 英文单词） ============ */
+    function Ge_tokens(Ge_s) {
+      var Ge_out = [];
+      var Ge_s2 = String(Ge_s).toLowerCase();
+      var Ge_ascii = Ge_s2.match(/[a-z0-9]+/g);
+      if (Ge_ascii) for (var Ge_i = 0; Ge_i < Ge_ascii.length; Ge_i++) Ge_out.push(Ge_ascii[Ge_i]);
+      var Ge_runs = Ge_s2.match(/[\u4e00-\u9fa5]+/g) || [];
+      for (var Ge_j = 0; Ge_j < Ge_runs.length; Ge_j++) {
+        var Ge_run = Ge_runs[Ge_j];
+        if (Ge_run.length === 1) { Ge_out.push(Ge_run); continue; }
+        for (var Ge_k = 0; Ge_k < Ge_run.length - 1; Ge_k++) Ge_out.push(Ge_run.substr(Ge_k, 2));
+      }
+      return Ge_out;
+    }
+
+    /* ============ 分块 ============ */
+    function Ge_chunkText(Ge_text) {
+      var Ge_paras = String(Ge_text).replace(/\r/g, "").split(/\n+/)
+        .map(function (s) { return s.trim(); })
+        .filter(function (s) { return s.length > 1; });
+      var Ge_MAX = 320;
+      var Ge_chunks = [];
+      var Ge_cur = "";
+
+      function Ge_pushLong(Ge_p) {
+        var Ge_sents = Ge_p.match(/[^。！？；;]+[。！？；;]?/g) || [Ge_p];
+        var Ge_buf = "";
+        for (var i = 0; i < Ge_sents.length; i++) {
+          if ((Ge_buf + Ge_sents[i]).length > Ge_MAX && Ge_buf) { Ge_chunks.push(Ge_buf); Ge_buf = Ge_sents[i]; }
+          else Ge_buf += Ge_sents[i];
+        }
+        if (Ge_buf) Ge_cur = Ge_buf;
+      }
+
+      for (var i = 0; i < Ge_paras.length; i++) {
+        var Ge_p = Ge_paras[i];
+        if (Ge_p.length > Ge_MAX) {
+          if (Ge_cur) { Ge_chunks.push(Ge_cur); Ge_cur = ""; }
+          Ge_pushLong(Ge_p);
+          continue;
+        }
+        if ((Ge_cur + "\n" + Ge_p).length > Ge_MAX && Ge_cur) { Ge_chunks.push(Ge_cur); Ge_cur = Ge_p; }
+        else Ge_cur = Ge_cur ? Ge_cur + "\n" + Ge_p : Ge_p;
+      }
+      if (Ge_cur) Ge_chunks.push(Ge_cur);
+
+      return Ge_chunks.map(function (t, i) { return { idx: i + 1, text: t }; });
+    }
+
+    /* ============ 倒排索引 / TF-IDF ============ */
+    function Ge_rebuildIndex() {
+      Ge_index.items = [];
+      Ge_index.df = {};
+      Ge_index.N = 0;
+      Ge_docs.forEach(function (Ge_d) {
+        Ge_d.chunks.forEach(function (Ge_c) {
+          var Ge_tf = {};
+          var Ge_toks = Ge_tokens(Ge_c.text);
+          for (var i = 0; i < Ge_toks.length; i++) Ge_tf[Ge_toks[i]] = (Ge_tf[Ge_toks[i]] || 0) + 1;
+          for (var k in Ge_tf) Ge_index.df[k] = (Ge_index.df[k] || 0) + 1;
+          Ge_index.items.push({ doc: Ge_d, chunk: Ge_c, tf: Ge_tf });
+          Ge_index.N++;
+        });
+      });
+    }
+
+    function Ge_idf(Ge_t) {
+      var Ge_df = Ge_index.df[Ge_t] || 0;
+      return Math.log(1 + Ge_index.N / (1 + Ge_df));
+    }
+
+    /* ============ 检索 ============ */
+    function Ge_retrieve(Ge_query, Ge_k) {
+      var Ge_uniq = {};
+      Ge_tokens(Ge_query).forEach(function (t) { Ge_uniq[t] = 1; });
+      var Ge_lower = Ge_query.toLowerCase();
+      var Ge_hits = [];
+
+      for (var i = 0; i < Ge_index.items.length; i++) {
+        var Ge_it = Ge_index.items[i];
+        var Ge_score = 0;
+        for (var t in Ge_uniq) {
+          if (Ge_it.tf[t]) Ge_score += Ge_idf(t) * Math.min(1, Ge_it.tf[t] / 3);
+        }
+        if (Ge_lower.length >= 2 && Ge_it.chunk.text.toLowerCase().indexOf(Ge_lower) !== -1) Ge_score += 0.6;
+        if (Ge_score > 0.01) Ge_hits.push({ item: Ge_it, score: Ge_score });
+      }
+
+      Ge_hits.sort(function (a, b) { return b.score - a.score; });
+      var Ge_top = Ge_hits.slice(0, Ge_k || Ge_cfg.topk);
+      var Ge_max = Ge_top.length ? Ge_top[0].score : 1;
+      Ge_top.forEach(function (h) { h.percent = Math.round(Math.min(100, h.score / Ge_max * 100)); });
+      return Ge_top;
+    }
+
+    /* ============ 抽取式回答（不依赖大模型） ============ */
+    function Ge_extractAnswer(Ge_query, Ge_hits) {
+      var Ge_uniq = {};
+      Ge_tokens(Ge_query).forEach(function (t) { Ge_uniq[t] = 1; });
+
+      var Ge_sents = [];
+      Ge_hits.forEach(function (Ge_h, Ge_hi) {
+        var Ge_parts = Ge_h.item.chunk.text.match(/[^。！？；;\n]+[。！？；;]?/g) || [Ge_h.item.chunk.text];
+        for (var i = 0; i < Ge_parts.length; i++) {
+          var Ge_stoks = {};
+          Ge_tokens(Ge_parts[i]).forEach(function (t) { Ge_stoks[t] = 1; });
+          var Ge_s = 0;
+          for (var t in Ge_uniq) if (Ge_stoks[t]) Ge_s += Ge_idf(t);
+          if (Ge_s > 0) Ge_sents.push({
+            text: Ge_parts[i].trim(),
+            score: Ge_s,
+            order: Ge_hi * 1000 + i,
+            src: Ge_h.item.doc.name + " · 块 " + Ge_h.item.chunk.idx
+          });
+        }
+      });
+
+      Ge_sents.sort(function (a, b) { return b.score - a.score; });
+      var Ge_picked = [];
+      var Ge_srcs = {};
+      for (var i = 0; i < Ge_sents.length && Ge_picked.length < 3; i++) {
+        if (Ge_srcs[Ge_sents[i].text]) continue;
+        Ge_srcs[Ge_sents[i].text] = 1;
+        Ge_picked.push(Ge_sents[i]);
+      }
+      if (!Ge_picked.length) {
+        Ge_picked.push({ text: Ge_hits[0].item.chunk.text, order: 0, src: Ge_hits[0].item.doc.name + " · 块 " + Ge_hits[0].item.chunk.idx });
+      }
+      Ge_picked.sort(function (a, b) { return a.order - b.order; });
+      return Ge_picked.map(function (s) { return s.text; }).join(" ");
+    }
+
+    /* 关键词高亮 */
+    function Ge_highlight(Ge_html, Ge_query) {
+      var Ge_toks = Ge_tokens(Ge_query)
+        .filter(function (t, i, arr) { return t.length >= 2 && arr.indexOf(t) === i; })
+        .sort(function (a, b) { return b.length - a.length; });
+      for (var i = 0; i < Ge_toks.length; i++) {
+        var Ge_t = Ge_esc(Ge_toks[i]).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        try {
+          Ge_html = Ge_html.replace(new RegExp(Ge_t, "g"), "<mark>" + Ge_esc(Ge_toks[i]) + "</mark>");
+        } catch (e) {}
+      }
+      return Ge_html;
+    }
+
+    function Ge_srcListHtml(Ge_hits) {
+      var Ge_h = '<div class="Ge_sources"><h4>引用来源（RAG 命中片段）</h4>';
+      Ge_hits.forEach(function (h) {
+        Ge_h += '<div class="Ge_srcItem"><b>' + Ge_esc(h.item.doc.name) + ' · 块 ' + h.item.chunk.idx
+          + ' · 相似度 ' + h.percent + '%</b><span>' + Ge_esc(h.item.chunk.text.slice(0, 60)) + '…</span></div>';
+      });
+      return Ge_h + '</div>';
+    }
+
+    /* ============ 消息渲染 ============ */
+    function Ge_addUser(Ge_text) {
+      var Ge_w = document.createElement("div");
+      Ge_w.className = "Ge_msg Ge_msgUser";
+      Ge_w.innerHTML = '<div class="Ge_bubble Ge_bubbleUser"></div><div class="Ge_avatar Ge_avaUser">我</div>';
+      Ge_w.querySelector(".Ge_bubble").textContent = Ge_text;
+      Ge_chat.appendChild(Ge_w);
+      Ge_chat.scrollTop = Ge_chat.scrollHeight;
+    }
+
+    function Ge_addAi() {
+      var Ge_w = document.createElement("div");
+      Ge_w.className = "Ge_msg Ge_msgAi";
+      Ge_w.innerHTML = '<div class="Ge_avatar Ge_avaAi">客</div>'
+        + '<div class="Ge_bubble Ge_bubbleAi">'
+        + '<div class="Ge_retrieved"></div>'
+        + '<div class="Ge_think"><div class="Ge_thinkHead"><span>思考过程</span><span>展开</span></div><div class="Ge_thinkBody"></div></div>'
+        + '<div class="Ge_content"></div>'
+        + '<span class="Ge_cursor"></span>'
+        + '</div>';
+      Ge_chat.appendChild(Ge_w);
+
+      var Ge_think = Ge_w.querySelector(".Ge_think");
+      var Ge_tog = Ge_w.querySelector(".Ge_thinkHead span:last-child");
+      Ge_w.querySelector(".Ge_thinkHead").onclick = function () {
+        var Ge_folded = Ge_think.classList.toggle("Ge_thinkFold");
+        Ge_tog.textContent = Ge_folded ? "展开" : "收起";
+      };
+
+      return {
+        wrap: Ge_w,
+        retrieved: Ge_w.querySelector(".Ge_retrieved"),
+        think: Ge_think,
+        thinkBody: Ge_w.querySelector(".Ge_thinkBody"),
+        tog: Ge_tog,
+        content: Ge_w.querySelector(".Ge_content"),
+        cursor: Ge_w.querySelector(".Ge_cursor"),
+        bubble: Ge_w.querySelector(".Ge_bubbleAi")
+      };
+    }
+
+    function Ge_finish(Ge_ai) {
+      if (Ge_ai.cursor.parentNode) Ge_ai.cursor.parentNode.removeChild(Ge_ai.cursor);
+      if (Ge_ai.thinkBody.textContent.trim() && Ge_ai.content.textContent.trim()) {
+        Ge_ai.think.classList.add("Ge_thinkFold");
+        Ge_ai.tog.textContent = "展开";
+      }
+      Ge_chat.scrollTop = Ge_chat.scrollHeight;
+    }
+
+    /* ============ 文件读取与解析 ============ */
+    function Ge_readText(Ge_file) {
+      return new Promise(function (Ge_res, Ge_rej) {
+        var Ge_r = new FileReader();
+        Ge_r.onload = function () {
+          var Ge_bytes = new Uint8Array(Ge_r.result);
+          var Ge_txt = new TextDecoder("utf-8").decode(Ge_bytes);
+          var Ge_bad = (Ge_txt.match(/\uFFFD/g) || []).length;
+          if (Ge_bad > Ge_txt.length * 0.02) {
+            try {
+              Ge_txt = new TextDecoder("gbk").decode(Ge_bytes);
+              Ge_log(Ge_file.name + "：检测到非 UTF-8 编码，已按 GBK 解码");
+            } catch (Ge_e) {}
+          }
+          if (!Ge_txt.trim()) { Ge_rej(new Error("文件内容为空")); return; }
+          Ge_res(Ge_txt);
+        };
+        Ge_r.onerror = function () { Ge_rej(new Error("文件读取失败")); };
+        Ge_r.readAsArrayBuffer(Ge_file);
+      });
+    }
+
+    var Ge_pdfPromise = null;
+    function Ge_loadPdfJs() {
+      if (window.pdfjsLib) return Promise.resolve();
+      if (Ge_pdfPromise) return Ge_pdfPromise;
+      Ge_pdfPromise = new Promise(function (Ge_res, Ge_rej) {
+        Ge_log("正在联网加载 pdf.js 解析组件…");
+        var Ge_s = document.createElement("script");
+        Ge_s.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+        Ge_s.onload = function () {
+          try {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+              "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+            Ge_res();
+          } catch (Ge_e) { Ge_rej(Ge_e); }
+        };
+        Ge_s.onerror = function () { Ge_pdfPromise = null; Ge_rej(new Error("pdf.js 加载失败，请检查网络，或改用 TXT/MD 文件")); };
+        document.head.appendChild(Ge_s);
+      });
+      return Ge_pdfPromise;
+    }
+
+    function Ge_parsePdf(Ge_file) {
+      return Ge_loadPdfJs().then(function () {
+        return new Promise(function (Ge_res, Ge_rej) {
+          var Ge_r = new FileReader();
+          Ge_r.onload = function () {
+            window.pdfjsLib.getDocument({ data: Ge_r.result }).promise
+              .then(function (Ge_pdf) {
+                var Ge_pages = [];
+                var Ge_p = 1;
+                function Ge_next() {
+                  if (Ge_p > Ge_pdf.numPages) { Ge_res(Ge_pages.join("\n")); return; }
+                  Ge_pdf.getPage(Ge_p).then(function (Ge_page) {
+                    return Ge_page.getTextContent();
+                  }).then(function (Ge_tc) {
+                    var Ge_txt = "";
+                    for (var i = 0; i < Ge_tc.items.length; i++) {
+                      Ge_txt += Ge_tc.items[i].str + (Ge_tc.items[i].hasEOL ? "\n" : " ");
+                    }
+                    Ge_pages.push(Ge_txt);
+                    Ge_p++;
+                    Ge_next();
+                  }).catch(Ge_rej);
+                }
+                Ge_next();
+              }).catch(Ge_rej);
+          };
+          Ge_r.onerror = function () { Ge_rej(new Error("文件读取失败")); };
+          Ge_r.readAsArrayBuffer(Ge_file);
+        });
+      });
+    }
+
+    /* ============ 入库 ============ */
+    function Ge_addDoc(Ge_name, Ge_type, Ge_size, Ge_text) {
+      var Ge_chunks = Ge_chunkText(Ge_text);
+      if (!Ge_chunks.length) { Ge_log(Ge_name + "：未解析出有效文本，未入库", true); return; }
+
+      var Ge_doc = {
+        id: "d" + Date.now() + Math.floor(Math.random() * 1000),
+        name: Ge_name,
+        type: Ge_type,
+        size: Ge_size,
+        time: Ge_now(),
+        chunks: Ge_chunks
+      };
+      Ge_docs.push(Ge_doc);
+      Ge_rebuildIndex();
+      Ge_save();
+      Ge_renderDocs();
+
+      Ge_log("已入库：" + Ge_name + "（" + Ge_text.length + " 字 → " + Ge_chunks.length + " 个知识块）");
+      console.log("%c[RAG] 文件入库", "color:#10b981;font-weight:700", {
+        文件: Ge_name, 字数: Ge_text.length, 知识块: Ge_chunks.length, 预览: Ge_chunks[0].text.slice(0, 80) + "…"
+      });
+    }
+
+    function Ge_processFile(Ge_f) {
+      var Ge_ext = (Ge_f.name.split(".").pop() || "").toLowerCase();
+      Ge_setStatus("正在解析 " + Ge_f.name + "…");
+
+      if (Ge_f.size > 8 * 1024 * 1024) {
+        Ge_log(Ge_f.name + "：文件超过 8MB，已跳过", true);
+        return Promise.resolve();
+      }
+
+      var Ge_p;
+      if (Ge_ext === "pdf") Ge_p = Ge_parsePdf(Ge_f);
+      else Ge_p = Ge_readText(Ge_f);
+
+      return Ge_p.then(function (Ge_text) {
+        Ge_addDoc(Ge_f.name, Ge_ext, Ge_f.size, Ge_text);
+      }).catch(function (Ge_e) {
+        Ge_log(Ge_f.name + "：解析失败 - " + Ge_e.message, true);
+        console.error("[RAG] 解析失败", Ge_f.name, Ge_e);
+      });
+    }
+
+    function Ge_handleFiles(Ge_files) {
+      var Ge_list = Array.prototype.slice.call(Ge_files);
+      var Ge_seq = Promise.resolve();
+      Ge_list.forEach(function (Ge_f) {
+        Ge_seq = Ge_seq.then(function () { return Ge_processFile(Ge_f); })
+          .then(function () { Ge_setStatus("就绪"); });
+      });
+    }
+
+    /* ============ 知识库管理 ============ */
+    function Ge_save() {
+      try { localStorage.setItem("Ge_kb_docs_v1", JSON.stringify(Ge_docs)); }
+      catch (Ge_e) { Ge_log("知识库过大，未能写入浏览器本地存储（仅影响刷新后保留）", true); }
+    }
+
+    function Ge_load() {
+      try {
+        var Ge_raw = localStorage.getItem("Ge_kb_docs_v1");
+        if (Ge_raw) Ge_docs = JSON.parse(Ge_raw) || [];
+      } catch (Ge_e) { Ge_docs = []; }
+      Ge_rebuildIndex();
+    }
+
+    function Ge_renderDocs() {
+      var Ge_chunkTotal = 0;
+      Ge_docs.forEach(function (d) { Ge_chunkTotal += d.chunks.length; });
+      Ge_statsEl.innerHTML = "知识库文件 <b>" + Ge_docs.length + "</b> 个 · 知识块 <b>" + Ge_chunkTotal
+        + "</b> 条 · 索引词条 <b>" + Object.keys(Ge_index.df).length + "</b> 个";
+
+      if (!Ge_docs.length) {
+        Ge_docList.innerHTML = '<div class="Ge_emptyTip">知识库还是空的 —— 拖入文件上传，或点右上角「载入示例知识库」快速体验</div>';
+        return;
+      }
+
+      var Ge_h = '<table class="Ge_table"><thead><tr>'
+        + '<th>文件名</th><th>类型</th><th>大小</th><th>知识块</th><th>入库时间</th><th>操作</th>'
+        + '</tr></thead><tbody>';
+
+      Ge_docs.forEach(function (Ge_d) {
+        Ge_h += '<tr>'
+          + '<td>' + Ge_esc(Ge_d.name) + '</td>'
+          + '<td><span class="Ge_typeTag">' + Ge_esc(Ge_d.type || "txt") + '</span></td>'
+          + '<td>' + (Ge_d.size >= 1024 ? (Ge_d.size / 1024).toFixed(1) + " KB" : Ge_d.size + " B") + '</td>'
+          + '<td>' + Ge_d.chunks.length + '</td>'
+          + '<td>' + Ge_esc(Ge_d.time) + '</td>'
+          + '<td><button class="Ge_linkBtn" data-act="view" data-id="' + Ge_d.id + '">预览</button>'
+          + '<button class="Ge_linkBtn Ge_danger" data-act="del" data-id="' + Ge_d.id + '">删除</button></td>'
+          + '</tr>';
+      });
+      Ge_h += "</tbody></table>";
+      Ge_docList.innerHTML = Ge_h;
+
+      var Ge_btns = Ge_docList.querySelectorAll("button");
+      for (var i = 0; i < Ge_btns.length; i++) {
+        Ge_btns[i].onclick = function () {
+          if (this.getAttribute("data-act") === "del") Ge_deleteDoc(this.getAttribute("data-id"));
+          else Ge_showPreview(this.getAttribute("data-id"));
+        };
+      }
+    }
+
+    function Ge_deleteDoc(Ge_id) {
+      var Ge_name = "";
+      Ge_docs = Ge_docs.filter(function (d) {
+        if (d.id === Ge_id) { Ge_name = d.name; return false; }
+        return true;
+      });
+      Ge_rebuildIndex();
+      Ge_save();
+      Ge_renderDocs();
+      Ge_log("已删除知识库文件：" + Ge_name);
+      console.log("%c[RAG] 删除文件", "color:#f59e0b;font-weight:700", Ge_name);
+    }
+
+    function Ge_showPreview(Ge_id) {
+      var Ge_doc = null;
+      Ge_docs.forEach(function (d) { if (d.id === Ge_id) Ge_doc = d; });
+      if (!Ge_doc) return;
+      document.getElementById("Ge_pvName").textContent = Ge_doc.name;
+      document.getElementById("Ge_pvMeta").textContent =
+        "类型 " + (Ge_doc.type || "txt") + " · 大小 " + (Ge_doc.size >= 1024 ? (Ge_doc.size / 1024).toFixed(1) + " KB" : Ge_doc.size + " B")
+        + " · " + Ge_doc.chunks.length + " 个知识块 · 入库 " + Ge_doc.time;
+      var Ge_h = "";
+      Ge_doc.chunks.forEach(function (c) {
+        Ge_h += '<div class="Ge_chunkBox"><b>知识块 ' + c.idx + '（' + c.text.length + ' 字）</b><p>' + Ge_esc(c.text) + '</p></div>';
+      });
+      document.getElementById("Ge_pvChunks").innerHTML = Ge_h || '<div class="Ge_emptyTip">没有内容</div>';
+      document.getElementById("Ge_previewModal").classList.add("Ge_modalOn");
+    }
+
+    /* ============ 示例知识库 ============ */
+    function Ge_loadSamples() {
+      var Ge_count = 0;
+      var Ge_exists = {};
+      Ge_docs.forEach(function (d) { Ge_exists[d.name] = 1; });
+
+      if (!Ge_exists["kb-1-智能客服常见问题.txt"]) {
+        Ge_docs.push({
+          id: "d" + Date.now() + "1", name: "kb-1-智能客服常见问题.txt", type: "txt",
+          size: Ge_SAMPLE_FAQ.length, time: Ge_now(),
+          chunks: Ge_chunkText(Ge_SAMPLE_FAQ)
+        });
+        Ge_count++;
+      }
+      if (!Ge_exists["kb-2-X1智能护眼台灯产品手册.txt"]) {
+        Ge_docs.push({
+          id: "d" + Date.now() + "2", name: "kb-2-X1智能护眼台灯产品手册.txt", type: "txt",
+          size: Ge_SAMPLE_MANUAL.length, time: Ge_now(),
+          chunks: Ge_chunkText(Ge_SAMPLE_MANUAL)
+        });
+        Ge_count++;
+      }
+
+      Ge_rebuildIndex();
+      Ge_save();
+      Ge_renderDocs();
+
+      if (Ge_count) Ge_log("已载入 " + Ge_count + " 个示例知识库文件（与目录下 kb-*.txt 内容一致）");
+      else Ge_log("示例知识库已存在，未重复载入");
+      console.log("%c[RAG] 载入示例知识库", "color:#10b981;font-weight:700", { 新增: Ge_count, 总块数: Ge_index.N });
+    }
+
+    /* ============ 问答主流程 ============ */
+    function Ge_ask(Ge_q) {
+      if (Ge_busy || !Ge_q) return;
+
+      Ge_addUser(Ge_q);
+      console.log("%c[RAG] 用户提问", "color:#e94560;font-weight:700", Ge_q);
+
+      var Ge_ai = Ge_addAi();
+      Ge_busy = true;
+      Ge_setBusy(true);
+
+      if (!Ge_index.N) {
+        Ge_ai.retrieved.textContent = "未执行检索";
+        Ge_ai.content.innerHTML = '知识库还是空的，请先上传知识库文件，或点击右上角<b>「载入示例知识库（2 个）」</b>后再提问。';
+        Ge_finish(Ge_ai);
+        Ge_busy = false;
+        Ge_setBusy(false);
+        Ge_setStatus("知识库为空");
+        return;
+      }
+
+      var Ge_hits = Ge_retrieve(Ge_q, Ge_cfg.topk);
+      console.log("%c[RAG] 检索完成", "color:#10b981;font-weight:700",
+        Ge_hits.map(function (h) {
+          return { 来源: h.item.doc.name, 块: h.item.chunk.idx, 相似度: h.percent + "%", 片段: h.item.chunk.text.slice(0, 50) + "…" };
+        }));
+
+      if (!Ge_hits.length) {
+        Ge_ai.retrieved.textContent = "检索完成 · 未命中任何知识块";
+        Ge_ai.content.innerHTML = '抱歉，知识库中没有找到与「' + Ge_esc(Ge_q)
+          + '」相关的内容。您可以换个说法，或上传更完整的资料。<br><br>'
+          + '<span style="color:#8fa3c7;font-size:12.5px">当前知识库：' + Ge_docs.length + ' 个文件、' + Ge_index.N + ' 个知识块。</span>';
+        Ge_finish(Ge_ai);
+        Ge_busy = false;
+        Ge_setBusy(false);
+        Ge_setStatus("未命中");
+        return;
+      }
+
+      var Ge_meta = "检索完成 · 命中 " + Ge_hits.length + " 个知识块（相似度 "
+        + Ge_hits.map(function (h) { return h.percent + "%"; }).join(" / ") + "）";
+      Ge_ai.retrieved.textContent = Ge_meta;
+
+      if (Ge_llmOn.checked && Ge_cfg.key) {
+        Ge_llmAnswer(Ge_q, Ge_hits, Ge_ai);
+      } else {
+        var Ge_ans = Ge_extractAnswer(Ge_q, Ge_hits);
+        Ge_ai.content.innerHTML = Ge_highlight(Ge_md(Ge_ans), Ge_q) + Ge_srcListHtml(Ge_hits);
+        Ge_finish(Ge_ai);
+        Ge_busy = false;
+        Ge_setBusy(false);
+        Ge_setStatus("已回答（抽取式）");
+        console.log("%c[RAG] 抽取式回答", "color:#22c55e;font-weight:700", Ge_ans);
+      }
+    }
+
+    /* ============ 大模型增强回答（流式） ============ */
+    function Ge_llmAnswer(Ge_q, Ge_hits, Ge_ai) {
+      Ge_setStatus("正在调用大模型…");
+
+      var Ge_ctx = Ge_hits.map(function (h, i) {
+        return "[" + (i + 1) + "]（来源：" + h.item.doc.name + " 第" + h.item.chunk.idx + "块）\n" + h.item.chunk.text;
+      }).join("\n\n");
+
+      var Ge_payload = {
+        model: Ge_cfg.model,
+        stream: true,
+        temperature: 0.3,
+        max_tokens: 1024,
+        messages: [
+          { role: "system", content: "你是「葛聪慧数码生活馆」的智能客服。请仅依据给定的知识库资料回答用户问题，回答简洁友好；若资料不足以回答，请明确说明并根据资料给出最接近的信息。回答末尾注明引用的资料编号，如（来源[1]）。" },
+          { role: "user", content: "【知识库资料】\n" + Ge_ctx + "\n\n【用户问题】\n" + Ge_q }
+        ]
+      };
+
+      console.groupCollapsed("%c[RAG→LLM] 发送给大模型", "color:#e94560;font-weight:700");
+      console.log("POST " + Ge_cfg.base.replace(/\/$/, "") + "/chat/completions");
+      console.log("请求体字符串:", JSON.stringify(Ge_payload));
+      console.groupEnd();
+
+      Ge_ctrl = new AbortController();
+
+      fetch(Ge_cfg.base.replace(/\/$/, "") + "/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + Ge_cfg.key },
+        body: JSON.stringify(Ge_payload),
+        signal: Ge_ctrl.signal
+      }).then(function (Ge_res) {
+        console.log("%c[RAG→LLM] 响应头", "color:#22c55e", Ge_res.status, Ge_res.statusText);
+        if (!Ge_res.ok) {
+          return Ge_res.text().then(function (t) {
+            console.error("[RAG→LLM] 错误响应:", t);
+            throw { status: Ge_res.status, text: t };
+          });
+        }
+        return Ge_res.body.getReader();
+      }).then(function (Ge_reader) {
+        if (!Ge_reader) return;
+        var Ge_dec = new TextDecoder("utf-8");
+        var Ge_buf = "", Ge_content = "", Ge_reason = "", Ge_n = 0, Ge_done = false;
+
+        function Ge_pump() {
+          return Ge_reader.read().then(function (Ge_r) {
+            if (Ge_r.done) { Ge_done = true; return; }
+            Ge_buf += Ge_dec.decode(Ge_r.value, { stream: true }).replace(/\r/g, "");
+            var Ge_parts = Ge_buf.split("\n\n");
+            Ge_buf = Ge_parts.pop();
+
+            for (var i = 0; i < Ge_parts.length; i++) {
+              var Ge_block = Ge_parts[i].trim();
+              if (!Ge_block) continue;
+              var Ge_lines = Ge_block.split("\n");
+              for (var j = 0; j < Ge_lines.length; j++) {
+                var Ge_line = Ge_lines[j].trim();
+                if (Ge_line.indexOf("data:") !== 0) continue;
+                var Ge_data = Ge_line.slice(5).trim();
+                if (Ge_data === "[DONE]") { Ge_done = true; break; }
+                var Ge_obj;
+                try { Ge_obj = JSON.parse(Ge_data); } catch (e) { continue; }
+                Ge_n++;
+                console.log("%c[RAG→LLM] chunk " + Ge_n, "color:#a8d8ea", Ge_obj);
+                var Ge_delta = (Ge_obj.choices && Ge_obj.choices[0] && Ge_obj.choices[0].delta) || {};
+                if (Ge_delta.reasoning_content) {
+                  Ge_reason += Ge_delta.reasoning_content;
+                  Ge_ai.think.style.display = "block";
+                  Ge_ai.thinkBody.textContent = Ge_reason;
+                  Ge_ai.thinkBody.scrollTop = Ge_ai.thinkBody.scrollHeight;
+                }
+                if (Ge_delta.content) {
+                  Ge_content += Ge_delta.content;
+                  Ge_ai.content.innerHTML = Ge_md(Ge_content) + Ge_srcListHtml(Ge_hits);
+                }
+              }
+              Ge_chat.scrollTop = Ge_chat.scrollHeight;
+              if (Ge_done) break;
+            }
+
+            if (Ge_done) {
+              console.groupCollapsed("%c[RAG→LLM] 完整结果", "color:#22c55e;font-weight:700");
+              console.log("回答:", Ge_content);
+              console.log("思考:", Ge_reason);
+              console.log("分片:", Ge_n);
+              console.groupEnd();
+              if (!Ge_content) Ge_content = "（模型未返回内容）";
+              Ge_ai.content.innerHTML = Ge_md(Ge_content) + Ge_srcListHtml(Ge_hits);
+              Ge_finish(Ge_ai);
+              Ge_busy = false;
+              Ge_setBusy(false);
+              Ge_setStatus("已回答（大模型增强）");
+              return;
+            }
+            return Ge_pump();
+          });
+        }
+
+        return Ge_pump();
+      }).catch(function (Ge_err) {
+        Ge_finish(Ge_ai);
+        if (Ge_err && Ge_err.name === "AbortError") {
+          Ge_busy = false;
+          Ge_setBusy(false);
+          Ge_setStatus("已停止");
+          return;
+        }
+
+        console.error("[RAG→LLM] 调用失败，回退为抽取式回答", Ge_err);
+        var Ge_ans = Ge_extractAnswer(Ge_q, Ge_hits);
+        var Ge_note = '<div style="font-size:11.5px;color:#ff8f9b;margin-bottom:8px;">⚠ 大模型调用失败（'
+          + ((Ge_err && Ge_err.status) || "网络错误")
+          + '），已自动回退为本地抽取式回答。</div>';
+        Ge_ai.content.innerHTML = Ge_note + Ge_highlight(Ge_md(Ge_ans), Ge_q) + Ge_srcListHtml(Ge_hits);
+        Ge_busy = false;
+        Ge_setBusy(false);
+        Ge_setStatus("已回答（回退抽取式）");
+      });
+    }
+
+    /* ============ 发送按钮 / 输入 ============ */
+    function Ge_setBusy(Ge_flag) {
+      Ge_busy = Ge_flag;
+      Ge_sendBtn.textContent = Ge_flag ? "停止" : "发送";
+      Ge_sendBtn.classList.toggle("Ge_sendStop", Ge_flag);
+    }
+
+    function Ge_autoGrow() {
+      Ge_input.style.height = "auto";
+      Ge_input.style.height = Math.min(Ge_input.scrollHeight, 120) + "px";
+    }
+
+    Ge_input.addEventListener("input", Ge_autoGrow);
+    Ge_input.addEventListener("keydown", function (Ge_e) {
+      if (Ge_e.key === "Enter" && !Ge_e.shiftKey && !Ge_e.isComposing) {
+        Ge_e.preventDefault();
+        Ge_sendNow();
+      }
+    });
+
+    function Ge_sendNow() {
+      var Ge_q = Ge_input.value.trim();
+      if (!Ge_q) return;
+      if (Ge_busy) {
+        if (Ge_ctrl) Ge_ctrl.abort();
+        return;
+      }
+      Ge_input.value = "";
+      Ge_autoGrow();
+      Ge_ask(Ge_q);
+    }
+
+    Ge_sendBtn.onclick = Ge_sendNow;
+
+    var Ge_chips = document.querySelectorAll(".Ge_chip");
+    for (var Ge_c = 0; Ge_c < Ge_chips.length; Ge_c++) {
+      Ge_chips[Ge_c].onclick = function () { Ge_ask(this.getAttribute("data-q")); };
+    }
+
+    /* ============ 上传交互 ============ */
+    Ge_drop.onclick = function () { Ge_fileInput.click(); };
+    Ge_fileInput.onchange = function () {
+      if (this.files.length) Ge_handleFiles(this.files);
+      this.value = "";
+    };
+
+    Ge_drop.ondragover = function (Ge_e) { Ge_e.preventDefault(); this.classList.add("Ge_dropOver"); };
+    Ge_drop.ondragleave = function () { this.classList.remove("Ge_dropOver"); };
+    Ge_drop.ondrop = function (Ge_e) {
+      Ge_e.preventDefault();
+      this.classList.remove("Ge_dropOver");
+      if (Ge_e.dataTransfer.files.length) Ge_handleFiles(Ge_e.dataTransfer.files);
+    };
+
+    /* ============ 管理按钮 / 弹窗 ============ */
+    document.getElementById("Ge_clearBtn").onclick = function () {
+      if (Ge_busy && Ge_ctrl) Ge_ctrl.abort();
+      Ge_docs = [];
+      Ge_rebuildIndex();
+      Ge_save();
+      Ge_renderDocs();
+      Ge_log("知识库已清空");
+      console.log("%c[RAG] 知识库已清空", "color:#f59e0b;font-weight:700");
+    };
+
+    document.getElementById("Ge_sampleBtn").onclick = Ge_loadSamples;
+
+    document.getElementById("Ge_pvClose").onclick = function () {
+      document.getElementById("Ge_previewModal").classList.remove("Ge_modalOn");
+    };
+
+    /* 接口配置 */
+    var Ge_keyInput = document.getElementById("Ge_keyInput");
+    var Ge_baseInput = document.getElementById("Ge_baseInput");
+    var Ge_modelInput = document.getElementById("Ge_modelInput");
+    var Ge_topkInput = document.getElementById("Ge_topkInput");
+
+    Ge_keyInput.value = Ge_cfg.key;
+    Ge_baseInput.value = Ge_cfg.base;
+    Ge_modelInput.value = Ge_cfg.model;
+    Ge_topkInput.value = Ge_cfg.topk;
+
+    document.getElementById("Ge_cfgBtn").onclick = function () {
+      document.getElementById("Ge_cfgModal").classList.add("Ge_modalOn");
+    };
+    document.getElementById("Ge_cfgClose").onclick = function () {
+      document.getElementById("Ge_cfgModal").classList.remove("Ge_modalOn");
+    };
+    document.getElementById("Ge_cfgSave").onclick = function () {
+      Ge_cfg.key = Ge_keyInput.value.trim();
+      Ge_cfg.base = Ge_baseInput.value.trim() || "https://api.qnaigc.com/v1";
+      Ge_cfg.model = Ge_modelInput.value.trim() || "qiniu/conatus-free";
+      Ge_cfg.topk = Math.max(1, Math.min(8, Number(Ge_topkInput.value) || 3));
+      localStorage.setItem("Ge_api_key", Ge_cfg.key);
+      localStorage.setItem("Ge_api_base", Ge_cfg.base);
+      localStorage.setItem("Ge_api_model", Ge_cfg.model);
+      localStorage.setItem("Ge_kb_topk", Ge_cfg.topk);
+      document.getElementById("Ge_cfgModal").classList.remove("Ge_modalOn");
+      Ge_setStatus("配置已保存");
+      console.log("%c[RAG] 接口配置已更新", "color:#f59e0b;font-weight:700",
+        { base: Ge_cfg.base, model: Ge_cfg.model, topk: Ge_cfg.topk });
+    };
+
+    [document.getElementById("Ge_previewModal"), document.getElementById("Ge_cfgModal")].forEach(function (m) {
+      m.onclick = function (e) { if (e.target === m) m.classList.remove("Ge_modalOn"); };
+    });
+
+    /* ============ 启动 ============ */
+    Ge_load();
+    Ge_renderDocs();
+    if (Ge_docs.length) Ge_log("已从本地存储恢复 " + Ge_docs.length + " 个知识库文件");
+
+    console.log("%c智能客服知识库系统（RAG）已就绪", "color:#10b981;font-size:14px;font-weight:700");
+    console.log("上传/解析/检索/生成的完整过程都会打印在本控制台。");
+  </script>
+</body>
+</html>

@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 聊天助手 · qiniu/conatus-free</title>
+<!-- 姓名：葛聪慧，2026-11-12：AI 聊天页面（16-5），调用七牛云 OpenAI 兼容接口 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    background: #0b0b14;
+    color: #e9e9f0;
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    font-size: 14px;
+    overflow: hidden;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-thumb { background: #22304d; border-radius: 3px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  .Ge_app {
+    width: 100%;
+    max-width: 960px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 14px 16px 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ================= 顶部 ================= */
+  .Ge_top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    background: #131a2e;
+    border: 1px solid #1d2b45;
+    border-radius: 14px;
+    flex: 0 0 auto;
+  }
+
+  .Ge_brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
+  .Ge_logo {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #e94560, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+    letter-spacing: 1px;
+    box-shadow: 0 6px 18px rgba(233, 69, 96, .35);
+  }
+
+  .Ge_brandTxt h1 { font-size: 16px; font-weight: 700; color: #eef2fb; letter-spacing: .5px; }
+  .Ge_brandTxt p { font-size: 12px; color: #7d8db0; margin-top: 2px; }
+
+  .Ge_topActions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+
+  .Ge_ghostBtn {
+    padding: 7px 12px;
+    background: transparent;
+    border: 1px solid #25365a;
+    border-radius: 9px;
+    color: #a8d8ea;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .Ge_ghostBtn:hover { border-color: #e94560; color: #fff; background: rgba(233, 69, 96, .1); }
+
+  /* ================= 接口配置 ================= */
+  .Ge_cfg {
+    display: none;
+    flex: 0 0 auto;
+    margin-top: 10px;
+    padding: 14px;
+    background: #131a2e;
+    border: 1px solid #1d2b45;
+    border-radius: 12px;
+  }
+
+  .Ge_cfgOn { display: block; }
+
+  .Ge_field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+
+  .Ge_field label { font-size: 12px; color: #8fa3c7; letter-spacing: .5px; }
+
+  .Ge_field input {
+    width: 100%;
+    padding: 9px 12px;
+    background: #0b1120;
+    border: 1px solid #1d2b45;
+    border-radius: 8px;
+    color: #e6ecf7;
+    font-size: 13px;
+    font-family: Consolas, "Microsoft YaHei", monospace;
+    outline: none;
+  }
+
+  .Ge_field input:focus { border-color: #e94560; }
+
+  .Ge_cfgRow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .Ge_primaryBtn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #e94560, #b8324f);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .Ge_primaryBtn:hover { filter: brightness(1.08); }
+
+  .Ge_warn { font-size: 12px; color: #ffb4a2; line-height: 1.7; }
+
+  /* ================= 消息区 ================= */
+  .Ge_chat {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 18px 2px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .Ge_welcome { text-align: center; padding: 24px 10px 10px; }
+
+  .Ge_welcome h2 { font-size: 19px; color: #dce6f7; font-weight: 700; letter-spacing: .5px; }
+
+  .Ge_welcome p { font-size: 13px; color: #7d8db0; margin-top: 8px; line-height: 1.8; }
+
+  .Ge_chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 16px; }
+
+  .Ge_chip {
+    padding: 8px 14px;
+    background: #141d33;
+    border: 1px solid #25365a;
+    border-radius: 20px;
+    color: #a8d8ea;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .Ge_chip:hover { border-color: #e94560; color: #fff; transform: translateY(-1px); }
+
+  .Ge_msg { display: flex; gap: 10px; align-items: flex-start; animation: Ge_in .25s ease both; }
+  .Ge_msgUser { flex-direction: row-reverse; }
+
+  .Ge_avatar {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+
+  .Ge_avaUser { background: #1d3557; color: #a8d8ea; border: 1px solid #2b4a6f; }
+  .Ge_avaAi { background: linear-gradient(135deg, #e94560, #8b5cf6); color: #fff; }
+
+  .Ge_bubble {
+    max-width: min(680px, 80%);
+    padding: 12px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.85;
+    word-break: break-word;
+    white-space: normal;
+  }
+
+  .Ge_bubbleUser {
+    background: linear-gradient(135deg, #e94560, #b8324f);
+    color: #fff;
+    border-top-right-radius: 4px;
+    white-space: pre-wrap;
+  }
+
+  .Ge_bubbleAi {
+    background: #141d33;
+    border: 1px solid #1e2d4a;
+    color: #e6ecf7;
+    border-top-left-radius: 4px;
+  }
+
+  .Ge_bubbleErr { border-color: #7f2c3a; background: #1f1219; color: #ffc3c3; }
+  .Ge_errTitle { font-weight: 700; margin-bottom: 6px; color: #ff8f9b; }
+
+  /* 思考过程 */
+  .Ge_think {
+    display: none;
+    margin-bottom: 10px;
+    border: 1px dashed #2a3b5c;
+    border-radius: 10px;
+    background: #0d1526;
+    overflow: hidden;
+  }
+
+  .Ge_thinkHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 10px;
+    font-size: 12px;
+    color: #8fa3c7;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .Ge_thinkHead span:last-child { color: #e94560; }
+
+  .Ge_thinkBody {
+    padding: 0 10px 9px;
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: #8f9ab8;
+    max-height: 150px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+  }
+
+  .Ge_thinkFold .Ge_thinkBody { display: none; }
+
+  /* 打字光标 */
+  .Ge_cursor {
+    display: inline-block;
+    width: 7px;
+    height: 15px;
+    background: #e94560;
+    border-radius: 1px;
+    vertical-align: -2px;
+    margin-left: 3px;
+    animation: Ge_blink .9s steps(1) infinite;
+  }
+
+  /* Markdown 简单排版 */
+  .Ge_bubble pre {
+    background: #0a1020;
+    border: 1px solid #1e2d4a;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin: 8px 0;
+    overflow-x: auto;
+    font-family: Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: #9be0b0;
+    white-space: pre;
+  }
+
+  .Ge_codeInline {
+    background: #0a1020;
+    border: 1px solid #1e2d4a;
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-family: Consolas, monospace;
+    font-size: 12.5px;
+    color: #9be0b0;
+  }
+
+  /* ================= 输入区 ================= */
+  .Ge_composer { flex: 0 0 auto; padding: 8px 0 12px; }
+
+  .Ge_inputWrap {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    padding: 10px 10px 10px 14px;
+    background: #131a2e;
+    border: 1px solid #1d2b45;
+    border-radius: 14px;
+    transition: border-color .2s, box-shadow .2s;
+  }
+
+  .Ge_inputWrap:focus-within { border-color: #e94560; box-shadow: 0 0 0 3px rgba(233, 69, 96, .12); }
+
+  .Ge_inputWrap textarea {
+    flex: 1;
+    min-height: 24px;
+    max-height: 160px;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    color: #eef2fb;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .Ge_inputWrap textarea::placeholder { color: #5f6f92; }
+
+  .Ge_send {
+    flex: 0 0 auto;
+    padding: 9px 18px;
+    background: linear-gradient(135deg, #e94560, #b8324f);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .Ge_send:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+  .Ge_sendStop {
+    background: #3a1220;
+    border: 1px solid #e94560;
+    color: #ffb4c0;
+    transform: none;
+  }
+
+  .Ge_hint {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 4px 0;
+    font-size: 11.5px;
+    color: #5f6f92;
+  }
+
+  .Ge_hint b { color: #a8d8ea; font-weight: 400; }
+
+  @keyframes Ge_in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes Ge_blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  @media (max-width: 640px) {
+    .Ge_app { padding: 10px 10px 0; }
+    .Ge_top { padding: 9px 10px; }
+    .Ge_brandTxt h1 { font-size: 14px; }
+    .Ge_brandTxt p { font-size: 11px; }
+    .Ge_ghostBtn { padding: 6px 9px; font-size: 11.5px; }
+    .Ge_bubble { max-width: 84%; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="Ge_app">
+
+    <!-- 顶部 -->
+    <div class="Ge_top">
+      <div class="Ge_brand">
+        <div class="Ge_logo">AI</div>
+        <div class="Ge_brandTxt">
+          <h1>AI 聊天助手</h1>
+          <p>qiniu/conatus-free &nbsp;·&nbsp; OpenAI 兼容接口</p>
+        </div>
+      </div>
+      <div class="Ge_topActions">
+        <button class="Ge_ghostBtn" id="Ge_cfgBtn">接口配置</button>
+        <button class="Ge_ghostBtn" id="Ge_clearBtn">清空对话</button>
+        <a class="Ge_ghostBtn" href="index.html">返回首页</a>
+      </div>
+    </div>
+
+    <!-- 接口配置 -->
+    <div class="Ge_cfg" id="Ge_cfgBox">
+      <div class="Ge_field">
+        <label>API Key</label>
+        <input id="Ge_keyInput" type="text" spellcheck="false">
+      </div>
+      <div class="Ge_field">
+        <label>OpenAI Base URL</label>
+        <input id="Ge_baseInput" type="text" spellcheck="false">
+      </div>
+      <div class="Ge_field">
+        <label>Model ID</label>
+        <input id="Ge_modelInput" type="text" spellcheck="false">
+      </div>
+      <div class="Ge_cfgRow">
+        <button class="Ge_primaryBtn" id="Ge_saveBtn">保存并关闭</button>
+        <span class="Ge_warn">密钥仅保存在本机浏览器 localStorage。静态页面的密钥是公开的，请勿把此页面部署到公网。</span>
+      </div>
+    </div>
+
+    <!-- 消息区 -->
+    <div class="Ge_chat" id="Ge_chat">
+      <div class="Ge_welcome" id="Ge_welcome">
+        <h2>你好，我是 AI 助手</h2>
+        <p>基于七牛云 qiniu/conatus-free 模型<br>发送给模型的参数与模型返回的数据都会打印在浏览器控制台（F12 → Console）</p>
+        <div class="Ge_chips">
+          <button class="Ge_chip" data-q="用一句话解释什么是 CSS 盒模型">用一句话解释 CSS 盒模型</button>
+          <button class="Ge_chip" data-q="用 flex 写一个水平垂直居中的例子，并解释用到的属性">Flex 水平垂直居中</button>
+          <button class="Ge_chip" data-q="JavaScript 数组去重有哪几种方法？各给一个简短示例">JS 数组去重的方法</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 输入区 -->
+    <div class="Ge_composer">
+      <div class="Ge_inputWrap">
+        <textarea id="Ge_input" rows="1" placeholder="输入消息，Enter 发送，Shift + Enter 换行"></textarea>
+        <button class="Ge_send" id="Ge_sendBtn">发送</button>
+      </div>
+      <div class="Ge_hint">
+        <span>状态：<b id="Ge_status">就绪</b></span>
+        <span>控制台已开启请求 / 响应日志</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /* ============ 接口配置 ============ */
+    var Ge_DEFAULT_KEY = "sk-21ae365ee2c9867b53c4b0630929a44a418f42b2dce3df99d17808e509e53884";
+
+    var Ge_cfg = {
+      key: localStorage.getItem("Ge_api_key") || Ge_DEFAULT_KEY,
+      base: localStorage.getItem("Ge_api_base") || "https://api.qnaigc.com/v1",
+      model: localStorage.getItem("Ge_api_model") || "qiniu/conatus-free"
+    };
+
+    var Ge_systemPrompt = "你是网页设计课程作业项目里的 AI 助手，回答简洁准确，使用简体中文，代码用 Markdown 代码块给出。";
+
+    var Ge_history = [];
+    var Ge_busy = false;
+    var Ge_ctrl = null;
+    var Ge_autoScroll = true;
+
+    /* ============ DOM ============ */
+    var Ge_chat = document.getElementById("Ge_chat");
+    var Ge_welcome = document.getElementById("Ge_welcome");
+    var Ge_input = document.getElementById("Ge_input");
+    var Ge_sendBtn = document.getElementById("Ge_sendBtn");
+    var Ge_statusEl = document.getElementById("Ge_status");
+    var Ge_cfgBox = document.getElementById("Ge_cfgBox");
+    var Ge_keyInput = document.getElementById("Ge_keyInput");
+    var Ge_baseInput = document.getElementById("Ge_baseInput");
+    var Ge_modelInput = document.getElementById("Ge_modelInput");
+
+    /* ============ 小工具 ============ */
+    function Ge_esc(Ge_s) {
+      return String(Ge_s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    /* 极简 Markdown：代码块 / 行内代码 / 加粗 / 标题 / 列表 */
+    function Ge_md(Ge_src) {
+      var Ge_stash = [];
+      var Ge_s = String(Ge_src);
+
+      Ge_s = Ge_s.replace(/```[a-zA-Z]*\n?([\s\S]*?)```/g, function (Ge_m, Ge_code) {
+        Ge_stash.push("<pre><code>" + Ge_esc(Ge_code.replace(/\n$/, "")) + "</code></pre>");
+        return "\u0001" + (Ge_stash.length - 1) + "\u0001";
+      });
+
+      Ge_s = Ge_esc(Ge_s);
+      Ge_s = Ge_s.replace(/`([^`\n]+)`/g, '<code class="Ge_codeInline">$1</code>');
+      Ge_s = Ge_s.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
+      Ge_s = Ge_s.replace(/^#{1,4}\s*(.+)$/gm, "<strong>$1</strong>");
+      Ge_s = Ge_s.replace(/^\s*[-*]\s+(.+)$/gm, "· $1");
+      Ge_s = Ge_s.replace(/\n/g, "<br>");
+      Ge_s = Ge_s.replace(/\u0001(\d+)\u0001/g, function (Ge_m, Ge_i) {
+        return Ge_stash[Number(Ge_i)];
+      });
+      return Ge_s;
+    }
+
+    function Ge_setStatus(Ge_txt) { Ge_statusEl.textContent = Ge_txt; }
+
+    function Ge_nearBottom() {
+      return Ge_chat.scrollHeight - Ge_chat.scrollTop - Ge_chat.clientHeight < 140;
+    }
+
+    function Ge_scroll() {
+      if (Ge_autoScroll) Ge_chat.scrollTop = Ge_chat.scrollHeight;
+    }
+
+    Ge_chat.onscroll = function () { Ge_autoScroll = Ge_nearBottom(); };
+
+    /* ============ 消息渲染 ============ */
+    function Ge_addUser(Ge_text) {
+      var Ge_wrap = document.createElement("div");
+      Ge_wrap.className = "Ge_msg Ge_msgUser";
+      var Ge_b = document.createElement("div");
+      Ge_b.className = "Ge_bubble Ge_bubbleUser";
+      Ge_b.textContent = Ge_text;
+      var Ge_av = document.createElement("div");
+      Ge_av.className = "Ge_avatar Ge_avaUser";
+      Ge_av.textContent = "我";
+      Ge_wrap.appendChild(Ge_b);
+      Ge_wrap.appendChild(Ge_av);
+      Ge_chat.appendChild(Ge_wrap);
+      Ge_scroll();
+    }
+
+    function Ge_addAi() {
+      var Ge_wrap = document.createElement("div");
+      Ge_wrap.className = "Ge_msg Ge_msgAi";
+      Ge_wrap.innerHTML =
+        '<div class="Ge_avatar Ge_avaAi">AI</div>'
+        + '<div class="Ge_bubble Ge_bubbleAi">'
+        + '  <div class="Ge_think" style="display:none">'
+        + '    <div class="Ge_thinkHead"><span>思考过程</span><span>展开</span></div>'
+        + '    <div class="Ge_thinkBody"></div>'
+        + '  </div>'
+        + '  <div class="Ge_content"></div>'
+        + '  <span class="Ge_cursor"></span>'
+        + '</div>';
+
+      Ge_chat.appendChild(Ge_wrap);
+
+      var Ge_think = Ge_wrap.querySelector(".Ge_think");
+      var Ge_head = Ge_wrap.querySelector(".Ge_thinkHead");
+      var Ge_tog = Ge_head.querySelector("span:last-child");
+
+      Ge_head.onclick = function () {
+        var Ge_folded = Ge_think.classList.toggle("Ge_thinkFold");
+        Ge_tog.textContent = Ge_folded ? "展开" : "收起";
+      };
+
+      return {
+        wrap: Ge_wrap,
+        think: Ge_think,
+        thinkBody: Ge_wrap.querySelector(".Ge_thinkBody"),
+        tog: Ge_tog,
+        content: Ge_wrap.querySelector(".Ge_content"),
+        cursor: Ge_wrap.querySelector(".Ge_cursor"),
+        bubble: Ge_wrap.querySelector(".Ge_bubbleAi")
+      };
+    }
+
+    function Ge_setThink(Ge_ai, Ge_txt) {
+      if (!Ge_txt) return;
+      Ge_ai.think.style.display = "block";
+      Ge_ai.thinkBody.textContent = Ge_txt;
+      Ge_ai.thinkBody.scrollTop = Ge_ai.thinkBody.scrollHeight;
+      Ge_scroll();
+    }
+
+    function Ge_setContent(Ge_ai, Ge_txt) {
+      Ge_ai.content.innerHTML = Ge_md(Ge_txt);
+      Ge_scroll();
+    }
+
+    function Ge_finishAi(Ge_ai) {
+      if (Ge_ai.cursor && Ge_ai.cursor.parentNode) Ge_ai.cursor.parentNode.removeChild(Ge_ai.cursor);
+      if (Ge_ai.thinkBody.textContent.trim() && Ge_ai.content.textContent.trim()) {
+        Ge_ai.think.classList.add("Ge_thinkFold");
+        Ge_ai.tog.textContent = "展开";
+      }
+    }
+
+    function Ge_addError(Ge_title, Ge_msg) {
+      var Ge_wrap = document.createElement("div");
+      Ge_wrap.className = "Ge_msg Ge_msgAi";
+      Ge_wrap.innerHTML = '<div class="Ge_avatar Ge_avaAi">AI</div>'
+        + '<div class="Ge_bubble Ge_bubbleAi Ge_bubbleErr">'
+        + '<div class="Ge_errTitle">' + Ge_esc(Ge_title) + '</div>'
+        + '<div>' + Ge_md(Ge_msg) + '</div></div>';
+      Ge_chat.appendChild(Ge_wrap);
+      Ge_scroll();
+    }
+
+    /* ============ 按钮状态 ============ */
+    function Ge_setBusy(Ge_flag) {
+      Ge_busy = Ge_flag;
+      Ge_sendBtn.textContent = Ge_flag ? "停止" : "发送";
+      Ge_sendBtn.classList.toggle("Ge_sendStop", Ge_flag);
+    }
+
+    function Ge_errHint(Ge_status, Ge_text) {
+      var Ge_map = {
+        400: "请求参数有误（模型 ID 或消息格式可能不正确）",
+        401: "API Key 无效或已失效，请在「接口配置」里检查",
+        403: "该 Key 无权访问此模型",
+        404: "接口地址或模型不存在，请检查 Base URL 与 Model ID",
+        429: "免费模型触发限流，请稍后再试",
+        500: "服务端错误，请稍后重试",
+        503: "模型服务繁忙，请稍后重试"
+      };
+      var Ge_hint = Ge_map[Ge_status] || "请求失败";
+      return Ge_hint + "\n\n服务端返回：" + Ge_text;
+    }
+
+    /* ============ 发送 ============ */
+    function Ge_send(Ge_text) {
+      if (Ge_busy) return;
+
+      var Ge_txt = (Ge_text === undefined ? Ge_input.value : Ge_text).trim();
+      if (!Ge_txt) { Ge_input.focus(); return; }
+
+      if (Ge_welcome) { Ge_welcome.style.display = "none"; }
+
+      Ge_addUser(Ge_txt);
+      Ge_history.push({ role: "user", content: Ge_txt });
+      Ge_input.value = "";
+      Ge_autoGrow();
+
+      var Ge_ai = Ge_addAi();
+      Ge_setBusy(true);
+      Ge_setStatus("正在生成…");
+
+      var Ge_payload = {
+        model: Ge_cfg.model,
+        messages: [{ role: "system", content: Ge_systemPrompt }].concat(Ge_history),
+        stream: true,
+        temperature: 0.7,
+        max_tokens: 2048
+      };
+
+      /* 控制台：打印发给大模型的数据 */
+      console.groupCollapsed("%c[发送给大模型] " + Ge_cfg.model, "color:#e94560;font-weight:700");
+      console.log("POST " + Ge_cfg.base.replace(/\/$/, "") + "/chat/completions");
+      console.log("请求头:", { "Content-Type": "application/json", Authorization: "Bearer " + Ge_cfg.key.slice(0, 8) + "…（已隐藏）" });
+      console.log("请求体:", JSON.parse(JSON.stringify(Ge_payload)));
+      console.log("请求体字符串:", JSON.stringify(Ge_payload));
+      console.groupEnd();
+
+      Ge_ctrl = new AbortController();
+      Ge_stream(Ge_payload, Ge_ai, Ge_ctrl);
+    }
+
+    async function Ge_stream(Ge_payload, Ge_ai, Ge_ctrl) {
+      var Ge_content = "";
+      var Ge_reasoning = "";
+      var Ge_chunks = 0;
+      var Ge_usage = null;
+
+      try {
+        var Ge_url = Ge_cfg.base.replace(/\/$/, "") + "/chat/completions";
+        var Ge_res = await fetch(Ge_url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + Ge_cfg.key
+          },
+          body: JSON.stringify(Ge_payload),
+          signal: Ge_ctrl.signal
+        });
+
+        console.log("%c[响应头]", "color:#22c55e", Ge_res.status, Ge_res.statusText, {
+          "content-type": Ge_res.headers.get("content-type"),
+          "x-reqid": Ge_res.headers.get("Http_x_reqid") || Ge_res.headers.get("x-reqid")
+        });
+
+        if (!Ge_res.ok) {
+          var Ge_errText = await Ge_res.text();
+          console.error("[从大模型接收] 错误响应:", Ge_errText);
+          throw { status: Ge_res.status, text: Ge_errText };
+        }
+
+        var Ge_ct = Ge_res.headers.get("content-type") || "";
+
+        /* 非流式兜底 */
+        if (Ge_ct.indexOf("application/json") !== -1) {
+          var Ge_json = await Ge_res.json();
+          console.log("%c[从大模型接收] 完整 JSON", "color:#22c55e;font-weight:700", Ge_json);
+          var Ge_msg = (Ge_json.choices && Ge_json.choices[0] && Ge_json.choices[0].message) || {};
+          Ge_content = Ge_msg.content || "";
+          if (Ge_msg.reasoning_content) { Ge_reasoning = Ge_msg.reasoning_content; Ge_setThink(Ge_ai, Ge_reasoning); }
+          Ge_setContent(Ge_ai, Ge_content);
+          Ge_history.push({ role: "assistant", content: Ge_content });
+          Ge_finishAi(Ge_ai);
+          Ge_setBusy(false);
+          Ge_setStatus("就绪");
+          return;
+        }
+
+        var Ge_reader = Ge_res.body.getReader();
+        var Ge_dec = new TextDecoder("utf-8");
+        var Ge_buf = "";
+        var Ge_done = false;
+
+        while (!Ge_done) {
+          var Ge_r = await Ge_reader.read();
+          if (Ge_r.done) break;
+
+          Ge_buf += Ge_dec.decode(Ge_r.value, { stream: true }).replace(/\r/g, "");
+
+          var Ge_parts = Ge_buf.split("\n\n");
+          Ge_buf = Ge_parts.pop();
+
+          for (var Ge_i = 0; Ge_i < Ge_parts.length; Ge_i++) {
+            var Ge_block = Ge_parts[Ge_i].trim();
+            if (!Ge_block) continue;
+
+            var Ge_lines = Ge_block.split("\n");
+            for (var Ge_j = 0; Ge_j < Ge_lines.length; Ge_j++) {
+              var Ge_line = Ge_lines[Ge_j].trim();
+              if (Ge_line.indexOf("data:") !== 0) continue;
+
+              var Ge_data = Ge_line.slice(5).trim();
+              if (Ge_data === "[DONE]") { Ge_done = true; break; }
+
+              var Ge_obj;
+              try { Ge_obj = JSON.parse(Ge_data); } catch (Ge_e) { continue; }
+
+              Ge_chunks++;
+              console.log("%c[从大模型接收] chunk " + Ge_chunks, "color:#a8d8ea", Ge_obj);
+
+              var Ge_delta = (Ge_obj.choices && Ge_obj.choices[0] && Ge_obj.choices[0].delta) || {};
+
+              if (Ge_delta.reasoning_content) {
+                Ge_reasoning += Ge_delta.reasoning_content;
+                Ge_setThink(Ge_ai, Ge_reasoning);
+              }
+              if (Ge_delta.content) {
+                Ge_content += Ge_delta.content;
+                Ge_setContent(Ge_ai, Ge_content);
+              }
+              if (Ge_obj.usage) Ge_usage = Ge_obj.usage;
+            }
+          }
+        }
+
+        console.groupCollapsed("%c[从大模型接收] 完整结果", "color:#22c55e;font-weight:700");
+        console.log("回复内容:", Ge_content);
+        console.log("思考内容:", Ge_reasoning);
+        console.log("分片数量:", Ge_chunks);
+        if (Ge_usage) console.log("usage:", Ge_usage);
+        console.groupEnd();
+
+        Ge_history.push({ role: "assistant", content: Ge_content });
+        Ge_finishAi(Ge_ai);
+        Ge_setBusy(false);
+        Ge_setStatus(Ge_usage
+          ? "就绪 · tokens " + Ge_usage.prompt_tokens + " / " + Ge_usage.completion_tokens
+          : "就绪");
+
+      } catch (Ge_err) {
+        Ge_finishAi(Ge_ai);
+
+        if (Ge_err && Ge_err.name === "AbortError") {
+          console.warn("[已停止] 用户手动中止生成，已接收片段:", Ge_content);
+          if (Ge_content) {
+            Ge_history.push({ role: "assistant", content: Ge_content });
+            Ge_setContent(Ge_ai, Ge_content + "\n\n_（已停止生成）_");
+          } else {
+            Ge_ai.content.innerHTML = '<span style="color:#8fa3c7">已停止生成</span>';
+          }
+          Ge_setBusy(false);
+          Ge_setStatus("已停止");
+          return;
+        }
+
+        console.error("[请求失败]", Ge_err);
+        var Ge_st = (Ge_err && Ge_err.status) || 0;
+        var Ge_tx = (Ge_err && Ge_err.text) || (Ge_err && Ge_err.message) || "未知错误";
+        var Ge_titleText = Ge_st ? "请求失败 · HTTP " + Ge_st : "请求失败";
+        if (Ge_ai.wrap && Ge_ai.wrap.parentNode) Ge_ai.wrap.parentNode.removeChild(Ge_ai.wrap);
+        Ge_addError(Ge_titleText, Ge_errHint(Ge_st, Ge_tx));
+        Ge_setBusy(false);
+        Ge_setStatus("出错");
+      }
+    }
+
+    /* ============ 输入框行为 ============ */
+    function Ge_autoGrow() {
+      Ge_input.style.height = "auto";
+      Ge_input.style.height = Math.min(Ge_input.scrollHeight, 160) + "px";
+    }
+
+    Ge_input.addEventListener("input", Ge_autoGrow);
+    Ge_input.addEventListener("keydown", function (Ge_e) {
+      if (Ge_e.key === "Enter" && !Ge_e.shiftKey && !Ge_e.isComposing) {
+        Ge_e.preventDefault();
+        Ge_send();
+      }
+    });
+
+    Ge_sendBtn.onclick = function () {
+      if (Ge_busy) {
+        if (Ge_ctrl) Ge_ctrl.abort();
+        return;
+      }
+      Ge_send();
+    };
+
+    var Ge_chipBtns = document.querySelectorAll(".Ge_chip");
+    for (var Ge_c = 0; Ge_c < Ge_chipBtns.length; Ge_c++) {
+      Ge_chipBtns[Ge_c].onclick = function () {
+        Ge_send(this.getAttribute("data-q"));
+      };
+    }
+
+    /* ============ 配置面板 ============ */
+    Ge_keyInput.value = Ge_cfg.key;
+    Ge_baseInput.value = Ge_cfg.base;
+    Ge_modelInput.value = Ge_cfg.model;
+
+    document.getElementById("Ge_cfgBtn").onclick = function () {
+      Ge_cfgBox.classList.toggle("Ge_cfgOn");
+    };
+
+    document.getElementById("Ge_saveBtn").onclick = function () {
+      var Ge_k = Ge_keyInput.value.trim();
+      var Ge_b = Ge_baseInput.value.trim() || "https://api.qnaigc.com/v1";
+      var Ge_m = Ge_modelInput.value.trim() || "qiniu/conatus-free";
+
+      Ge_cfg.key = Ge_k;
+      Ge_cfg.base = Ge_b;
+      Ge_cfg.model = Ge_m;
+
+      localStorage.setItem("Ge_api_key", Ge_k);
+      localStorage.setItem("Ge_api_base", Ge_b);
+      localStorage.setItem("Ge_api_model", Ge_m);
+
+      Ge_cfgBox.classList.remove("Ge_cfgOn");
+      Ge_setStatus("配置已保存");
+
+      console.log("%c[接口配置已更新]", "color:#ffd166;font-weight:700", {
+        base: Ge_b, model: Ge_m, key: Ge_k.slice(0, 8) + "…"
+      });
+    };
+
+    document.getElementById("Ge_clearBtn").onclick = function () {
+      if (Ge_busy && Ge_ctrl) Ge_ctrl.abort();
+      Ge_history = [];
+      var Ge_msgs = Ge_chat.querySelectorAll(".Ge_msg");
+      for (var Ge_m2 = 0; Ge_m2 < Ge_msgs.length; Ge_m2++) {
+        if (Ge_msgs[Ge_m2].parentNode === Ge_chat) Ge_chat.removeChild(Ge_msgs[Ge_m2]);
+      }
+      if (Ge_welcome) Ge_welcome.style.display = "block";
+      Ge_setBusy(false);
+      Ge_setStatus("就绪");
+      console.clear();
+      console.log("%c[对话已清空] 历史记录已重置", "color:#ffd166;font-weight:700");
+    };
+
+    /* ============ 启动提示 ============ */
+    console.log("%cAI 聊天页面已就绪", "color:#e94560;font-size:14px;font-weight:700");
+    console.log("接口地址:", Ge_cfg.base);
+    console.log("模型:", Ge_cfg.model);
+    console.log("提示：每次发送都会在控制台打印 [发送给大模型] 与 [从大模型接收] 的完整数据。");
+  </script>
+</body>
+</html>
